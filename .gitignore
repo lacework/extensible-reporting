@@ -1,0 +1,4 @@
+*.html
+notes
+.DS_Store
+*.pickle
