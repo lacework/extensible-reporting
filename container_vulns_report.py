@@ -15,6 +15,8 @@ def main():
 
     container_vulns = p_lw_dummy.container_vulns(_25_hours_ago,_now)
     report = dp.Report(
+        "## Summary by Severity",
+        t_lw.container_vulns_summary(container_vulns),
         "## Breakdown by Image",
         t_lw.container_vulns_summary_by_image(container_vulns),
     )

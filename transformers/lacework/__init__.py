@@ -6,3 +6,4 @@ from .events_raw import events_raw
 from .integrations_aws import integrations_aws
 from .compliance_reports_raw import compliance_reports_raw
 from .container_vulns_summary_by_image import container_vulns_summary_by_image
+from .container_vulns_summary import container_vulns_summary
