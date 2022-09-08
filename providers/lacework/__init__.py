@@ -9,3 +9,5 @@ def datetime_to_lacework_time(datestr):
 from .events import events
 from .container_vulns import container_vulns
 from .host_vulns import host_vulns
+from .integrations import integrations
+from .compliance_reports import compliance_reports
