@@ -14,6 +14,8 @@ def main():
 
     compliance_reports = p_lw_dummy.compliance_reports(accounts=['181778024219','580771763063'])
     report = dp.Report(
+        "## Compliance Summary",
+        t_lw.compliance_reports_summary(compliance_reports),
         "## Compliance Report Raw",
         t_lw.compliance_reports_raw(compliance_reports)
     )

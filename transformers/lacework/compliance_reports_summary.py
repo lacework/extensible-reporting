@@ -2,7 +2,7 @@ import pandas as pd
 import datapane as dp
 import numpy as np
 
-def compliance_reports_raw(compliance_reports, severities=["Critical", "High"]):
+def compliance_reports_summary(compliance_reports, severities=["Critical", "High"]):
     rows = []
   
     for report in compliance_reports:
@@ -21,9 +21,8 @@ def compliance_reports_raw(compliance_reports, severities=["Critical", "High"]):
     df = df.replace({'SEVERITY': {1: "Critical", 2: "High", 3: "Medium", 4: "Low", 5: "Info"}})
     df = df[df['SEVERITY'].isin(severities)]
     
-    df = df.reset_index()
+    df = df.groupby(['ACCOUNT_ID', 'SEVERITY']).agg(count=('SEVERITY', 'count'), resources=('RESOURCE_COUNT', 'sum'), assessed=('ASSESSED_RESOURCE_COUNT', 'sum')).reset_index() # .size().reset_index(name='count')
 
-    df['Assessed vs non-compliant resources'] = df['RESOURCE_COUNT'].astype('string') + " / " + df['ASSESSED_RESOURCE_COUNT'].astype('string')
-    df = df[['ACCOUNT_ID', 'CATEGORY', 'TITLE', 'SEVERITY', 'Assessed vs non-compliant resources']]
+    df.rename(columns={'ACCOUNT_ID': 'Account ID', 'SEVERITY': 'Severity', 'count': 'Severity Count', 'resources': 'Non-compliant Resources', 'assessed': 'Total Assessed Resources'}, inplace=True)
     
     return dp.Table(df)
