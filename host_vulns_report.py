@@ -20,7 +20,9 @@ def main():
         "## Summary of total vulnerabilities",
         t_lw.host_vulns_summary(host_vulns),
         "## Breakdown by host",
-        t_lw.host_vulns_summary_by_host(host_vulns)
+        t_lw.host_vulns_summary_by_host(host_vulns),
+        "## Full Export",
+        t_lw.host_vulns_full_table(host_vulns)
     )
 
     report.save(path="host-vulns-report.html")
