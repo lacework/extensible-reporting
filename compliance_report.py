@@ -12,13 +12,12 @@ _7_days_ago = _now - timedelta(days = 7)
 
 def main():
 
-    events = p_lw_dummy.events(_7_days_ago, _now)
-    
+    compliance_reports = p_lw_dummy.compliance_reports(accounts=['181778024219','580771763063'])
     report = dp.Report(
-        "## Events Raw",
-        t_lw.events_raw(events,severities=["Critical", "High", "Medium"])
+        "## Compliance Report Raw",
+        t_lw.compliance_reports_raw(compliance_reports)
     )
 
-    report.save(path="events-report.html")
+    report.save(path="compliance-report.html")
     
 main()

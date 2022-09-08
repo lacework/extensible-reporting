@@ -7,6 +7,7 @@ def this_path(file):
 from .events import events
 from .container_vulns import container_vulns
 from .host_vulns import host_vulns
+from .compliance_reports import compliance_reports
 
 def save_data(data, name):
     import pickle

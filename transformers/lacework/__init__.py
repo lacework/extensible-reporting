@@ -3,3 +3,5 @@ from .host_vulns_summary_by_host import host_vulns_summary_by_host
 from .host_vulns_summary import host_vulns_summary
 from .host_vulns_total_evaluated import host_vulns_total_evaluated
 from .events_raw import events_raw
+from .integrations_aws import integrations_aws
+from .compliance_reports_raw import compliance_reports_raw
