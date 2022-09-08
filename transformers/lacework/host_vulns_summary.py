@@ -12,7 +12,7 @@ def host_vulns_summary(host_vulns, severities=["Critical", "High", "Medium", "Lo
     df = df[['evalCtx.hostname', 'mid', 'severity']]
 
     # count severities by host & total sum
-    df = df.groupby(['severity'])['evalCtx.hostname'].agg(['count', 'nunique'])
+    df = df.groupby(['severity'])['mid'].agg(['count', 'nunique'])
     df = df.reset_index()
 
     # sort

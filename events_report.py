@@ -6,22 +6,22 @@ import transformers.lacework as t_lw
 
 import datapane as dp
 
-
 _now = datetime.now(timezone.utc)
 _25_hours_ago = _now - timedelta(hours = 25)
 _7_days_ago = _now - timedelta(days = 7)
 
 def main():
 
-    # events = p_lw_dummy.events(_25_hours_ago, _now)
-    # print(len(events))
-    # print(events['data'][0])
+    #events = p_lw.events(_7_days_ago, _now)
+    #p_lw_dummy.save_data(events,"events")
+    events = p_lw_dummy.events(_7_days_ago, _now)
+    
+    report = dp.Report(
+        "## Events Raw",
+        t_lw.events_raw(events,severities=["Critical", "High", "Medium"])
+    )
 
-    host_vulns = p_lw_dummy.host_vulns(_25_hours_ago, _now)
-    # report = dp.Report(t_lw.host_vulns_full_table(host_vulns))
-    report = dp.Report(t_lw.host_vulns_summary(host_vulns))
-    #report = dp.Report(t_lw.host_vulns_summary_by_host(host_vulns))
-    report.save(path="simple-report.html")
+    report.save(path="events-report.html")
 
     # container_vulns = p_lw_dummy.container_vulns(_25_hours_ago, _now)
     
