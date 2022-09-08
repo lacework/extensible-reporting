@@ -23,6 +23,6 @@ def main():
         t_lw.host_vulns_summary_by_host(host_vulns)
     )
 
-    report.save(path="simple-report.html")
+    report.save(path="host-vulns-report.html")
     
 main()
