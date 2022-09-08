@@ -24,7 +24,7 @@ def host_vulns_summary_by_host(host_vulns, severities=["Critical", "High", "Medi
     df.rename(columns={'mid': 'Machine ID', 'evalCtx.hostname': 'Hostname', 'sev_merged': 'Severity Count'}, inplace=True)
 
     # style
-    df = df.style.set_table_styles({"sev_merged" : [
+    df = df.style.set_table_styles({"Severity Count" : [
         {
             "selector" :"td",
             "props": "white-space: pre-wrap; text-align:left"
