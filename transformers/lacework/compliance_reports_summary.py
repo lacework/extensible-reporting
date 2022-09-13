@@ -25,4 +25,4 @@ def compliance_reports_summary(compliance_reports, severities=["Critical", "High
 
     df.rename(columns={'ACCOUNT_ID': 'Account ID', 'SEVERITY': 'Severity', 'count': 'Severity Count', 'resources': 'Non-compliant Resources', 'assessed': 'Total Assessed Resources'}, inplace=True)
     
-    return dp.Table(df)
+    return df

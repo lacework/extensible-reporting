@@ -1,8 +1,11 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from . import lw
 from . import datetime_to_lacework_time
 
 def container_vulns(start_time, end_time, severities=["Critical", "High"]):
-    container_vulns = lw.vulnerabilities.containers.search(json={
+    filters = {
         "timeFilters": {
             "startTime": datetime_to_lacework_time(start_time),
             "endTime": datetime_to_lacework_time(end_time)
@@ -15,13 +18,17 @@ def container_vulns(start_time, end_time, severities=["Critical", "High"]):
                 "values": severities,
             }
         ]
-    })
+    }
+    logger.info('Getting Container Vulnerabilities with following filters:')
+    logger.info(filters)
+    container_vulns = lw().vulnerabilities.containers.search(json=filters)
     
     results = []
-    i = 0
+
+    # logger.info('Found ' + len(container_vulns) + ' pages of data')
+    i = 1
     for page in container_vulns:
-        if i == 4:
-            break
+        logger.info('Saving page ' + str(i))
         i = i + 1
         results.extend(page['data'])
     return results

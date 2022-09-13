@@ -1,5 +1,9 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from . import lw
 
 def integrations():
-	integrations = lw.integrations.get_all()['data']
+	logger.info('Getting integrations')
+	integrations = lw().integrations.get_all()['data']
 	return integrations

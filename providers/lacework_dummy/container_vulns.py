@@ -1,7 +1,6 @@
 import pickle
 from . import this_path
+from . import generic_open
 
-def container_vulns(start_time, end_time):
-    with open(this_path("container_vulns.pickle"), "rb") as infile:
-        container_vulns = pickle.load(infile)
-        return container_vulns
+def container_vulns(*args, **kwargs):
+    return generic_open('container_vulns')

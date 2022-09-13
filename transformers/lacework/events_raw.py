@@ -8,4 +8,4 @@ def events_raw(events, severities=["Critical", "High"], excluded_event_types=["C
     df = df.replace({'SEVERITY': {"1": "Critical", "2": "High", "3": "Medium", "4": "Low", "5": "Info"}})
     df = df[df['SEVERITY'].isin(severities)]
     df = df[~df['EVENT_TYPE'].isin(excluded_event_types)]
-    return dp.Table(df)
+    return df

@@ -22,4 +22,4 @@ def container_vulns_summary(container_vulns, severities=["Critical", "High", "Me
     # rename columns    
     df.rename(columns={'severity': 'Severity', 'count': 'Total CVEs', 'nunique': 'Images Affected'}, inplace=True)
 
-    return dp.Table(df)
+    return df

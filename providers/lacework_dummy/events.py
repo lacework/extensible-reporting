@@ -1,7 +1,6 @@
 import pickle
 from . import this_path
+from . import generic_open
 
-def events(start_time, end_time):
-    with open(this_path("events.pickle"), "rb") as infile:
-        events = pickle.load(infile)
-        return events
+def events(*args, **kwargs):
+    return generic_open('events')

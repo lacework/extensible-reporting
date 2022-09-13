@@ -27,18 +27,4 @@ def container_vulns_summary_by_image(container_vulns, severities=["Critical", "H
     # clean names
     df.rename(columns={'imageId': 'Image ID', 'evalCtx.image_info.repo': 'Repository Name', 'sev_merged': 'Severity Count'}, inplace=True)
 
-    # style
-    df = df.style.set_table_styles({"Severity Count" : [
-        {
-            "selector" :"td",
-            "props": "white-space: pre-wrap; text-align:left"
-        }],
-        "Tags" : [
-	        {
-	            "selector" :"td",
-	            "props": "white-space: pre-wrap; text-align:left"
-	        }
-    	]
-    })
-
-    return dp.Table(df)
+    return df
