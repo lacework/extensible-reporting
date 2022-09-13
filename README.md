@@ -6,11 +6,12 @@
 
 ### Example commands
 ```
-./generate_report.py --use-dummy-data reports/datapane/compliance_report.py --report-path sample_reports/compliance_report.html
-./generate_report.py --use-dummy-data reports/datapane/container_vulns_report.py --report-path sample_reports/container_vulns_report.html
-./generate_report.py --use-dummy-data reports/datapane/events_report.py --report-path sample_reports/events_report.html
-./generate_report.py --use-dummy-data reports/datapane/host_vulns_report.py --report-path sample_reports/host_vulns_report.html
-./generate_report.py --use-dummy-data reports/datapane/integrations_report.py --report-path sample_reports/integrations_report.html
+./generate_report.py --use-dummy-data reports/datapane/compliance_report.py --report-path sample_reports/dp_compliance_report.html
+./generate_report.py --use-dummy-data reports/datapane/container_vulns_report.py --report-path sample_reports/dp_container_vulns_report.html
+./generate_report.py --use-dummy-data reports/datapane/events_report.py --report-path sample_reports/dp_events_report.html
+./generate_report.py --use-dummy-data reports/datapane/host_vulns_report.py --report-path sample_reports/dp_host_vulns_report.html
+./generate_report.py --use-dummy-data reports/datapane/integrations_report.py --report-path sample_reports/dp_integrations_report.html
+./generate_report.py --use-dummy-data reports/jinja2/host_vulns_report.py --report-path sample_reports/j2_host_vulns_report.html
 ```
 
 ## Architecture
