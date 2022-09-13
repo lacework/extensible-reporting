@@ -22,4 +22,4 @@ def host_vulns_summary(host_vulns, severities=["Critical", "High", "Medium", "Lo
     # rename columns    
     df.rename(columns={'severity': 'Severity', 'count': 'Total CVEs', 'nunique': 'Hosts Affected'}, inplace=True)
 
-    return dp.Table(df)
+    return df

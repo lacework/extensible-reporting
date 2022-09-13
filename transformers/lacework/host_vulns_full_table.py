@@ -32,4 +32,4 @@ def host_vulns_full_table(host_vulns, severities=["Critical", "High"]):
         }
     ]})
 
-    return dp.Table(df)
+    return df
