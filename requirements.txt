@@ -2,3 +2,4 @@ pandas~=1.4
 laceworksdk~=1.6
 datapane~=0.15
 coloredlogs~=15.0
+Jinja2~=3.0
