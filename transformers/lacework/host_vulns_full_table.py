@@ -25,7 +25,7 @@ def host_vulns_full_table(host_vulns, severities=["Critical", "High"]):
     df.rename(columns={'mid': 'Machine ID', 'evalCtx.hostname': 'Hostname', 'vuln_details': 'Vulnerabilities'}, inplace=True)
 
     # style
-    df = df.style.set_table_styles({"vuln_details" : [
+    df = df.style.set_table_styles({"Vulnerabilities" : [
         {
             "selector" :"td",
             "props": "white-space: pre-wrap; text-align:left"
