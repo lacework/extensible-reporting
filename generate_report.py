@@ -39,10 +39,12 @@ def main():
             import providers.lacework as p_lw
             import providers.lacework_dummy as p_lw_dummy
             import transformers.lacework as t_lw
+            import graphics.lacework.plotly as g_lw_plotly
 
             self.p_lw = p_lw
             self.p_lw_dummy = p_lw_dummy
             self.t_lw = t_lw
+            self.g_lw_plotly = g_lw_plotly 
             self._now = datetime.now(timezone.utc)
             self._25_hours_ago = self._now - timedelta(hours = 25)
             self._7_days_ago = self._now - timedelta(days = 7)
