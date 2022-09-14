@@ -3,3 +3,5 @@ laceworksdk~=1.6
 datapane~=0.15
 coloredlogs~=15.0
 Jinja2~=3.0
+plotly~=5.10
+kaleido~=0.2

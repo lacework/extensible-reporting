@@ -524,15 +524,15 @@ CCAAAIIIIAAAgiUX4DB5fKbEhEBBBBAAAEEEEAAAQQQQAABBBBAAAEEEKh6gSpac9nytVhMLj4LOFX9g
 <div style="background:grey;">
 <center><b>Host Vulnerabilities Report<br />
 Confidential, Subject to NDA and License Terms<br/></b>
-Report date: {{date}}</center>
+Report date: {{date}}<br/>
+Total Evaluated Hosts: {{host_vulns_total_evaluated}}</center>
 </div>
-
-<h1>Total Evaluated Hosts</h1>
-
-<ul><li>{{host_vulns_total_evaluated}}</li></ul>
 
 <h2>Host Vulnerabilities Summary</h2> 
 {{ host_vulns_summary.to_html() | safe }}
+<div>
+{{ host_vulns_summary_bar_graphic | safe }}
+</div>
 <h2>Breakdown by host</h2> 
 {{ host_vulns_summary_by_host.to_html() | safe }}
 <h2>Full Export</h2> 
