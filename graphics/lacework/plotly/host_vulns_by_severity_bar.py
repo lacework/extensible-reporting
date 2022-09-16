@@ -13,7 +13,7 @@ def host_vulns_by_severity_bar(df, width=600, height=350, format='svg'):
 	fig = go.Figure(data=[go.Bar(x=df['Severity'], y=df['Total CVEs'], marker_color=colors)])
 
 	fig.update_layout(
-	    title='Severities by CVE',
+	    title='Host Severities by CVE',
 	    yaxis=dict(
 	        title='Number of CVEs'
 	    )

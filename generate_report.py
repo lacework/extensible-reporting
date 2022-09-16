@@ -49,6 +49,10 @@ def main():
             self._25_hours_ago = self._now - timedelta(hours = 25)
             self._7_days_ago = self._now - timedelta(days = 7)
             self.use_dummy_data = args.use_dummy_data
+            self.cli_data = {
+                'customer': 'AcmeCoPlaceHolder',
+                'author': 'John Q. Placeholder'
+            }
 
     report.generate_report(_shared(), report_save_path=args.report_path, use_dummy_data=args.use_dummy_data)
 
