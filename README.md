@@ -3,15 +3,19 @@
 
 `usage: generate_report.py [-h] [--report-path REPORT_PATH] [--use-dummy-data] REPORT_GENERATOR`
 
+NOTE: You can use the env vars [specified in the SDK](https://github.com/lacework/python-sdk#environment-variables) to control api access
 
 ### Example commands
 ```
+export LW_PROFILE=some_profile # will use default lacework profile if not provided
+
 ./generate_report.py --use-dummy-data reports/datapane/compliance_report.py --report-path sample_reports/dp_compliance_report.html
 ./generate_report.py --use-dummy-data reports/datapane/container_vulns_report.py --report-path sample_reports/dp_container_vulns_report.html
 ./generate_report.py --use-dummy-data reports/datapane/events_report.py --report-path sample_reports/dp_events_report.html
 ./generate_report.py --use-dummy-data reports/datapane/host_vulns_report.py --report-path sample_reports/dp_host_vulns_report.html
 ./generate_report.py --use-dummy-data reports/datapane/integrations_report.py --report-path sample_reports/dp_integrations_report.html
 ./generate_report.py --use-dummy-data reports/jinja2/host_vulns_report.py --report-path sample_reports/j2_host_vulns_report.html
+./generate_report.py --use-dummy-data reports/jinja2/csa_report.py --report-path sample_reports/csa_report.html
 ```
 
 ## Architecture
