@@ -21,5 +21,6 @@ def container_vulns_summary(container_vulns, severities=["Critical", "High", "Me
 
     # rename columns    
     df.rename(columns={'severity': 'Severity', 'count': 'Total CVEs', 'nunique': 'Images Affected'}, inplace=True)
+    df = df.reset_index(drop=True)
 
     return df

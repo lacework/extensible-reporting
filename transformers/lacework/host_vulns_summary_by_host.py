@@ -22,5 +22,6 @@ def host_vulns_summary_by_host(host_vulns, severities=["Critical", "High", "Medi
 
     # clean names
     df.rename(columns={'mid': 'Machine ID', 'evalCtx.hostname': 'Hostname', 'sev_merged': 'Severity Count'}, inplace=True)
-
+    df = df.drop(columns=['Machine ID'])
+    
     return df

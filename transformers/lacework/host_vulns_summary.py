@@ -20,8 +20,8 @@ def host_vulns_summary(host_vulns, severities=["Critical", "High", "Medium", "Lo
     df = df.sort_values(by=['severity'])
     df = df.reset_index()
     df = df.drop(columns=['index'])
-
+    
     # rename columns    
     df.rename(columns={'severity': 'Severity', 'count': 'Total CVEs', 'nunique': 'Hosts Affected'}, inplace=True)
-
+    
     return df

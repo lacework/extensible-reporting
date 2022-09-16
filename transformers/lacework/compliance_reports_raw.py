@@ -23,7 +23,8 @@ def compliance_reports_raw(compliance_reports, severities=["Critical", "High"]):
     
     df = df.reset_index()
 
-    df['Non-compliant vs Assessed resources'] = df['ASSESSED_RESOURCE_COUNT'].astype('string') + " / " + df['RESOURCE_COUNT'].astype('string')
-    df = df[['ACCOUNT_ID', 'CATEGORY', 'TITLE', 'SEVERITY', 'Non-compliant vs Assessed resources']]
-    
+    df['Resources'] = df['ASSESSED_RESOURCE_COUNT'].astype('string') + " / " + df['RESOURCE_COUNT'].astype('string')
+    df = df[['ACCOUNT_ID', 'CATEGORY', 'TITLE', 'SEVERITY', 'Resources']]
+    df.rename(columns={'ACCOUNT_ID': 'Account ID', 'CATEGORY': 'Category', 'TITLE': 'Title', 'SEVERITY': 'Severity'}, inplace=True)
+
     return df
