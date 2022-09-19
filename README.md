@@ -1,4 +1,14 @@
 # Lacework API Report Generator
+## Installation / Requirements
+
+- `python3`
+- `pip3` (latest version is required, run `pip3 install --upgrade pip`)
+
+To install dependencies run:
+```
+$ pip3 -r requirements.txt
+```
+
 ## Usage
 
 `usage: generate_report.py [-h] [--report-path REPORT_PATH] [--use-dummy-data] REPORT_GENERATOR`
