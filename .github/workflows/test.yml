@@ -11,4 +11,5 @@ jobs:
         cache: 'pip' # cache pip dependencies
     - run: pip install -r requirements.txt
     - run: pip --version
+    - run: python generate_report.py reports/jinja2/csa_report.py
     
