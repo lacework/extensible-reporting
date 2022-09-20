@@ -43,24 +43,17 @@ def generate_report(_shared, report_save_path, use_dummy_data):
         file.write(html)
 
 def gather_host_vulns_data(_shared, lw_provider):
+    # get host vulns
     host_vulns = lw_provider.host_vulns(_shared._25_hours_ago, _shared._now)
 
-    # style
+    # set table classes
     host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns)
-    host_vulns_summary_by_host = host_vulns_summary_by_host.style.set_table_styles({"Severity Count" : [
-        {
-            "selector" :"td.col1",
-            "props": "white-space: pre; text-align:left"
-        },
-        {
-            "selector" :"th.row_heading",
-            "props": "white-space: nowrap; width: 15px"
-        }
+    host_vulns_summary_by_host = host_vulns_summary_by_host.style.set_table_attributes('class="host_vulns_summary_by_host"')
+    host_vulns_summary_data = _shared.t_lw.host_vulns_summary(host_vulns)
+    host_vulns_summary = host_vulns_summary_data.style.set_table_attributes('class="host_vulns_summary"')    
 
-    ]})
-
-    host_vulns_summary = _shared.t_lw.host_vulns_summary(host_vulns)
-    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary, width=750)
+    # get graphics
+    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary_data, width=750)
     host_vulns_summary_bar_graphic = _shared.g_lw_plotly.bytes_to_image_tag(host_vulns_summary_bar_graphic)
 
     return {
@@ -71,35 +64,18 @@ def gather_host_vulns_data(_shared, lw_provider):
     }
 
 def gather_container_vulns_data(_shared, lw_provider):
+    # get container vulns
     container_vulns = lw_provider.container_vulns(_shared._25_hours_ago,_shared._now)
     
+    # set table classes
     container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns)
-    container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_styles([
-        {
-            "selector" :"td.col2",
-            "props": "white-space: pre; text-align:left"
-        },
-        {
-            "selector" :"th.row_heading",
-            "props": "white-space: nowrap; width: 15px"
-        },
-        {
-            "selector" :"td.col0",
-            "props": "white-space: nowrap"
-        },
-        {
-            "selector" :"td.col1",
-            "props": "white-space: nowrap"
-        },
-        {
-            "selector" :"td.col3",
-            "props": "white-space: nowrap"
-        }
-    
-    ])
+    container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_attributes('class="container_vulns_summary_by_image"')
+    container_vulns_summary = _shared.t_lw.container_vulns_summary(container_vulns)
+    container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
+
     return {
         'containers_scanned_count': '[Containers Scanned Count Placeholder]', # _shared.t_lw.container_vulns_total_evaluated(host_vulns)
-        'container_vulns_summary': _shared.t_lw.container_vulns_summary(container_vulns),
+        'container_vulns_summary': container_vulns_summary,
         'container_vulns_summary_bar_graphic': '[Container Vulns Summary Bar Graphic Placeholder]',
         'container_vulns_summary_by_image': container_vulns_summary_by_image,
         'active_images_count': '[Active Images Count Placeholder]'
@@ -113,30 +89,15 @@ def gather_compliance_data(_shared, lw_provider):
     # get compliance reports
     compliance_reports = lw_provider.compliance_reports(accounts=aws_config_accounts)
 
+    # set table classes
     compliance_detail = _shared.t_lw.compliance_reports_raw(compliance_reports)
+    compliance_detail = compliance_detail.style.set_table_attributes('class="compliance_detail"')
+    compliance_summary = _shared.t_lw.compliance_reports_summary(compliance_reports)
+    compliance_summary = compliance_summary.style.set_table_attributes('class="compliance_summary"')
 
-    compliance_detail = compliance_detail.style.set_table_styles([
-        {
-            "selector" :"td.col0",
-            "props": "white-space: nowrap"
-        },
-        {
-            "selector" :".col3",
-            "props": "white-space: nowrap"
-        },
-        {
-            "selector" :".col4",
-            "props": "white-space: nowrap"
-        },
-        {
-            "selector" :"th.row_heading",
-            "props": "white-space: nowrap; width: 15px"
-        }
-    
-    ])
     return {
         'cloud_accounts_count': '[Cloud Accounts Count Placeholder]',
-        'compliance_summary': _shared.t_lw.compliance_reports_summary(compliance_reports),
+        'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': '[Compliance Findings by Service Bar Graphic Placeholder]',
         'compliance_findings_by_account_bar_graphic': '[Compliance Findings by Account Bar Graphic Placeholder]',
         'compliance_detail': compliance_detail
