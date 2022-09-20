@@ -11,11 +11,9 @@ jobs:
         cache: 'pip' # cache pip dependencies
     - run: pip install -r requirements.txt
     - run: pip --version
-    - shell: bash
+    - run: python generate_report.py reports/jinja2/csa_report.py
       env:
         LW_ACCOUNT: ${{ secrets.LW_ACCOUNT }}
         LW_SUBACCOUNT: ${{ secrets.LW_SUBACCOUNT }}
         LW_API_KEY: ${{ secrets.LW_API_KEY }}
         LW_API_SECRET: ${{ secrets.LW_API_SECRET }}
-    - run: python generate_report.py reports/jinja2/csa_report.py
-    
