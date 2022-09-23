@@ -14,27 +14,16 @@ def generate_report(_shared, report_save_path, use_dummy_data):
     compliance_data = gather_compliance_data(_shared, lw_provider)
 
     templateLoader = jinja2.FileSystemLoader(searchpath=os.path.dirname(__file__))
-    templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True)
+    templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
     TEMPLATE_FILE = "csa_report.html"
     template = templateEnv.get_template(TEMPLATE_FILE)
     html = template.render(
         customer                                   = _shared.cli_data['customer'],
         date                                       = datetime.now().strftime("%A %B %d, %Y"),
         author                                     = _shared.cli_data['author'],
-        cloud_accounts_count                       = str(compliance_data['cloud_accounts_count']),
-        hosts_scanned_count                        = str(host_vulns_data['hosts_scanned_count']),
-        containers_scanned_count                   = str(container_vulns_data['containers_scanned_count']),
-        active_images_count                        = str(container_vulns_data['active_images_count']),
-        host_vulns_summary                         = host_vulns_data['host_vulns_summary'],
-        host_vulns_summary_bar_graphic             = host_vulns_data['host_vulns_summary_bar_graphic'],
-        container_vulns_summary                    = container_vulns_data['container_vulns_summary'],
-        container_vulns_summary_bar_graphic        = container_vulns_data['container_vulns_summary_bar_graphic'],
-        host_vulns_summary_by_host                 = host_vulns_data['host_vulns_summary_by_host'],
-        container_vulns_summary_by_image           = container_vulns_data['container_vulns_summary_by_image'],
-        compliance_summary                         = compliance_data['compliance_summary'],
-        compliance_findings_by_service_bar_graphic = compliance_data['compliance_findings_by_service_bar_graphic'],
-        compliance_findings_by_account_bar_graphic = compliance_data['compliance_findings_by_account_bar_graphic'],
-        compliance_detail                          = compliance_data['compliance_detail']
+        compliance_data                            = compliance_data,
+        host_vulns_data                            = host_vulns_data,
+        container_vulns_data                       = container_vulns_data,
     )
 
     logger.info('Saving report to: ' + report_save_path)
@@ -45,6 +34,8 @@ def generate_report(_shared, report_save_path, use_dummy_data):
 def gather_host_vulns_data(_shared, lw_provider):
     # get host vulns
     host_vulns = lw_provider.host_vulns(_shared._25_hours_ago, _shared._now)
+    if not host_vulns:
+        return False
 
     # set table classes
     host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns)
@@ -66,7 +57,9 @@ def gather_host_vulns_data(_shared, lw_provider):
 def gather_container_vulns_data(_shared, lw_provider):
     # get container vulns
     container_vulns = lw_provider.container_vulns(_shared._25_hours_ago,_shared._now)
-    
+    if not container_vulns:
+        return False
+
     # set table classes
     container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns)
     container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_attributes('class="container_vulns_summary_by_image"')
@@ -84,10 +77,15 @@ def gather_container_vulns_data(_shared, lw_provider):
 def gather_compliance_data(_shared, lw_provider):
     # get aws accounts
     integrations = lw_provider.integrations()
+
     aws_config_accounts = _shared.t_lw.integrations_config_accounts(integrations)
+    if not aws_config_accounts:
+        return False
 
     # get compliance reports
     compliance_reports = lw_provider.compliance_reports(accounts=aws_config_accounts)
+    if not compliance_reports:
+        return False
 
     # set table classes
     compliance_detail = _shared.t_lw.compliance_reports_raw(compliance_reports)
