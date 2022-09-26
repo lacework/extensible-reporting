@@ -3,17 +3,8 @@ import datapane as dp
 import numpy as np
 
 def compliance_reports_raw(compliance_reports, severities=["Critical", "High"]):
-    rows = []
-  
-    for report in compliance_reports:
-        recommendations = report['recommendations']
-        reportType = report['reportType']
-          
-        for row in recommendations:
-            row['reportType']= reportType
-            rows.append(row)
-      
-    df = pd.json_normalize(rows)
+
+    df = pd.json_normalize(compliance_reports)
     df = df[df['STATUS'].isin(["NonCompliant"])]
     
     df = df.sort_values(by=['SEVERITY', 'ASSESSED_RESOURCE_COUNT'],ascending=[True,False])
