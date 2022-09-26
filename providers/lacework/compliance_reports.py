@@ -15,4 +15,15 @@ def compliance_reports(accounts=[]):
         except LWApiError:
             logger.warning('Could not get compliance report for aws account: ' + aws_account)
         results.extend(a['data'])
-    return results
+
+    rows = []
+  
+    for report in results:
+        recommendations = report['recommendations']
+        reportType = report['reportType']
+          
+        for row in recommendations:
+            row['reportType']= reportType
+            rows.append(row)
+
+    return rows
