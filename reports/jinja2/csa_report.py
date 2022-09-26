@@ -67,11 +67,10 @@ def gather_container_vulns_data(_shared, lw_provider):
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
 
     return {
-        'containers_scanned_count': '[Containers Scanned Count Placeholder]', # _shared.t_lw.container_vulns_total_evaluated(host_vulns)
+        'containers_scanned_count': _shared.t_lw.container_vulns_total_evaluated(container_vulns),
         'container_vulns_summary': container_vulns_summary,
         'container_vulns_summary_bar_graphic': '[Container Vulns Summary Bar Graphic Placeholder]',
-        'container_vulns_summary_by_image': container_vulns_summary_by_image,
-        'active_images_count': '[Active Images Count Placeholder]'
+        'container_vulns_summary_by_image': container_vulns_summary_by_image
     }
 
 def gather_compliance_data(_shared, lw_provider):
@@ -94,7 +93,7 @@ def gather_compliance_data(_shared, lw_provider):
     compliance_summary = compliance_summary.style.set_table_attributes('class="compliance_summary"')
 
     return {
-        'cloud_accounts_count': '[Cloud Accounts Count Placeholder]',
+        'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': '[Compliance Findings by Service Bar Graphic Placeholder]',
         'compliance_findings_by_account_bar_graphic': '[Compliance Findings by Account Bar Graphic Placeholder]',

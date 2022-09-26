@@ -7,5 +7,7 @@ from .integrations_aws import integrations_aws
 from .integrations_config_accounts import integrations_config_accounts
 from .compliance_reports_raw import compliance_reports_raw
 from .compliance_reports_summary import compliance_reports_summary
+from .compliance_reports_total_accounts_evaluated import compliance_reports_total_accounts_evaluated
 from .container_vulns_summary_by_image import container_vulns_summary_by_image
 from .container_vulns_summary import container_vulns_summary
+from .container_vulns_total_evaluated import container_vulns_total_evaluated
