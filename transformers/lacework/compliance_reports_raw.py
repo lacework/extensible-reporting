@@ -4,7 +4,7 @@ import numpy as np
 
 def compliance_reports_raw(compliance_reports, severities=["Critical", "High"]):
 
-    df = pd.json_normalize(compliance_reports)
+    df = pd.DataFrame(compliance_reports)
     df = df[df['STATUS'].isin(["NonCompliant"])]
     
     df = df.sort_values(by=['SEVERITY', 'ASSESSED_RESOURCE_COUNT'],ascending=[True,False])
