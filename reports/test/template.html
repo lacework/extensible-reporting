@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+	<style type="text/css">
+		@media (prefers-color-scheme: dark) {
+			:root {
+				--nc-tx-1: #000000;
+				--nc-tx-2: #1A1A1A;
+				--nc-bg-1: #FFFFFF;
+				--nc-bg-2: #F6F8FA;
+				--nc-bg-3: #E5E7EB;
+				--nc-lk-1: #0070F3;
+				--nc-lk-2: #0366D6;
+				--nc-lk-tx: #FFFFFF;
+				--nc-ac-1: #79FFE1;
+				--nc-ac-tx: #0C4047;
+			}
+		}
+		blockquote { font-size:.7em; padding:.7em }
+		* {
+			font-size: .9em;
+		}
+	</style>
+</head>
+<body>
+	{% for key in data %}
+		<h1>{{ key }}</h1>
+		<div>{{ data[key] | safe }}</div>
+	{% endfor %}
+</body>
+</html>
