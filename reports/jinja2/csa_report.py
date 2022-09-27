@@ -13,6 +13,9 @@ def generate_report(_shared, report_save_path, use_cached_data):
     container_vulns_data = gather_container_vulns_data(_shared, lw_provider)
     compliance_data = gather_compliance_data(_shared, lw_provider)
 
+    polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(os.getcwd(), 'assets/lacework/images/polygraph-info.png'))
+    polygraph_graphic_html = _shared.common.bytes_to_image_tag(polygraph_graphic_bytes,'png')
+
     templateLoader = jinja2.FileSystemLoader(searchpath=os.path.dirname(__file__))
     templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
     TEMPLATE_FILE = "csa_report.html"
@@ -21,6 +24,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
         customer                                   = _shared.cli_data['customer'],
         date                                       = datetime.now().strftime("%A %B %d, %Y"),
         author                                     = _shared.cli_data['author'],
+        polygraph_graphic_html                     = polygraph_graphic_html,
         compliance_data                            = compliance_data,
         host_vulns_data                            = host_vulns_data,
         container_vulns_data                       = container_vulns_data,
@@ -45,7 +49,7 @@ def gather_host_vulns_data(_shared, lw_provider):
 
     # get graphics
     host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary_data, width=750)
-    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.bytes_to_image_tag(host_vulns_summary_bar_graphic)
+    host_vulns_summary_bar_graphic = _shared.common.bytes_to_image_tag(host_vulns_summary_bar_graphic,'svg+xml')
 
     return {
         'hosts_scanned_count': _shared.t_lw.host_vulns_total_evaluated(host_vulns),

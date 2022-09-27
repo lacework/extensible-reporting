@@ -22,7 +22,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
 
     host_vulns_summary = _shared.t_lw.host_vulns_summary(host_vulns)
     host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary, width=720)
-    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.bytes_to_image_tag(host_vulns_summary_bar_graphic)
+    host_vulns_summary_bar_graphic = _shared.common.bytes_to_image_tag(host_vulns_summary_bar_graphic,'svg+xml')
 
     templateLoader = jinja2.FileSystemLoader(searchpath=os.path.dirname(__file__))
     templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True)
