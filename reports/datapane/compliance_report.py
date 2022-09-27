@@ -1,7 +1,7 @@
-def generate_report(_shared, report_save_path, use_dummy_data):
+def generate_report(_shared, report_save_path, use_cached_data):
     import datapane as dp
     
-    lw_provider = _shared.p_lw_dummy if use_dummy_data else _shared.p_lw
+    lw_provider = _shared.p_lw_cached if use_cached_data else _shared.p_lw
     
     # get aws accounts
     integrations = lw_provider.integrations()
