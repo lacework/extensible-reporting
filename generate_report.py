@@ -17,6 +17,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--report-path", help="Path to save report", default="report.html")
     parser.add_argument("--use-cached-data", help="Use cached data (if available)", action='store_true')
+    parser.add_argument("--author", help="Author of report", type=str, required=True)
+    parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
     parser.add_argument('report_generator', metavar='REPORT_GENERATOR', type=str, nargs=None,
                     help='Path to the report generator (eg: reports/datapane/compliance_report.py')
     args = parser.parse_args()
@@ -50,8 +52,8 @@ def main():
             self._7_days_ago = self._now - timedelta(days = 7)
             self.use_cached_data = args.use_cached_data
             self.cli_data = {
-                'customer': 'AcmeCoPlaceHolder',
-                'author': 'John Q. Placeholder'
+                'customer': args.customer,
+                'author': args.author
             }
 
     report.generate_report(_shared(), report_save_path=args.report_path, use_cached_data=args.use_cached_data)
