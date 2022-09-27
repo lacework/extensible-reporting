@@ -111,6 +111,9 @@
 		<li>Accelerate security throughout development with less effort</li>
 	</ul>
 	
+	<div>
+		{{ polygraph_graphic_html | safe }}
+	</div>
 	{% if host_vulns_data or container_vulns_data %}
 		<h2>Workload Vulnerability Assessment</h2>
 		<p>
