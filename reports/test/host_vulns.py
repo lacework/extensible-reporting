@@ -3,13 +3,13 @@ import json
 import logging
 logger = logging.getLogger(__name__)
 
-def generate_report(_shared, report_save_path, use_dummy_data):
+def generate_report(_shared, report_save_path, use_cached_data):
     import os
     from datetime import datetime
 
     import jinja2
     
-    lw_provider = _shared.p_lw_dummy if use_dummy_data else _shared.p_lw
+    lw_provider = _shared.p_lw_cached if use_cached_data else _shared.p_lw
 
     host_vulns = lw_provider.host_vulns(_shared._25_hours_ago, _shared._now)
 
