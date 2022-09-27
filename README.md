@@ -50,6 +50,14 @@ To simplify development and limit the API calls made to a provider's backend, th
 
 To create a set of dummy data, run the `generate_dummy_data.py` script.
 
+The script by default will generate dummy date for whatever Lacework profile or API credentials you have in your environment.
+
+To only generate dummy data for specific sets, add one or more as parameters to the command line.
+
+eg: `./generate_dummy_data.py lw_compliance lw_events`
+
+The full set of available data sources is [hardcoded in the script](generate_dummy_data.py#L20)
+
 ### Logging
 
 TBD
