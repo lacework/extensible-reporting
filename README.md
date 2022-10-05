@@ -1,4 +1,9 @@
-# Lacework API Report Generator
+# Extensible Report Generator
+
+## Description
+
+A project to abstract the gathering, transformations, and rendering of datasets into reports.
+
 ## Installation / Requirements
 
 - `python3`
