@@ -1,4 +1,4 @@
-def container_vulns_top_packages(df, width=600, height=350, format='svg'):
+def container_vulns_top_packages_bar(df, width=600, height=350, format='svg'):
 	import plotly.graph_objects as go
 	
 	colors = [
