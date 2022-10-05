@@ -74,7 +74,7 @@ def gather_container_vulns_data(_shared, lw_provider):
     container_vulns_summary_by_package = _shared.t_lw.container_vulns_summary_by_package(container_vulns)
     container_vulns_summary_by_package['Package Info'] = container_vulns_summary_by_package['Package Info'].str.replace("\n",'<br>')
     
-    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages(container_vulns_summary_by_package.head(5), width=750)
+    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages_bar(container_vulns_summary_by_package.head(5), width=750)
     container_vulns_summary_by_package_bar_graphic = _shared.common.bytes_to_image_tag(container_vulns_summary_by_package_bar_graphic, 'svg+xml')
     
     return {
