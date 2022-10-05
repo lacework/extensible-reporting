@@ -24,7 +24,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
     
     # get graphics
-    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages(container_vulns_summary_by_package.head(5), width=750)
+    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages_bar(container_vulns_summary_by_package.head(5), width=750)
     container_vulns_summary_by_package_bar_graphic = _shared.common.bytes_to_image_tag(container_vulns_summary_by_package_bar_graphic, 'svg+xml')
 
     data = {
