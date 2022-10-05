@@ -1,1 +1,2 @@
 from .host_vulns_by_severity_bar import host_vulns_by_severity_bar
+from .container_vulns_top_packages import container_vulns_top_packages
