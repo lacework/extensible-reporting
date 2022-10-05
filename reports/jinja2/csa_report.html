@@ -138,7 +138,7 @@
 		{% if container_vulns_data %}
 			<h3>Container Vulnerability Summary</h3>
 			{{ container_vulns_data.container_vulns_summary.to_html(index=False) | safe }}
-			{{ container_vulns_data.container_vulns_summary_bar_graphic | safe }}
+			{{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
 		{% endif %}
 
 		<h3>Detailed CVE Breakdown</h3>

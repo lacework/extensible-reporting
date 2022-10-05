@@ -70,10 +70,17 @@ def gather_container_vulns_data(_shared, lw_provider):
     container_vulns_summary = _shared.t_lw.container_vulns_summary(container_vulns)
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
 
+    # get graphics
+    container_vulns_summary_by_package = _shared.t_lw.container_vulns_summary_by_package(container_vulns)
+    container_vulns_summary_by_package['Package Info'] = container_vulns_summary_by_package['Package Info'].str.replace("\n",'<br>')
+    
+    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages(container_vulns_summary_by_package.head(5), width=750)
+    container_vulns_summary_by_package_bar_graphic = _shared.common.bytes_to_image_tag(container_vulns_summary_by_package_bar_graphic, 'svg+xml')
+    
     return {
         'containers_scanned_count': _shared.t_lw.container_vulns_total_evaluated(container_vulns),
         'container_vulns_summary': container_vulns_summary,
-        'container_vulns_summary_bar_graphic': '[Container Vulns Summary Bar Graphic Placeholder]',
+        'container_vulns_summary_by_package_bar_graphic': container_vulns_summary_by_package_bar_graphic,
         'container_vulns_summary_by_image': container_vulns_summary_by_image
     }
 
