@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "lw-api-report-maker"
+version = "0.1.0"
+description = "Lacework automated report generator"
+authors = ["Jeff Vogt <jeff.vogt@lacework.net>"]
+license = "TBD"
+
+[[tool.poetry.source]]
+name = "pypi-public"
+url = "https://pypi.org/simple/"
+default = true
+
+[tool.poetry.dependencies]
+python = ">=3.8,<3.11"
+pandas = "^1.5.0"
+laceworksdk = "^1.6.1"
+dataplane = "^0.0.3"
+coloredlogs = "^15.0.1"
+jinja2 = "^3.1.2"
+plotly = "^5.10.0"
+kaleido = "0.2.1"
+
+[tool.poetry.dev-dependencies]
+pyinstaller = "^5.4.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
