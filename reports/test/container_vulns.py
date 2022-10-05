@@ -16,14 +16,24 @@ def generate_report(_shared, report_save_path, use_cached_data):
     # set table classes
     container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns)
     container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_attributes('class="container_vulns_summary_by_image"')
+    
+    container_vulns_summary_by_package = _shared.t_lw.container_vulns_summary_by_package(container_vulns)
+    container_vulns_summary_by_package['Package Info'] = container_vulns_summary_by_package['Package Info'].str.replace("\n",'<br>')
+    
     container_vulns_summary = _shared.t_lw.container_vulns_summary(container_vulns)
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
+    
+    # get graphics
+    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages(container_vulns_summary_by_package.head(5), width=750)
+    container_vulns_summary_by_package_bar_graphic = _shared.common.bytes_to_image_tag(container_vulns_summary_by_package_bar_graphic, 'svg+xml')
 
     data = {
         'containers_scanned_count': _shared.t_lw.container_vulns_total_evaluated(container_vulns),
         'container_vulns_summary': container_vulns_summary.to_html(),
         'container_vulns_summary_bar_graphic': '[Container Vulns Summary Bar Graphic Placeholder]',
         'container_vulns_summary_by_image': container_vulns_summary_by_image.to_html(),
+        'container_vulns_summary_by_package_bar_graphic': container_vulns_summary_by_package_bar_graphic,
+        'container_vulns_summary_by_package': container_vulns_summary_by_package.to_html(),
         'container_vulns_raw_json': '<pre>' + json.dumps(container_vulns, indent=2) + '</pre>'
     }
 
