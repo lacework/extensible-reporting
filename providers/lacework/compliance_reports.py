@@ -14,6 +14,7 @@ def compliance_reports(accounts=[]):
             a = lw().compliance.get_latest_aws_report(aws_account_id=aws_account, file_format="json")
         except LWApiError:
             logger.warning('Could not get compliance report for aws account: ' + aws_account)
+            continue
         results.extend(a['data'])
 
     rows = []
