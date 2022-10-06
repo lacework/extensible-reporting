@@ -25,6 +25,6 @@ def container_vulns_summary_by_image(container_vulns, severities=["Critical", "H
     df = df[['evalCtx.image_info.repo', 'Tags', 'sev_merged', 'imageId']]
     
     # clean names
-    df.rename(columns={'imageId': 'Image ID', 'evalCtx.image_info.repo': 'Repository Name', 'sev_merged': 'Severity Count'}, inplace=True)
+    df.rename(columns={'imageId': 'Image ID', 'evalCtx.image_info.repo': 'Repository Name', 'sev_merged': 'CVE Count'}, inplace=True)
 
     return df
