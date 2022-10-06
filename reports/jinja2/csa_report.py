@@ -103,10 +103,17 @@ def gather_compliance_data(_shared, lw_provider):
     compliance_summary = _shared.t_lw.compliance_reports_summary(compliance_reports)
     compliance_summary = compliance_summary.style.set_table_attributes('class="compliance_summary"')
 
+    # get graphics
+    compliance_findings_summary_for_graphic = _shared.t_lw.compliance_reports_summary_for_graphic(compliance_reports)
+
+    compliance_findings_by_account_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_account_bar(compliance_findings_summary_for_graphic, width=750)
+    compliance_findings_by_account_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_by_account_bar_graphic, 'svg+xml')
+    
+
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': '[Compliance Findings by Service Bar Graphic Placeholder]',
-        'compliance_findings_by_account_bar_graphic': '[Compliance Findings by Account Bar Graphic Placeholder]',
+        'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail
     }
