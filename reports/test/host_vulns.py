@@ -21,7 +21,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
 
     # get graphics
     host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary_data, width=750)
-    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.bytes_to_image_tag(host_vulns_summary_bar_graphic)
+    host_vulns_summary_bar_graphic = _shared.common.bytes_to_image_tag(host_vulns_summary_bar_graphic, 'svg+xml')
 
     data = {
         'hosts_scanned_count': _shared.t_lw.host_vulns_total_evaluated(host_vulns),
