@@ -24,13 +24,7 @@ NOTE: You can use the env vars [specified in the SDK](https://github.com/lacewor
 ```
 export LW_PROFILE=some_profile # will use default lacework profile if not provided
 
-./generate_report.py --use-cached-data reports/datapane/compliance_report.py --report-path sample_reports/dp_compliance_report.html
-./generate_report.py --use-cached-data reports/datapane/container_vulns_report.py --report-path sample_reports/dp_container_vulns_report.html
-./generate_report.py --use-cached-data reports/datapane/events_report.py --report-path sample_reports/dp_events_report.html
-./generate_report.py --use-cached-data reports/datapane/host_vulns_report.py --report-path sample_reports/dp_host_vulns_report.html
-./generate_report.py --use-cached-data reports/datapane/integrations_report.py --report-path sample_reports/dp_integrations_report.html
-./generate_report.py --use-cached-data reports/jinja2/host_vulns_report.py --report-path sample_reports/j2_host_vulns_report.html
-./generate_report.py --use-cached-data reports/jinja2/csa_report.py --report-path sample_reports/csa_report.html
+./generate_report.py [--use-cached-data] reports/jinja2/csa_report.py --report-path sample_reports/csa_report.html --author "Your Name" --customer "Customer Name"
 ```
 
 ## Architecture
