@@ -38,13 +38,12 @@ jobs:
         include:
           - os: macos-latest
             TARGET: macos
-            CMD_BUILD: >
-                pyinstaller -F -n generate_report generate_report.py 
-            OUT_FILE_NAME: generate_report
+            CMD_BUILD: pyinstaller generate_csa_report.spec 
+            OUT_FILE_NAME: generate_report_mac
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
-            CMD_BUILD: pyinstaller -F -n generate_report generate_report.py
+            CMD_BUILD: pyinstaller generate_csa_report.spec
             OUT_FILE_NAME: generate_report.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
     steps:
