@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import datapane
 import coloredlogs, logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -7,7 +7,7 @@ coloredlogs.install(level='INFO',fmt='%(asctime)s %(name)s[%(process)d] %(leveln
 
 from datetime import datetime, timezone, timedelta
 import os
-
+import sys
 import argparse
 
 import importlib.machinery
@@ -23,6 +23,7 @@ def main():
     parser.add_argument("--author", help="Author of report", type=str, required=True)
     parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
     args = parser.parse_args()
+    # Hardcode the report
     csa_report = "reports/jinja2/csa_report.py"
     
     # detect if in Pyinstaller package and build appropriate base directory path
