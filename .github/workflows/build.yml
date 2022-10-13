@@ -38,11 +38,13 @@ jobs:
         include:
           - os: macos-latest
             TARGET: macos
-            CMD_BUILD: pyinstaller generate_csa_report_mac.spec 
+            CMD_BUILD: pyinstaller generate_csa_report_mac.spec
+            OUT_FILE_NAME: generate_csa_report_mac
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
             CMD_BUILD: pyinstaller generate_csa_report_win.spec
+            OUT_FILE_NAME: generate_csa_report_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
     steps:
     - uses: actions/checkout@v1
