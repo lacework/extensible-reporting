@@ -14,11 +14,11 @@ default = true
 python = ">=3.8,<3.11"
 pandas = "^1.5.0"
 laceworksdk = "^1.6.1"
-dataplane = "^0.0.3"
 coloredlogs = "^15.0.1"
 jinja2 = "^3.1.2"
 plotly = "^5.10.0"
 kaleido = "0.2.1"
+datapane = "^0.15.3"
 
 [tool.poetry.dev-dependencies]
 pyinstaller = "^5.4.1"
