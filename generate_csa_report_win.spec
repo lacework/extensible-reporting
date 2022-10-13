@@ -50,7 +50,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='generate_csa_report',
+    name='generate_csa_report_win',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
