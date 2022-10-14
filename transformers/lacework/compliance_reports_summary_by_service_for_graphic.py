@@ -10,6 +10,8 @@ def compliance_reports_summary_by_service_for_graphic(compliance_reports, severi
     df = df.replace({'SEVERITY': {1: "Critical", 2: "High", 3: "Medium", 4: "Low", 5: "Info"}})
     df = df[df['SEVERITY'].isin(severities)]
     
+    df['RESOURCE_COUNT'] = (df['VIOLATIONS'].str.len())
+
     df = df.reset_index()
 
     df = df[['ACCOUNT_ID', 'CATEGORY', 'SEVERITY', 'RESOURCE_COUNT']]
