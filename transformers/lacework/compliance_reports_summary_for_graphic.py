@@ -7,6 +7,8 @@ def compliance_reports_summary_for_graphic(compliance_reports, severities=["Crit
     df = pd.DataFrame(compliance_reports)
     df = df[df['STATUS'].isin(["NonCompliant"])]
     
+    df['RESOURCE_COUNT'] = (df['VIOLATIONS'].str.len())
+        
     # sort to determine account order, while we still have the severity & resource count data
     df = df.sort_values(by=['SEVERITY', 'RESOURCE_COUNT'],ascending=[True,False])
     account_order = df['ACCOUNT_ID'].unique()

@@ -7,6 +7,8 @@ def compliance_reports_summary(compliance_reports, severities=["Critical", "High
     df = pd.DataFrame(compliance_reports)
     df = df[df['STATUS'].isin(["NonCompliant"])]
     
+    df['RESOURCE_COUNT'] = (df['VIOLATIONS'].str.len())
+    
     df = df.sort_values(by=['SEVERITY', 'RESOURCE_COUNT'],ascending=[True,False])
     
     df = df.replace({'SEVERITY': {1: "Critical", 2: "High", 3: "Medium", 4: "Low", 5: "Info"}})
