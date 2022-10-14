@@ -19,12 +19,13 @@ if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
     basedir = os.path.dirname(os.path.abspath(__file__))
+    
 def main():
     parser = argparse.ArgumentParser(description=
     """Tool to generate a Lacework customer security assessment report.
     Requires that the Lacework CLI is installed and configured.
     https://docs.lacework.com/cli""")
-    parser.add_argument("--report-path", help="Path to save report", default="report.html")
+    parser.add_argument("--report-path", help="Filename to save report", default="report.html")
     parser.add_argument("--use-cached-data", help="Use cached data (if available)", action='store_true')
     parser.add_argument("--author", help="Author of report", type=str, required=True)
     parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
