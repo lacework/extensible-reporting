@@ -4,19 +4,26 @@ logger = logging.getLogger(__name__)
 def generate_report(_shared, report_save_path, use_cached_data):
     import os
     from datetime import datetime
-
+    import sys
     import jinja2
-    
+        
+    # detect if in Pyinstaller package and build appropriate base directory path
+    if getattr(sys, 'frozen', False):
+        basedir = sys._MEIPASS
+    else:
+        basedir = os.path.dirname(os.path.abspath(os.path.join(os.path.join(__file__, os.pardir), os.pardir)))
+        
+        
     lw_provider = _shared.p_lw_cached if use_cached_data else _shared.p_lw
 
     host_vulns_data = gather_host_vulns_data(_shared, lw_provider)
     container_vulns_data = gather_container_vulns_data(_shared, lw_provider)
     compliance_data = gather_compliance_data(_shared, lw_provider)
 
-    polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(os.getcwd(), 'assets/lacework/images/polygraph-info.png'))
+    polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/polygraph-info.png'))
     polygraph_graphic_html = _shared.common.bytes_to_image_tag(polygraph_graphic_bytes,'png')
 
-    templateLoader = jinja2.FileSystemLoader(searchpath=os.path.dirname(__file__))
+    templateLoader = jinja2.FileSystemLoader(searchpath=os.path.join(basedir, "reports/jinja2/"))
     templateEnv = jinja2.Environment(loader=templateLoader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
     TEMPLATE_FILE = "csa_report.html"
     template = templateEnv.get_template(TEMPLATE_FILE)
