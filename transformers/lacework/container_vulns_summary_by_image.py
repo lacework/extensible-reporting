@@ -5,26 +5,33 @@ import numpy as np
 def container_vulns_summary_by_image(container_vulns, severities=["Critical", "High", "Medium", "Low"]):
     df = pd.json_normalize(container_vulns, meta=[['evalCtx', 'image_info', 'repo'],['evalCtx', 'image_info', 'tags'], ['featureKey', 'name'], ['fixInfo', 'fix_available'], 'vulnId', 'severity', 'imageId'])
     
+    # delete extra columns
+    df = df[['evalCtx.image_info.repo', 'evalCtx.image_info.tags', 'featureKey.name', 'fixInfo.fix_available', 'vulnId', 'severity', 'imageId']]
+
     # filter
     df = df[df['severity'].isin(severities)]
 
-    # delete extra columns
-    # df = df[['evalCtx.hostname', 'mid', 'severity']]
-
-    df['Tags'] = df['evalCtx.image_info.tags'].str.join(f"\n")
-    # count severities by imageId
-    df = df.groupby(['imageId', 'severity','evalCtx.image_info.repo','Tags']).size().reset_index(name='count')
+    # combine repo and tags into newline separated repo_tag
+    df['repo_tags'] = df.apply(lambda y: "\n".join(list(map(lambda x: y['evalCtx.image_info.repo'] + ':' + x, y['evalCtx.image_info.tags']))), axis=1)    
+    df.drop(columns=['evalCtx.image_info.tags'], inplace=True)
+    df.drop_duplicates(inplace=True)
     
-    # summarize severities onto one column (and sort)
-    df['sev_merged'] = df['severity'].astype('string') + ": " + df['count'].astype('string')
+    # assemble multiple repos / tags into one line per imageid
+    df = df.groupby(['imageId', 'vulnId', 'featureKey.name']).agg(repositories=('repo_tags', f"\n".join), fix_available=('fixInfo.fix_available', 'first'), severity=('severity', 'first')).reset_index()
+    
+    # count by severity
+    df = df.groupby(['imageId', 'severity']).agg(repositories=('repositories', 'first'), count=('vulnId','count')).reset_index()
+        
+    # sort and concat severities
     df['severity'] = pd.Categorical(df['severity'], ["Critical", "High", "Medium", "Low", "Info"])
+    df['sev_merged'] = df['severity'].astype('string') + ": " + df['count'].astype('string')
     df = df.sort_values(by=['severity', 'count'],ascending=[True,False])
-    df = df.groupby('imageId', sort=False, as_index=False).agg({'Tags' : 'first', 'imageId' : 'first', 'evalCtx.image_info.repo' : 'first', 'sev_merged' : f"\n".join})
-
+    df = df.groupby('imageId', sort=False).agg(repositories=('repositories', 'first'),severities=('sev_merged', f"\n".join)).reset_index()
+    
     # reorder
-    df = df[['evalCtx.image_info.repo', 'Tags', 'sev_merged', 'imageId']]
+    df = df[['repositories', 'severities', 'imageId']]
     
     # clean names
-    df.rename(columns={'imageId': 'Image ID', 'evalCtx.image_info.repo': 'Repository Name', 'sev_merged': 'CVE Count'}, inplace=True)
+    df.rename(columns={'imageId': 'Image ID', 'repositories': 'Repository / Tag', 'severities': 'CVE Count'}, inplace=True)
 
     return df
