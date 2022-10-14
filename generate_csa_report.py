@@ -13,6 +13,12 @@ import argparse
 import importlib.machinery
 import importlib.util
 
+# detect if in Pyinstaller package and build appropriate base directory path
+# this needs to be and remain a global variable
+if getattr(sys, 'frozen', False):
+    basedir = sys._MEIPASS
+else:
+    basedir = os.path.dirname(os.path.abspath(__file__))
 def main():
     parser = argparse.ArgumentParser(description=
     """Tool to generate a Lacework customer security assessment report.
@@ -26,11 +32,7 @@ def main():
     # Hardcode the report
     csa_report = "reports/jinja2/csa_report.py"
     
-    # detect if in Pyinstaller package and build appropriate base directory path
-    if getattr(sys, 'frozen', False):
-        basedir = sys._MEIPASS
-    else:
-        basedir = os.path.dirname(os.path.abspath(__file__))
+
     
     report_path = os.path.join(basedir, csa_report)
     if not os.path.exists(report_path):
