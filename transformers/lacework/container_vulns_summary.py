@@ -9,8 +9,9 @@ def container_vulns_summary(container_vulns, severities=["Critical", "High", "Me
     df = df[df['severity'].isin(severities)]
 
     # delete extra columns
-    df = df[['imageId', 'severity']]
-
+    df = df[['imageId', 'severity', 'vulnId', 'featureKey.name']]
+    df.drop_duplicates(inplace=True)
+    
     # count severities by host & total sum
     df = df.groupby(['severity'])['imageId'].agg(['count', 'nunique'])
     df = df.reset_index()
