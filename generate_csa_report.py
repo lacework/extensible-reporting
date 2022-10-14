@@ -14,7 +14,6 @@ import importlib.machinery
 import importlib.util
 
 # detect if in Pyinstaller package and build appropriate base directory path
-# this needs to be and remain a global variable
 if getattr(sys, 'frozen', False):
     basedir = sys._MEIPASS
 else:
