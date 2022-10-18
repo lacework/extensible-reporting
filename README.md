@@ -1,8 +1,8 @@
-# Extensible Report Generator
+# Lacework CSA Report Generator
 
 ## Description
 
-A project to abstract the gathering, transformations, and rendering of datasets into reports.
+This project was developed to simplify generating reports leveraging the Lacework CLI and SDK to complete a Cloud Security Assessment 'CSA' to prospective customers.
 
 ## Installation / Requirements
 
