@@ -19,6 +19,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
     host_vulns_data = gather_host_vulns_data(_shared, lw_provider)
     container_vulns_data = gather_container_vulns_data(_shared, lw_provider)
     compliance_data = gather_compliance_data(_shared, lw_provider)
+    event_data = gather_event_data(_shared, lw_provider)
 
     polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/polygraph-info.png'))
     polygraph_graphic_html = _shared.common.bytes_to_image_tag(polygraph_graphic_bytes,'png')
@@ -35,6 +36,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
         compliance_data                            = compliance_data,
         host_vulns_data                            = host_vulns_data,
         container_vulns_data                       = container_vulns_data,
+        event_data                                 = event_data
     )
 
     logger.info('Saving report to: ' + report_save_path)
@@ -55,14 +57,15 @@ def gather_host_vulns_data(_shared, lw_provider):
     host_vulns_summary = host_vulns_summary_data.style.set_table_attributes('class="host_vulns_summary"')    
 
     # get graphics
-    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary_data, width=750)
+    host_vulns_summary_bar_graphic = _shared.g_lw_plotly.host_vulns_by_severity_bar(host_vulns_summary_data, width=1200)
     host_vulns_summary_bar_graphic = _shared.common.bytes_to_image_tag(host_vulns_summary_bar_graphic,'svg+xml')
 
     return {
         'hosts_scanned_count': _shared.t_lw.host_vulns_total_evaluated(host_vulns),
         'host_vulns_summary': host_vulns_summary,
         'host_vulns_summary_bar_graphic': host_vulns_summary_bar_graphic,
-        'host_vulns_summary_by_host': host_vulns_summary_by_host
+        'host_vulns_summary_by_host': host_vulns_summary_by_host,
+        'critical_vuln_count': 'TBD'
     }
 
 def gather_container_vulns_data(_shared, lw_provider):
@@ -81,14 +84,15 @@ def gather_container_vulns_data(_shared, lw_provider):
     container_vulns_summary_by_package = _shared.t_lw.container_vulns_summary_by_package(container_vulns)
     container_vulns_summary_by_package['Package Info'] = container_vulns_summary_by_package['Package Info'].str.replace("\n",'<br>')
     
-    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages_bar(container_vulns_summary_by_package.head(10), width=750)
+    container_vulns_summary_by_package_bar_graphic = _shared.g_lw_plotly.container_vulns_top_packages_bar(container_vulns_summary_by_package.head(10), width=1200)
     container_vulns_summary_by_package_bar_graphic = _shared.common.bytes_to_image_tag(container_vulns_summary_by_package_bar_graphic, 'svg+xml')
     
     return {
         'containers_scanned_count': _shared.t_lw.container_vulns_total_evaluated(container_vulns),
         'container_vulns_summary': container_vulns_summary,
         'container_vulns_summary_by_package_bar_graphic': container_vulns_summary_by_package_bar_graphic,
-        'container_vulns_summary_by_image': container_vulns_summary_by_image
+        'container_vulns_summary_by_image': container_vulns_summary_by_image,
+        'critical_vuln_count': 'TBD'
     }
 
 def gather_compliance_data(_shared, lw_provider):
@@ -113,12 +117,12 @@ def gather_compliance_data(_shared, lw_provider):
     # get graphics
     compliance_findings_summary_for_graphic = _shared.t_lw.compliance_reports_summary_for_graphic(compliance_reports)
 
-    compliance_findings_by_account_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_account_bar(compliance_findings_summary_for_graphic, width=750)
+    compliance_findings_by_account_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_account_bar(compliance_findings_summary_for_graphic, width=1200)
     compliance_findings_by_account_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_by_account_bar_graphic, 'svg+xml')
     
     compliance_reports_summary_by_service_for_graphic = _shared.t_lw.compliance_reports_summary_by_service_for_graphic(compliance_reports)
     
-    compliance_findings_summary_by_service_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_service_bar(compliance_reports_summary_by_service_for_graphic, width=750)
+    compliance_findings_summary_by_service_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_service_bar(compliance_reports_summary_by_service_for_graphic, width=1200)
     compliance_findings_summary_by_service_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_summary_by_service_bar_graphic, 'svg+xml')
     
 
@@ -127,5 +131,11 @@ def gather_compliance_data(_shared, lw_provider):
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
-        'compliance_detail': compliance_detail
+        'compliance_detail': compliance_detail,
+        'critical_finding_count': 'TBD'
+    }
+
+def gather_event_data(_shared, lw_provider):
+    return {
+        'high_finding_count': 'TBD'
     }
