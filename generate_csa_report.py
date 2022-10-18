@@ -24,16 +24,19 @@ def main():
     """Tool to generate a Lacework customer security assessment report.
     Requires that the Lacework CLI is installed and configured.
     https://docs.lacework.com/cli""")
-    parser.add_argument("--report-path", help="Filename to save report", default="report.html")
-    parser.add_argument("--use-cached-data", help="Use cached data (if available)", action='store_true')
+    #parser.add_argument("--report-path", help="Filename to save report", default="report.html")
+    #parser.add_argument("--use-cached-data", help="Use cached data (if available)", action='store_true')
     parser.add_argument("--author", help="Author of report", type=str, required=True)
     parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
     args = parser.parse_args()
     # Hardcode the report
     csa_report = "reports/jinja2/csa_report.py"
     
-
+    #generate a save file name for the report output html
+    report_save_path = f"{str(args.customer).replace(' ', '_')}_report.html"
+    print(f"Report will be saved to filename {report_save_path}")
     
+    #generate a path to the report generator python
     report_path = os.path.join(basedir, csa_report)
     if not os.path.exists(report_path):
         logger.error(csa_report + ' does not exist')
@@ -72,7 +75,7 @@ def main():
                 'author': args.author
             }
 
-    report.generate_report(_shared(), report_save_path=args.report_path, use_cached_data=args.use_cached_data)
+    report.generate_report(_shared(), report_save_path=report_save_path, use_cached_data=args.use_cached_data)
 
 if __name__ == "__main__":
     main()
