@@ -1,8 +1,8 @@
-# Lacework CSA Report Generator
+# Extensible Report Generator
 
 ## Description
 
-This project was developed to simplify generating reports leveraging the Lacework CLI and SDK to complete a Cloud Security Assessment 'CSA' to prospective customers.
+A project to abstract the gathering, transformations, and rendering of datasets into reports.
 
 ## Installation / Requirements
 
@@ -14,7 +14,22 @@ To install dependencies run:
 $ pip3 -r requirements.txt
 ```
 
-## Usage
+## Usage for CSA Reports
+
+### Option 1:
+
+Use the compiled binary on the releases page
+
+### Option 2:
+
+Run the python directly:
+
+```
+export LW_PROFILE='some-profile' # optional, will use default profile or other SDK env vars
+./generate_report.py [--report-path GENERATED_REPORT_PATH] reports/jinja2/csa_report.py
+```
+
+## General Usage
 
 `usage: generate_report.py [-h] [--report-path REPORT_PATH] [--use-cached-data] REPORT_GENERATOR`
 
