@@ -5,22 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
-	<style type="text/css">
-	@media (prefers-color-scheme: dark) {
-		:root {
-			--nc-tx-1: #000000;
-			--nc-tx-2: #1A1A1A;
-			--nc-bg-1: #FFFFFF;
-			--nc-bg-2: #F6F8FA;
-			--nc-bg-3: #E5E7EB;
-			--nc-lk-1: #0070F3;
-			--nc-lk-2: #0366D6;
-			--nc-lk-tx: #FFFFFF;
-			--nc-ac-1: #79FFE1;
-			--nc-ac-tx: #0C4047;
-		}
-	}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+  <style type="text/css">
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --nc-tx-1: #000000;
+      --nc-tx-2: #1A1A1A;
+      --nc-bg-1: #FFFFFF;
+      --nc-bg-2: #F6F8FA;
+      --nc-bg-3: #E5E7EB;
+      --nc-lk-1: #0070F3;
+      --nc-lk-2: #0366D6;
+      --nc-lk-tx: #FFFFFF;
+      --nc-ac-1: #79FFE1;
+      --nc-ac-tx: #0C4047;
+    }
+  }
 
   @font-face {
     font-family: 'NB International';
@@ -29,24 +29,27 @@
 
   body {
     font-family: 'NB International';
-    max-width: 1134px;
+    width: 95%;
+        max-width: 95%;
     background: transparent linear-gradient(180deg, #F2F5FA 0%, #FCFCFE 5%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
   }
 
   header {
     background: #fff;
     box-shadow: 0px 10px 20px #0000000D;
-    border-bottom: none;
-    margin: -2rem calc(0px - (50vw - 50%)) 6rem;
+    padding: 2rem;
+    margin: -2rem -2rem 0;
+ 
   }
 
   header img {
-    height: 48px;
+    height: 35px;
+
   }
 
   .section-one h1 {
-    font-size: 57px;
-    line-height: 63px;
+    font-size: 45px;
+    line-height: 60px;
     letter-spacing: 0px;
     color: #000538;
     border-bottom: none;
@@ -64,7 +67,7 @@
     line-height: 23px;
     letter-spacing: 0px;
     color: #1540F3;
-    margin-top: 0.5rem;
+    margin-top: .5rem;
     font-family: monospace;
     font-weight: normal;
   }
@@ -77,24 +80,24 @@
     border-left: 13px solid #E5ECF6;
     background: #F7F7F7;
     padding: 1em;
-    /* margin-bottom: 1.5rem; */
+    margin-bottom: 1.5rem;
     margin-top: 1.5rem;
   }
 
   .section-two {
     background-image: url('https://www.lacework.com/wp-content/uploads/2022/10/executive_summary_background.png');
-    padding-left: calc(50vw - 50%);
-    padding-right: calc(50vw - 50%);
-    margin: 6rem calc(0px - (50vw - 50%)) 4rem;
-    padding-top: 3rem;
-    padding-bottom: 5rem;
+    padding-left: 2rem ;
+    padding-right: 2rem;
+    margin: 3rem 0 4rem;
+    padding-top: 1rem;
+    padding-bottom: 3rem;
     background-repeat: no-repeat;
     background-size: cover;
     position: relative;
   }
 
   .section-two h2 {
-    font-size: 55px;
+    font-size: 40px;
     line-height: 61px;
     letter-spacing: 0px;
     color: #fff;
@@ -131,12 +134,13 @@
   .section-two .boxes {
    display: flex;
    margin-top: 3rem;
+ justify-content: center;
   }
 
   .section-two .box {
     display: flex;
     flex-direction: column;
-    flex-basis: 20%;
+    flex-basis: 75%;
     margin-left: 15px;
   }
 
@@ -172,7 +176,7 @@
 
   .section-two .box .gradient {
     background: transparent linear-gradient(90deg, #00F8F8 0%, #1540F3 100%) 0% 0% no-repeat padding-box;
-    height: 5px;
+    height: 7px;
     width: 100%;
   }
 
@@ -190,7 +194,7 @@
   }
 
   h2  {
-    font-size: 55px;
+    font-size: 40px;
     line-height: 61px;
     letter-spacing: 0px;
     color: #01023B;
@@ -300,67 +304,77 @@
     margin-top: 1rem;
   }
 
-	blockquote { font-size:.7em; padding:.7em }
+  blockquote { font-size:.7em; padding:.7em }
 
-	* {
-		font-size: .9em;
-	}
+  * {
+    font-size: .9em;
+  }
 
-	</style>
-	<style type="text/css">
+  </style>
+  <style type="text/css">
 
-		table.host_vulns_summary_by_host td.col1.col1 {
-			white-space: pre;
-			text-align: left;
-		}
-		table.host_vulns_summary_by_host th.row_heading.col1 {
-			white-space: nowrap;
-			width: 15px;
-		}
+    table.host_vulns_summary_by_host td.col1.col1 {
+      white-space: pre;
+      text-align: left;
+    }
+    table.host_vulns_summary_by_host th.row_heading.col1 {
+      white-space: nowrap;
+      width: 15px;
+    }
 
-		table.container_vulns_summary_by_image td.col2 {
-			white-space: pre; text-align:left
-		}
-		table.container_vulns_summary_by_image th.row_heading {
-			white-space: nowrap; width: 15px
-		}
-		table.container_vulns_summary_by_image td.col0 {
-			white-space: nowrap
-		}
-		table.container_vulns_summary_by_image td.col1 {
-			white-space: nowrap
-		}
-		table.container_vulns_summary_by_image td.col3 {
-			white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px
-		}
+    table.container_vulns_summary_by_image td.col2 {
+      white-space: pre; text-align:left
+    }
+    table.container_vulns_summary_by_image th.row_heading {
+      white-space: nowrap; width: 15px
+    }
+    table.container_vulns_summary_by_image td.col0 {
+      white-space: nowrap
+    }
+    table.container_vulns_summary_by_image td.col1 {
+      white-space: nowrap
+    }
+    table.container_vulns_summary_by_image td.col3 {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px
+    }
 
-		table.compliance_detail td.col0 {
-			white-space: nowrap
-		}
-		table.compliance_detail .col3 {
-			white-space: nowrap
-		}
-		table.compliance_detail .col4 {
-			white-space: nowrap
-		}
-		table.compliance_detail th.row_heading {
-			white-space: nowrap; width: 15px
-		}
-	</style>
+    table.compliance_detail td.col0 {
+      white-space: nowrap
+    }
+    table.compliance_detail .col3 {
+      white-space: nowrap
+    }
+    table.compliance_detail .col4 {
+      white-space: nowrap
+    }
+    table.compliance_detail th.row_heading {
+      white-space: nowrap; width: 15px
+    }
+  </style>
 </head>
 <body>
   <header>
     <img src="https://d33wubrfki0l68.cloudfront.net/d3b93ffb077063fc6238de3e13b896becc6f907b/98bc1/img/logo.png" />
   </header>
-
   <div class="section-one">
       <h1>Lacework Cloud Security Assessment Report</h1>
       <h4>Report created for AcmeCoPlaceHolder</h4>
       <p>Tuesday September 20, 2022</p>
       <blockquote>
-        Generated by John Q. Placeholder<br/>
-        Confidential - Subject to NDA and License Terms<br/>
-        Cloud Accounts Analyzed [Cloud Accounts Count Placeholder], Hosts Scanned: 22, Containers Scanned: [Containers Scanned Count Placeholder]
+        Generated by {{author}}<br/>
+    Confidential - Subject to NDA and License Terms<br/>
+
+    {% set summary_data = [] %}
+    {% if compliance_data %}
+      {% set _ = summary_data.append('Cloud Accounts Analyzed: ' ~ compliance_data.cloud_accounts_count) %}
+    {% endif %}
+    {% if host_vulns_data %}
+      {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
+    {% endif %}
+    {% if container_vulns_data %}
+      {% set _ = summary_data.append('Containers Scanned: ' ~ container_vulns_data.containers_scanned_count) %}
+    {% endif %}
+    {{ summary_data | join(', ') }}
       </blockquote>
   </div>
 
@@ -399,10 +413,11 @@
         <div class="gradient"></div>
       </div>
     </div>
+    </div>
   
 
     <p><br/>
-      The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers::
+      The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers:
     </p>
     <ul>
       <li>Reduce alerts 100:1</li>
@@ -415,7 +430,7 @@
     <div>
     {{ polygraph_graphic_html | safe }}
   </div>
-  
+
     </div>
 
   <div class="section-three">
@@ -432,15 +447,15 @@
         Total Container Images Scanned: {{container_vulns_data.containers_scanned_count}}<br/>
       {% endif %}
     </b></p>
-  </div>
+  
 
-	{% if host_vulns_data %}
+  {% if host_vulns_data %}
       <h3>Host Vulnerability Summary</h3>
       {{ host_vulns_data.host_vulns_summary.to_html(index=False) | safe }}
       {{ host_vulns_data.host_vulns_summary_bar_graphic | safe }}
-    
+   </div> 
 
-	<style type="text/css">
+  <style type="text/css">
 </style>
 <table id="T_5e151" class="host_vulns_summary">
   <thead>
@@ -473,7 +488,8 @@
   </tbody>
 </table>
 
-	<img src='https://www.lacework.com/wp-content/uploads/2022/10/sample_host_severities_by_cve_graph.svg'/>
+  <img src='https://www.lacework.com/wp-content/uploads/2022/10/sample_host_severities_by_cve_graph.svg'/>
+
 {% endif %}
 
 {% if container_vulns_data %}
@@ -481,7 +497,7 @@
       {{ container_vulns_data.container_vulns_summary.to_html(index=False) | safe }}
       {{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
 
-	<style type="text/css">
+  <style type="text/css">
 </style>
 <table id="T_c1984" class="container_vulns_summary">
   <thead>
@@ -508,15 +524,15 @@
   </tbody>
 </table>
 
-  {% endif %}	
+  {% endif %} 
 
-	<h3>Detailed CVE Breakdown</h3>
+  <h3>Detailed CVE Breakdown</h3>
 
 {% if host_vulns_data %}
       <h4>Hosts</h4>
       {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
 
-	<style type="text/css">
+  <style type="text/css">
 </style>
 <table id="T_95120" class="host_vulns_summary_by_host">
   <thead>
@@ -668,7 +684,7 @@ Low: 47</td>
       <h4>Containers</h4>
       {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
 
-	<style type="text/css">
+  <style type="text/css">
 </style>
 <table id="T_c6dbd" class="container_vulns_summary_by_image">
   <thead>
@@ -994,13 +1010,13 @@ High: 9</td>
 {% endif %}
 
 {% if compliance_data %}
-	<h2>Cloud Compliance Findings</h2>
-	<p>
-		Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Based on the {X framework report selected} Lacework identified the following:
-	</p>
-	<p><b>
-		Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
-	</b></p>
+  <h2>Cloud Compliance Findings</h2>
+  <p>
+    Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Based on the {X framework report selected} Lacework identified the following:
+  </p>
+  <p><b>
+    Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
+  </b></p>
 
     {{ compliance_data.compliance_summary.to_html(index=False) | safe }}
     {{ compliance_data.compliance_findings_by_service_bar_graphic | safe }}
@@ -1008,8 +1024,8 @@ High: 9</td>
     {{ compliance_data.compliance_detail.to_html() | safe }}
 
 
-	
-	<style type="text/css">
+  
+  <style type="text/css">
 </style>
 <table id="T_5a4b8" class="compliance_summary">
   <thead>
@@ -1042,7 +1058,7 @@ High: 9</td>
   </tbody>
 </table>
 
-	<style type="text/css">
+  <style type="text/css">
 </style>
 <table id="T_4be56" class="compliance_detail">
   <thead>
