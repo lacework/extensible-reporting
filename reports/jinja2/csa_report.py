@@ -77,10 +77,12 @@ def gather_container_vulns_data(_shared, lw_provider):
     if not container_vulns:
         return False
 
-    # set table classes
-    container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns)
+    container_vulns_summary_by_image_limit = 25
+    container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns, limit=container_vulns_summary_by_image_limit)
     container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_attributes('class="container_vulns_summary_by_image"')
     container_vulns_summary = _shared.t_lw.container_vulns_summary(container_vulns)
+    
+    # set table classes
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
 
     # get graphics
@@ -95,7 +97,8 @@ def gather_container_vulns_data(_shared, lw_provider):
         'container_vulns_summary': container_vulns_summary,
         'container_vulns_summary_by_package_bar_graphic': container_vulns_summary_by_package_bar_graphic,
         'container_vulns_summary_by_image': container_vulns_summary_by_image,
-        'critical_vuln_count': 'TBD'
+        'critical_vuln_count': 'TBD',
+        'container_vulns_summary_by_image_limit': container_vulns_summary_by_image_limit
     }
 
 def gather_compliance_data(_shared, lw_provider):

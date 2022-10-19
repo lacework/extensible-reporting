@@ -483,7 +483,7 @@
 
 
 {% if container_vulns_data %}
-      <h4>Containers</h4>
+      <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
       {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
 
  
