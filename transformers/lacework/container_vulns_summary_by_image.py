@@ -2,7 +2,7 @@ import pandas as pd
 import datapane as dp
 import numpy as np
 
-def container_vulns_summary_by_image(container_vulns, severities=["Critical", "High", "Medium", "Low"]):
+def container_vulns_summary_by_image(container_vulns, severities=["Critical", "High", "Medium", "Low"], limit=False):
     df = pd.json_normalize(container_vulns, meta=[['evalCtx', 'image_info', 'repo'],['evalCtx', 'image_info', 'tags'], ['featureKey', 'name'], ['fixInfo', 'fix_available'], 'vulnId', 'severity', 'imageId'])
     
     # delete extra columns
@@ -34,4 +34,6 @@ def container_vulns_summary_by_image(container_vulns, severities=["Critical", "H
     # clean names
     df.rename(columns={'imageId': 'Image ID', 'repositories': 'Repository / Tag', 'severities': 'CVE Count'}, inplace=True)
 
+    if limit:
+        df = df.head(limit)
     return df
