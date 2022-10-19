@@ -388,29 +388,37 @@
     
   <div class="boxes">
 
+      {% if container_vulns_data %}
       <div class="box">
         <span>{{container_vulns_data.critical_vuln_count}}</span>
         <p>Total Containers with Critical Vulnerabilities</p>
         <div class="gradient"></div>
       </div>
+      {% endif %}
 
+      {% if host_vulns_data %}
       <div class="box">
         <span>{{host_vulns_data.critical_vuln_count}}</span>
         <p>Hosts with Critical Vulnerabilities</p>
         <div class="gradient"></div>
       </div>
+      {% endif %}
+      
+      {% if compliance_data %}
+        <div class="box">
+          <span>{{compliance_data.critical_finding_count}}</span>
+          <p>Total Critical Cloud Compliance Findings</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
 
-      <div class="box">
-        <span>{{compliance_data.critical_finding_count}}</span>
-        <p>Total Critical Cloud Compliance Findings</p>
-        <div class="gradient"></div>
-      </div>
-
-      <div class="box">
-        <span>{{ event_data.high_finding_count}}</span>
-        <p>Total High Severity Anomalies Detected</p>
-        <div class="gradient"></div>
-      </div>
+      {% if event_data %}
+        <div class="box">
+          <span>{{ event_data.high_finding_count}}</span>
+          <p>Total High Severity Anomalies Detected</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
     </div>
     </div>
   
@@ -476,14 +484,14 @@
   <h3>Detailed CVE Breakdown</h3>
 
 {% if host_vulns_data %}
-      <h4>Hosts</h4>
+      <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
       {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
 
 {% endif %}
 
 
 {% if container_vulns_data %}
-      <h4>Containers</h4>
+      <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
       {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
 
  

@@ -50,10 +50,13 @@ def gather_host_vulns_data(_shared, lw_provider):
     if not host_vulns:
         return False
 
-    # set table classes
-    host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns)
+    host_vulns_summary_by_host_limit = 25
+    host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns, limit=host_vulns_summary_by_host_limit)
     host_vulns_summary_by_host = host_vulns_summary_by_host.style.set_table_attributes('class="host_vulns_summary_by_host"')
     host_vulns_summary_data = _shared.t_lw.host_vulns_summary(host_vulns)
+    critical_vuln_count = host_vulns_summary_data.loc[host_vulns_summary_data['Severity'] == 'Critical','Hosts Affected'].values[0]
+    
+    # set table classes
     host_vulns_summary = host_vulns_summary_data.style.set_table_attributes('class="host_vulns_summary"')    
 
     # get graphics
@@ -65,7 +68,8 @@ def gather_host_vulns_data(_shared, lw_provider):
         'host_vulns_summary': host_vulns_summary,
         'host_vulns_summary_bar_graphic': host_vulns_summary_bar_graphic,
         'host_vulns_summary_by_host': host_vulns_summary_by_host,
-        'critical_vuln_count': 'TBD'
+        'critical_vuln_count': critical_vuln_count,
+        'host_vulns_summary_by_host_limit': host_vulns_summary_by_host_limit
     }
 
 def gather_container_vulns_data(_shared, lw_provider):
@@ -74,10 +78,13 @@ def gather_container_vulns_data(_shared, lw_provider):
     if not container_vulns:
         return False
 
-    # set table classes
-    container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns)
+    container_vulns_summary_by_image_limit = 25
+    container_vulns_summary_by_image = _shared.t_lw.container_vulns_summary_by_image(container_vulns, limit=container_vulns_summary_by_image_limit)
     container_vulns_summary_by_image = container_vulns_summary_by_image.style.set_table_attributes('class="container_vulns_summary_by_image"')
     container_vulns_summary = _shared.t_lw.container_vulns_summary(container_vulns)
+    critical_vuln_count = container_vulns_summary.loc[container_vulns_summary['Severity'] == 'Critical','Images Affected'].values[0]
+
+    # set table classes
     container_vulns_summary = container_vulns_summary.style.set_table_attributes('class="container_vulns_summary"')
 
     # get graphics
@@ -92,7 +99,8 @@ def gather_container_vulns_data(_shared, lw_provider):
         'container_vulns_summary': container_vulns_summary,
         'container_vulns_summary_by_package_bar_graphic': container_vulns_summary_by_package_bar_graphic,
         'container_vulns_summary_by_image': container_vulns_summary_by_image,
-        'critical_vuln_count': 'TBD'
+        'critical_vuln_count': critical_vuln_count,
+        'container_vulns_summary_by_image_limit': container_vulns_summary_by_image_limit
     }
 
 def gather_compliance_data(_shared, lw_provider):
@@ -125,6 +133,7 @@ def gather_compliance_data(_shared, lw_provider):
     compliance_findings_summary_by_service_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_service_bar(compliance_reports_summary_by_service_for_graphic, width=1200)
     compliance_findings_summary_by_service_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_summary_by_service_bar_graphic, 'svg+xml')
     
+    critical_finding_count = compliance_findings_summary_for_graphic['Critical'].sum()
 
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
@@ -132,10 +141,11 @@ def gather_compliance_data(_shared, lw_provider):
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail,
-        'critical_finding_count': 'TBD'
+        'critical_finding_count': critical_finding_count
     }
 
 def gather_event_data(_shared, lw_provider):
+    return False
     return {
         'high_finding_count': 'TBD'
     }
