@@ -145,6 +145,7 @@ def gather_compliance_data(_shared, lw_provider):
     }
 
 def gather_event_data(_shared, lw_provider):
+    return False
     return {
         'high_finding_count': 'TBD'
     }
