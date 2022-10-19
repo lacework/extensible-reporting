@@ -14,6 +14,9 @@ def container_vulns_summary(container_vulns, severities=["Critical", "High", "Me
     
     # count severities by host & total sum
     df = df.groupby(['severity'])['imageId'].agg(['count', 'nunique'])
+    for severity in severities:
+        if not severity in df.index: df = pd.concat([df, pd.DataFrame([{'severity': severity, 'count': 0, 'nunique': 0}]).set_index('severity')])
+
     df = df.reset_index()
 
     # sort
