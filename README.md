@@ -7,9 +7,20 @@ A project to abstract the gathering, transformations, and rendering of datasets 
 
 ## Usage for CSA Reports
 
+This tool framework simplifies how partners and internal resources can execute Lacework Cloud Security Assessments to prospective customers. Below are a few example screenshots of the report that once generated is an html that can be modified and exported as a PDF and sent to prospects. 
+
+<img width="604" alt="image (1)" src="https://user-images.githubusercontent.com/10535862/196780720-f74c93d1-ebcb-42d4-930f-66d3c2a6571d.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780812-f546f58a-d40b-4e50-a119-38a0a6e3c656.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780860-a9cae2d1-e047-4b23-9d23-ade77c1d6de0.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780942-de7297c0-89ea-4cce-a6f8-ca712f4ea0ed.png">
+
+## Install & Running Reports:
+
 To get started with either option you will need to ensure you first start with configuring your Lacework CLI. Instructions to do so can be found here: https://docs.lacework.com/cli/
 
-## Running reports:
 
 ### Option 1:
 
