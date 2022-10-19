@@ -33,8 +33,8 @@ def main():
     csa_report = "reports/jinja2/csa_report.py"
     
     #generate a save file name for the report output html
-    date = datetime.now().strftime("%d-%m-%y")
-    report_save_path = f"{str(args.customer).replace(' ', '_')}_report_{date}.html"
+    date = datetime.now().strftime("%m-%d-%y")
+    report_save_path = f"CSA_Report_{str(args.customer).replace(' ', '_')}_report_{date}.html"
     print(f"Report will be saved to filename {report_save_path}")
     
     #generate a path to the report generator python
