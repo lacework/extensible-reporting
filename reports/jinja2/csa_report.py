@@ -50,10 +50,12 @@ def gather_host_vulns_data(_shared, lw_provider):
     if not host_vulns:
         return False
 
-    # set table classes
-    host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns)
+    host_vulns_summary_by_host_limit = 25
+    host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns, limit=host_vulns_summary_by_host_limit)
     host_vulns_summary_by_host = host_vulns_summary_by_host.style.set_table_attributes('class="host_vulns_summary_by_host"')
     host_vulns_summary_data = _shared.t_lw.host_vulns_summary(host_vulns)
+    
+    # set table classes
     host_vulns_summary = host_vulns_summary_data.style.set_table_attributes('class="host_vulns_summary"')    
 
     # get graphics
@@ -65,7 +67,8 @@ def gather_host_vulns_data(_shared, lw_provider):
         'host_vulns_summary': host_vulns_summary,
         'host_vulns_summary_bar_graphic': host_vulns_summary_bar_graphic,
         'host_vulns_summary_by_host': host_vulns_summary_by_host,
-        'critical_vuln_count': 'TBD'
+        'critical_vuln_count': 'TBD',
+        'host_vulns_summary_by_host_limit': host_vulns_summary_by_host_limit
     }
 
 def gather_container_vulns_data(_shared, lw_provider):
