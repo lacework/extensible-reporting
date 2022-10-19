@@ -13,6 +13,10 @@ def host_vulns_summary(host_vulns, severities=["Critical", "High", "Medium", "Lo
 
     # count severities by host & total sum
     df = df.groupby(['severity'], as_index=False)['mid'].agg(['count', 'nunique'])
+    
+    for severity in severities:
+        if not severity in df.index: df = df.append(pd.DataFrame([{'severity': severity, 'count': 0, 'nunique': 0}]).set_index('severity'))
+
     df = df.reset_index()
 
     # sort
