@@ -16,7 +16,11 @@ def container_vulns(start_time, end_time, severities=["Critical", "High"]):
                 "field": "severity",
                 "expression": "in",
                 "values": severities,
-            }
+            },
+            {"expression": "eq",
+             "field": "request_source",
+             "value": "AGENTLESS_SCANNER"
+             }
         ]
     }
     logger.info('Getting Container Vulnerabilities with following filters:')

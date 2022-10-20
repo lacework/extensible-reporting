@@ -9,7 +9,13 @@ def host_vulns(start_time, end_time):
         "timeFilters": {
             "startTime": datetime_to_lacework_time(start_time),
             "endTime": datetime_to_lacework_time(end_time)
-        }
+        },
+        "filters": [
+            {"expression": "eq",
+             "field": "request_source",
+             "value": "AGENTLESS_SCANNER"
+             }
+        ]
     }
     logger.info('Getting Host Vulns with following filters:')
     logger.info(filters)
