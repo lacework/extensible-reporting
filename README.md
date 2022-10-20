@@ -31,6 +31,7 @@ Use the compiled binary on the releases page. This is the easiest option as you 
     1. Launch a terminal and `chmod +x generate_csa_report_mac`
     2. If prompted to trust this code to execute in your terminal, navigate to `System Preferences -> Security & Privacy -> Privacy (tab)` and scroll to `Developer Tools` and ensure that `Terminal` is checked. You will then need to relaunch your Terminal session
  - Run the report: `./generate_csa_report_mac --author your_name --customer your_customer`
+ 
 - If running on Windows you will need to:
     1. Launch a command prompt and run the report from the directory you downloaded it to `generate_csa_report.exe --author your_name --customer your_customer`
     
