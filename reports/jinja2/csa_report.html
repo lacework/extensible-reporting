@@ -380,7 +380,7 @@
   <div class="section-two">  
     <h2>Executive Summary</h2>
     <p>
-      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {Customer}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
+      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {customer}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
     </p>
     <p>
     Below are quick findings identified by the CSA and additional detail is explained on subsequent pages:
@@ -423,7 +423,7 @@
     </div>
   
 
-    <p><br/>
+    <p>
       <b><u>
       The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers: </u></b>
     </p>
@@ -447,6 +447,33 @@
     </div>
 
   <div class="section-three">
+
+    {% if compliance_data %}
+  <h3>Cloud Compliance Findings</h3>
+  <p>
+    Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
+  </p>
+  <p><b>
+    Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
+  </b></p>
+
+    {{ compliance_data.compliance_summary.to_html(index=False) | safe }}
+    {{ compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+    {{ compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+
+  {% endif %}
+
+   </div> 
+
+    {% if event_data %}
+    <h2>Behavioral & Known-Bad Events - Polygraph Anomalies (last 7 days / top 25)</h2>
+    <p>
+      Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
+    </p>
+
+    {{ event_data.events_raw.to_html(index=False) | safe }}
+  {% endif %}
+
     <h2>Workload Vulnerability Assessment</h2>
     <p>
       Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. The Lacework agent was not installed as part of this assessment but can be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
@@ -480,10 +507,14 @@
       {{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
 
   {% endif %} 
+  
+  <h2>Appendix of Detailed Findings</h2>
+  <p>This section contains additional details on the findings that were summarized above:</p>
 
+  {% if host_vulns_data %}
   <h3>Detailed CVE Breakdown</h3>
 
-{% if host_vulns_data %}
+
       <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
       {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
 
@@ -498,27 +529,10 @@
     {% endif %}
 <br/>
 {% if compliance_data %}
-  <h3>Cloud Compliance Findings</h3>
-  <p>
-    Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
-  </p>
-  <p><b>
-    Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
-  </b></p>
-
-    {{ compliance_data.compliance_summary.to_html(index=False) | safe }}
-    {{ compliance_data.compliance_findings_by_service_bar_graphic | safe }}
-    {{ compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+  <h3>Detailed Cloud Compliance Findings</h3>
+<p></p>
     {{ compliance_data.compliance_detail.to_html() | safe }}
 
-  {% endif %}
-  {% if event_data %}
-    <h3>Behavioral & Known-Bad Events (last 7 days / top 25 as of report generation)</h3>
-    <p>
-      Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigations.
-    </p>
-
-    {{ event_data.events_raw.to_html(index=False) | safe }}
   {% endif %}
 
    </div> 
