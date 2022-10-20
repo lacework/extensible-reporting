@@ -25,7 +25,7 @@ To get started with either option you will need to ensure you first start with c
 ### Option 1:
 
 Use the compiled binary on the releases page. This is the easiest option as you do not need to install python3 and the required prerequisites through pip. To execute this binary:
-- Download the corresponding binary based on your computer's OS: https://github.com/lacework-dev/extensible-reporting/releases/
+- Download the corresponding binary based on your computer's OS: https://github.com/lacework/extensible-reporting/releases/
 
 - If running on MacOS you will need to:
     1. Launch a terminal and `chmod +x generate_csa_report_mac`
