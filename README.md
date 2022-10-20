@@ -2,61 +2,71 @@
 
 ## Description
 
-A project to abstract the gathering, transformations, and rendering of datasets into reports.
+A project to abstract the gathering, transformations, and rendering of datasets from Lacework into auto-generated reports.
 
-## Installation / Requirements
+
+## Usage for CSA Reports
+
+This tool framework simplifies how partners and internal resources can execute Lacework Cloud Security Assessments to prospective customers. Below are a few example screenshots of the report that once generated is an html that can be modified and exported as a PDF and sent to prospects. 
+
+<img width="604" alt="image (1)" src="https://user-images.githubusercontent.com/10535862/196780720-f74c93d1-ebcb-42d4-930f-66d3c2a6571d.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780812-f546f58a-d40b-4e50-a119-38a0a6e3c656.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780860-a9cae2d1-e047-4b23-9d23-ade77c1d6de0.png">
+
+<img width="604" src="https://user-images.githubusercontent.com/10535862/196780942-de7297c0-89ea-4cce-a6f8-ca712f4ea0ed.png">
+
+## Install & Running Reports:
+
+To get started with either option you will need to ensure you first start with configuring your Lacework CLI. Instructions to do so can be found here: https://docs.lacework.com/cli/
+
+
+### Option 1:
+
+Use the compiled binary on the releases page. This is the easiest option as you do not need to install python3 and the required prerequisites through pip. To execute this binary:
+- Download the corresponding binary based on your computer's OS: https://github.com/lacework-dev/extensible-reporting/releases/
+
+- If running on MacOS you will need to:
+    1. Launch a terminal and `chmod +x generate_csa_report_mac`
+    2. If prompted to trust this code to execute in your terminal, navigate to `System Preferences -> Security & Privacy -> Privacy (tab)` and scroll to `Developer Tools` and ensure that `Terminal` is checked. You will then need to relaunch your Terminal session
+ - Run the report: `./generate_csa_report_mac --author your_name --customer your_customer`
+ 
+- If running on Windows you will need to:
+    1. Launch a command prompt and run the report from the directory you downloaded it to `generate_csa_report.exe --author your_name --customer your_customer`
+    
+    
+ 
+ The report will be generated in the same directory you execute the binary with a name of `CSA_Report_customer_date.html`
+
+### Option 2:
+
+This option involves running the `generate_csa_report.py` command directly in this repo but has a few prerequisites.
+
+To run the python directly you will need
 
 - `python3`
 - `pip3` (latest version is required, run `pip3 install --upgrade pip`)
 
 To install dependencies run:
 ```
-$ pip3 -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
-
-## Usage for CSA Reports
-
-### Option 1:
-
-Use the compiled binary on the releases page
-
-### Option 2:
 
 Run the python directly:
 
 ```
 export LW_PROFILE='some-profile' # optional, will use default profile or other SDK env vars
-./generate_report.py [--report-path GENERATED_REPORT_PATH] reports/jinja2/csa_report.py
+./generate_csa_report.py --author your_name --customer your_customer
 ```
 
-## General Usage
+Once the report is generated, you may edit the html with your own company logo or add in new content. From there, simply print as a PDF and your report is ready to be shared. 
 
-`usage: generate_report.py [-h] [--report-path REPORT_PATH] [--use-cached-data] REPORT_GENERATOR`
-
-NOTE: You can use the env vars [specified in the SDK](https://github.com/lacework/python-sdk#environment-variables) to control api access
-
-### Example commands
-```
-export LW_PROFILE=some_profile # will use default lacework profile if not provided
-
-./generate_report.py [--use-cached-data] reports/jinja2/csa_report.py --report-path sample_reports/csa_report.html --author "Your Name" --customer "Customer Name"
-```
 
 ## Architecture
 
 This project is very modular.  Data is collected with provider modules, which return native python `dict`s.  Transformers are used to do grouping, ordering, aggregation, filtering, and customization of columns.  Transformers should return a `pandas` dataframe.  Reports can be created using any library (currently all are using the `datapane` library.)
 
-### Providers
-
-TBD
-
-### Transformers
-
-TBD
-
-### Reports
-
-TBD
 
 ### Cached Data
 
