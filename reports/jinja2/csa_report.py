@@ -145,7 +145,16 @@ def gather_compliance_data(_shared, lw_provider):
     }
 
 def gather_event_data(_shared, lw_provider):
-    return False
+    events = lw_provider.events(_shared._7_days_ago,_shared._now)
+    if not events:
+        return False
+
+    events_raw = _shared.t_lw.events_raw(events, limit=25)
+
+    
+    high_critical_finding_count = len(events_raw[events_raw['Severity'].isin(['Critical','High'])])
+
     return {
-        'high_finding_count': 'TBD'
+        'events_raw': events_raw,
+        'high_critical_finding_count': high_critical_finding_count
     }
