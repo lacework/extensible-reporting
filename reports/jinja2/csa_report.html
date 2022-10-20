@@ -380,7 +380,7 @@
   <div class="section-two">  
     <h2>Executive Summary</h2>
     <p>
-      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {customer}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
+      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {{customer}}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
     </p>
     <p>
     Below are quick findings identified by the CSA and additional detail is explained on subsequent pages:
@@ -519,7 +519,6 @@
       {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
 
 {% endif %}
-
 
 {% if container_vulns_data %}
       <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
