@@ -44,7 +44,7 @@ To run the python directly you will need
 
 To install dependencies run:
 ```
-$ pip3 -r requirements.txt
+$ pip3 install -r requirements.txt
 ```
 
 Run the python directly:
