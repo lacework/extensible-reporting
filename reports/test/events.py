@@ -13,7 +13,10 @@ def generate_report(_shared, report_save_path, use_cached_data):
     
     events = lw_provider.events(_shared._25_hours_ago,_shared._now)
 
+    events_raw = _shared.t_lw.events_raw(events, limit=10)
+    
     data = {
+        'events_raw': events_raw.to_html(),
         'events_raw_json': '<pre>' + json.dumps(events, indent=2) + '</pre>'
     }
 
