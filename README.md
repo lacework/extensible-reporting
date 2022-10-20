@@ -31,7 +31,7 @@ Use the compiled binary on the releases page. This is the easiest option as you 
     1. Launch a terminal and `chmod +x generate_csa_report_mac`
     2. If prompted to trust this code to execute in your terminal, navigate to `System Preferences -> Security & Privacy -> Privacy (tab)` and scroll to `Developer Tools` and ensure that `Terminal` is checked. You will then need to relaunch your Terminal session
  - Run the report: `./generate_csa_report_mac --author your_name --customer your_customer`
- - If running on Windows you will need to:
+- If running on Windows you will need to:
     1. Launch a command prompt and run the report from the directory you downloaded it to `generate_csa_report.exe --author your_name --customer your_customer`
     
     
@@ -40,7 +40,7 @@ Use the compiled binary on the releases page. This is the easiest option as you 
 
 ### Option 2:
 
-This option involves running the `generate_report.py` command directly in this repo but has a few prerequisites.
+This option involves running the `generate_csa_report.py` command directly in this repo but has a few prerequisites.
 
 To run the python directly you will need
 
@@ -56,7 +56,7 @@ Run the python directly:
 
 ```
 export LW_PROFILE='some-profile' # optional, will use default profile or other SDK env vars
-./generate_report.py --author your_name --customer your_customer
+./generate_csa_report.py --author your_name --customer your_customer
 ```
 
 Once the report is generated, you may edit the html with your own company logo or add in new content. From there, simply print as a PDF and your report is ready to be shared. 
