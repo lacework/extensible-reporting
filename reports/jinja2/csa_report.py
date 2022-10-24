@@ -133,7 +133,10 @@ def gather_compliance_data(_shared, lw_provider):
     compliance_findings_summary_by_service_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_service_bar(compliance_reports_summary_by_service_for_graphic, width=1200)
     compliance_findings_summary_by_service_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_summary_by_service_bar_graphic, 'svg+xml')
     
-    critical_finding_count = compliance_findings_summary_for_graphic['Critical'].sum()
+    if 'Critical' in compliance_findings_summary_for_graphic.columns:
+        critical_finding_count = compliance_findings_summary_for_graphic['Critical'].sum()
+    else:
+        critical_finding_count = 0
 
     return {
         'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
