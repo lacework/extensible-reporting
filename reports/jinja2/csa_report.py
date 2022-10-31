@@ -113,6 +113,12 @@ def gather_compliance_data(_shared, lw_provider):
 
     # get compliance reports
     compliance_reports = lw_provider.compliance_reports(accounts=aws_config_accounts)
+    compliance_reports = _shared.t_lw.compliance_reports_select_most_noncompliant(compliance_reports)
+    cloud_accounts_count = len(compliance_reports.keys())
+
+    #flatten
+    compliance_reports = sum(map(lambda kv: kv[1], compliance_reports.items()), [])
+
     if not compliance_reports:
         return False
 
@@ -139,7 +145,7 @@ def gather_compliance_data(_shared, lw_provider):
         critical_finding_count = 0
 
     return {
-        'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports),
+        'cloud_accounts_count': cloud_accounts_count,
         'compliance_summary': compliance_summary,
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
