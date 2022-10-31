@@ -113,6 +113,11 @@ def gather_compliance_data(_shared, lw_provider):
 
     # get compliance reports
     compliance_reports = lw_provider.compliance_reports(accounts=aws_config_accounts)
+    compliance_reports = _shared.t_lw.compliance_reports_select_most_noncompliant(compliance_reports)
+
+    #flatten
+    compliance_reports = sum(map(lambda kv: kv[1], compliance_reports.items()), [])
+
     if not compliance_reports:
         return False
 

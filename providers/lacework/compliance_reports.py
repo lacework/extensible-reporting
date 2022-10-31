@@ -6,25 +6,34 @@ from . import LWApiError
 
 import json
 
-def compliance_reports(accounts=[]):
-    results = []
+def compliance_reports(accounts=[],report_types=['AWS_CIS_S3', 'AWS_CIS_14']): # select both legacy & new CIS report
+    results = {}
     for aws_account in accounts:
-        try:
-            logger.info('Getting compliance report for aws account: ' + aws_account)
-            a = lw().compliance.get_latest_aws_report(aws_account_id=aws_account, file_format="json")
-        except LWApiError:
-            logger.warning('Could not get compliance report for aws account: ' + aws_account)
-            continue
-        results.extend(a['data'])
+        results[aws_account] = []
+        for report_type in report_types:
+            try:
+                logger.info('Getting ' + report_type + ' compliance report for aws account: ' + aws_account)
+                a = lw().reports.get(
+                    primary_query_id=aws_account,
+                    type="COMPLIANCE",
+                    report_type=report_type, # AWS_SOC_Rev2, # AWS_SOC_Rev2, # AWS_CIS_14, # AWS_CIS_S3
+                    format="json",
+                    latest=True
+                )
 
-    rows = []
-  
-    for report in results:
-        recommendations = report['recommendations']
-        reportType = report['reportType']
-          
-        for row in recommendations:
-            row['reportType']= reportType
-            rows.append(row)
+                report = a['data'][0]
+                recommendations = report['recommendations']
+                reportType = report['reportType']
+                
+                rows = []
+                for row in recommendations:
+                    row['reportType']= reportType
+                    rows.append(row)
 
-    return rows
+                results[aws_account].append(rows)
+                
+            except LWApiError:
+                logger.warning('Could not get compliance report for aws account: ' + aws_account)
+                continue
+
+    return results
