@@ -18,7 +18,11 @@ def generate_report(_shared, report_save_path, use_cached_data):
 
     # get compliance reports
     compliance_reports = lw_provider.compliance_reports(accounts=aws_config_accounts)
-    cloud_accounts_count = _shared.t_lw.compliance_reports_total_accounts_evaluated(compliance_reports)
+    compliance_reports = _shared.t_lw.compliance_reports_select_most_noncompliant(compliance_reports)
+    cloud_accounts_count = len(compliance_reports.keys())
+    
+    #flatten
+    compliance_reports = sum(map(lambda kv: kv[1], compliance_reports.items()), [])
 
     # set table classes
     compliance_detail = _shared.t_lw.compliance_reports_raw(compliance_reports)
