@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
-import coloredlogs, logging
-logging.basicConfig(level=logging.INFO)
+import coloredlogs, logging, os
+LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
+
+logging.basicConfig(level=LOGLEVEL)
 logger = logging.getLogger()
-coloredlogs.install(level='INFO',fmt='%(asctime)s %(name)s[%(process)d] %(levelname)s %(message)s')
+coloredlogs.install(level=LOGLEVEL,fmt='%(asctime)s %(name)s[%(process)d] %(levelname)s %(message)s')
 
 from datetime import datetime, timezone, timedelta
 import os
