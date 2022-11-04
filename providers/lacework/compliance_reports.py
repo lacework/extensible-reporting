@@ -33,7 +33,7 @@ def compliance_reports(accounts=[],report_types=['AWS_CIS_S3', 'AWS_CIS_14']): #
                 results[aws_account].append(rows)
                 
             except LWApiError:
-                logger.warning('Could not get compliance report for aws account: ' + aws_account)
+                logger.warning('Could not get compliance report')
                 continue
 
     return results
