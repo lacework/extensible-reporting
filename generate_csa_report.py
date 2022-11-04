@@ -7,6 +7,9 @@ logging.basicConfig(level=LOGLEVEL)
 logger = logging.getLogger()
 coloredlogs.install(level=LOGLEVEL,fmt='%(asctime)s %(name)s[%(process)d] %(levelname)s %(message)s')
 
+from common import alert_new_release
+alert_new_release()
+
 from datetime import datetime, timezone, timedelta
 import os
 import sys
