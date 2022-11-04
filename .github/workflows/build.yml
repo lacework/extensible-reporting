@@ -6,6 +6,25 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
 
 jobs:
+  updateversion:
+    name: Update VERSION
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8.1
+      - name: Update VERSION file
+        id: update_version
+        run: python ./.github/workflows/ci_bump_version.py ${{ github.ref }}
+      - name: stage changed files
+        run: git add VERSION
+      - name: commit
+        run: git commit -m "Auto updating VERSION file"
+      - name: fetch from main
+        run: git fetch origin main
+      - name: push code to main
+        run: git push origin HEAD:main
 
   createrelease:
     name: Create Release
