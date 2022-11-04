@@ -3,7 +3,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('version', metavar='VERSION', type=str, nargs=None)
 args = parser.parse_args()
 
-version_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'VERSION')
+version_path = os.path.join(os.path.dirname(os.path.realpath(__file__)),'../../VERSION')
 
 with open(version_path, 'r') as f:
     version_current = json.load(f)
