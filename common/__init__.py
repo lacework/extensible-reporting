@@ -17,7 +17,7 @@ def alert_new_release():
             response = requests.get(tag_ref)
             tag_latest = response.json()["tag_name"]
 
-            if tag_latest != tag_current:
+            if tag_latest != tag_current and tag_latest != 'placeholder':
                 print(f"{WARNING}IMPORTANT:{ENDC}{BOLD}A newer version of this project is available! The latest version is {tag_latest}.{ENDC}", file=sys.stderr)
                 print(f"{BOLD}Visit {upgrade_url} to upgrade.{ENDC}", file=sys.stderr)
                 time.sleep(5)
