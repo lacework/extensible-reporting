@@ -15,8 +15,8 @@ def alert_new_release():
         if getattr(sys, 'frozen', False):
             basedir = sys._MEIPASS
         else:
-            basedir = os.path.dirname(os.path.abspath(__file__))
-        with open(os.path.join(basedir,'../VERSION'), 'r') as f:
+            basedir = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..")
+        with open(os.path.join(basedir,'VERSION'), 'r') as f:
             version_current = json.load(f)
             tag_ref = version_current['tag_ref']
             tag_current = version_current['tag_val']
