@@ -3,3 +3,4 @@ notes
 .DS_Store
 *.pickle
 /ps/
+__pycache__/

@@ -24,6 +24,7 @@ a.datas += Tree("graphics", "graphics")
 a.datas += Tree("providers", "providers")
 a.datas += Tree("transformers", "transformers")
 a.datas += Tree("assets", "assets")
+a.datas += ("VERSION", ".")
 def get_datapane_path():
     import datapane
     datapane_path = datapane.__path__[0]
