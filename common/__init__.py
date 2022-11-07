@@ -12,7 +12,11 @@ def alert_new_release():
     ENDC = '\033[0m'
     BOLD = '\033[1m'
     try:
-        with open(os.path.join(os.path.dirname(os.path.realpath(__file__)),'../VERSION'), 'r') as f:
+        if getattr(sys, 'frozen', False):
+            basedir = sys._MEIPASS
+        else:
+            basedir = os.path.dirname(os.path.abspath(__file__))
+        with open(os.path.join(basedir,'../VERSION'), 'r') as f:
             version_current = json.load(f)
             tag_ref = version_current['tag_ref']
             tag_current = version_current['tag_val']
