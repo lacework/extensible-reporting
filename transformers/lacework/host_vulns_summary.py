@@ -5,6 +5,9 @@ import numpy as np
 def host_vulns_summary(host_vulns, severities=["Critical", "High", "Medium", "Low"]):
     df = pd.json_normalize(host_vulns, meta=[['evalCtx', 'hostname'], ['featureKey', 'name'], 'vulnId', 'severity', 'mid'])
     
+    if 'severity' not in df:
+        df['severity'] = False
+    
     # filter
     df = df[df['severity'].isin(severities)]
 
