@@ -31,4 +31,6 @@ def container_vulns(start_time, end_time, severities=["Critical", "High"]):
         logger.info('Saving page ' + str(i))
         i = i + 1
         results.extend(page['data'])
+    if i > 100:
+        logger.warning("Lacework API returned maximum pages of container vuln results (100 pages). Processed dataset is likely incomplete.")
     return results
