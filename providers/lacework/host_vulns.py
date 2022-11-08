@@ -21,7 +21,6 @@ def host_vulns(start_time, end_time):
         logger.info('Saving page ' + str(i))
         i = i + 1
         results.extend(page['data'])
-        break
     if i > 100:
         logger.warning("Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
     return results
