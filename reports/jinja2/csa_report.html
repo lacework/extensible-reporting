@@ -473,25 +473,25 @@
 
     {{ event_data.events_raw.to_html(index=False) | safe }}
   {% endif %}
-
+  {% if host_vulns_data or container_vulns_data %}
     <h2>Workload Vulnerability Assessment</h2>
     <p>
-      Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. The Lacework agent was not installed as part of this assessment but can be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
+      Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. If the Lacework agent was not installed as part of this assessment it may be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
     </p>
     
-      {% if host_vulns_data %}
-        <p><b>
-          Total Hosts Scanned: {{host_vulns_data.hosts_scanned_count}}
-        </b></p>
-      {% endif %}
+    {% if host_vulns_data %}
+      <p><b>
+        Total Hosts Scanned: {{host_vulns_data.hosts_scanned_count}}
+      </b></p>
+    {% endif %}
 
-      {% if container_vulns_data %}
-        <p><b>
-        Total Container Images Scanned: {{container_vulns_data.containers_scanned_count}}
-        </b></p>
-      <br/>
-      {% endif %}
-    
+    {% if container_vulns_data %}
+      <p><b>
+      Total Container Images Scanned: {{container_vulns_data.containers_scanned_count}}
+      </b></p>
+    <br/>
+    {% endif %}
+  {% endif %}
   
 
   {% if host_vulns_data %}
@@ -508,32 +508,33 @@
 
   {% endif %} 
   
-  <h2>Appendix of Detailed Findings</h2>
-  <p>This section contains additional details on the findings that were summarized above:</p>
+  {% if host_vulns_data or container_vulns_data or compliance_data %}
+    <h2>Appendix of Detailed Findings</h2>
+    <p>This section contains additional details on the findings that were summarized above:</p>
 
-  {% if host_vulns_data %}
-  <h3>Detailed CVE Breakdown</h3>
+    {% if host_vulns_data %}
+    <h3>Detailed CVE Breakdown</h3>
 
 
-      <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
-      {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
-
-{% endif %}
-
-{% if container_vulns_data %}
-      <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
-      {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
-
- 
-    {% endif %}
-<br/>
-{% if compliance_data %}
-  <h3>Detailed Cloud Compliance Findings</h3>
-<p></p>
-    {{ compliance_data.compliance_detail.to_html() | safe }}
+        <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
+        {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
 
   {% endif %}
 
+  {% if container_vulns_data %}
+        <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
+        {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
+
+   
+      {% endif %}
+  <br/>
+  {% if compliance_data %}
+    <h3>Detailed Cloud Compliance Findings</h3>
+  <p></p>
+      {{ compliance_data.compliance_detail.to_html() | safe }}
+
+    {% endif %}
+    {% endif %}
    </div> 
 <div class="recommendations">
   <h3>Recommendations</h3>
