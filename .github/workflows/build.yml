@@ -9,6 +9,8 @@ jobs:
   createrelease:
     name: Create Release
     runs-on: [ubuntu-latest]
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
     steps:
     - name: Create Release
       id: create_release
@@ -18,7 +20,7 @@ jobs:
       with:
         tag_name: ${{ github.ref }}
         release_name: Release ${{ github.ref }}
-        draft: false
+        draft: true
         prerelease: false
     - name: Output Release URL File
       run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
@@ -83,3 +85,15 @@ jobs:
         asset_path: ./dist/${{ matrix.OUT_FILE_NAME}}
         asset_name: ${{ matrix.OUT_FILE_NAME}}
         asset_content_type: ${{ matrix.ASSET_MIME}}
+  
+  publish:
+    name: Publish
+    needs: [createrelease, build]
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Publish Release
+        uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{needs.createrelease.outputs.release_id}}
