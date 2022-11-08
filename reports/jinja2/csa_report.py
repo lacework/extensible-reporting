@@ -52,6 +52,8 @@ def gather_host_vulns_data(_shared, lw_provider):
 
     host_vulns_summary_by_host_limit = 25
     host_vulns_summary_by_host = _shared.t_lw.host_vulns_summary_by_host(host_vulns, limit=host_vulns_summary_by_host_limit)
+    if host_vulns_summary_by_host.empty:
+        return False
     host_vulns_summary_by_host = host_vulns_summary_by_host.style.set_table_attributes('class="host_vulns_summary_by_host"')
     host_vulns_summary_data = _shared.t_lw.host_vulns_summary(host_vulns)
     critical_vuln_count = host_vulns_summary_data.loc[host_vulns_summary_data['Severity'] == 'Critical','Hosts Affected'].values[0]
