@@ -3,8 +3,11 @@ import datapane as dp
 import numpy as np
 
 def host_vulns_summary_by_host(host_vulns, severities=["Critical", "High", "Medium", "Low"], limit=False):
-    df = pd.json_normalize(host_vulns, meta=[['evalCtx', 'hostname'], ['featureKey', 'name'], 'vulnId', 'severity', 'mid'])
+    df = pd.json_normalize(host_vulns, meta=[['cveProps', 'metadata'], ['evalCtx', 'hostname'], ['featureKey', 'name'], 'vulnId', 'severity', 'mid'])
     
+    if 'severity' not in df:
+        df['severity'] = False
+
     # filter
     df = df[df['severity'].isin(severities)]
 
