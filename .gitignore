@@ -4,3 +4,4 @@ notes
 *.pickle
 /ps/
 __pycache__/
+.vscode

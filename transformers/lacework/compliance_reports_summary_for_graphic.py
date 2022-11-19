@@ -33,3 +33,36 @@ def compliance_reports_summary_for_graphic(compliance_reports, severities=["Crit
     df = df.reindex(severity_order, axis=1)
     
     return df
+
+def compliance_reports_summary_for_graphic_azure(compliance_reports, severities=["Critical", "High", "Medium", "Low"]):
+
+    df = pd.DataFrame(compliance_reports)
+    df = df[df['STATUS'].isin(["NonCompliant"])]
+    
+    df['RESOURCE_COUNT'] = (df['VIOLATIONS'].str.len())
+        
+    # sort to determine account order, while we still have the severity & resource count data
+    df = df.sort_values(by=['SEVERITY', 'RESOURCE_COUNT'],ascending=[True,False])
+    account_order = df['SUBSCRIPTION_ID'].unique()
+    
+    # group
+    df = df.groupby(['SUBSCRIPTION_ID', 'SEVERITY']).agg(failed_control_count=('SEVERITY', 'count'), failed_resources=('RESOURCE_COUNT', 'sum')).reset_index()
+    
+    # sort by accounts with most criticals, followed by most highs
+    df['SUBSCRIPTION_ID'] = pd.Categorical(df['SUBSCRIPTION_ID'], account_order)
+    df.sort_values(by=['SUBSCRIPTION_ID', 'SEVERITY'], ascending=True)
+
+    # convert int and filter severities
+    df = df.replace({'SEVERITY': {1: "Critical", 2: "High", 3: "Medium", 4: "Low", 5: "Info"}})
+    df = df[df['SEVERITY'].isin(severities)]
+
+    # rename    
+    df.rename(columns={'SUBSCRIPTION_ID': 'Subscription ID', 'SEVERITY': 'Severity', 'failed_resources': 'Non-compliant Resources', 'failed_control_count': 'Failed controls'}, inplace=True)
+    
+
+    # pivot and preseve severity order (pivot breaks this)
+    severity_order = df['Severity'].unique()
+    df = pd.pivot_table(df, values='Non-compliant Resources', index='Subscription ID', columns='Severity', sort=False)
+    df = df.reindex(severity_order, axis=1)
+    
+    return df

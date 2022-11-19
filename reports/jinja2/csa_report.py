@@ -19,6 +19,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
     host_vulns_data = gather_host_vulns_data(_shared, lw_provider)
     container_vulns_data = gather_container_vulns_data(_shared, lw_provider)
     compliance_data = gather_compliance_data(_shared, lw_provider)
+    azure_compliance_data = gather_compliance_data_azure(_shared, lw_provider)
     event_data = gather_event_data(_shared, lw_provider)
 
     polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/polygraph-info.png'))
@@ -34,6 +35,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
         author                                     = _shared.cli_data['author'],
         polygraph_graphic_html                     = polygraph_graphic_html,
         compliance_data                            = compliance_data,
+        azure_compliance_data                      = azure_compliance_data,
         host_vulns_data                            = host_vulns_data,
         container_vulns_data                       = container_vulns_data,
         event_data                                 = event_data
@@ -151,7 +153,54 @@ def gather_compliance_data(_shared, lw_provider):
         'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
         'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
         'compliance_detail': compliance_detail,
-        'critical_finding_count': critical_finding_count
+        'critical_finding_count': round(critical_finding_count)
+    }
+
+def gather_compliance_data_azure(_shared, lw_provider):
+    # get integrations  
+    integrations = lw_provider.integrations()
+
+    # get tenants
+    azure_tenant_ids = _shared.t_lw.integrations_config_accounts_azure(integrations)
+    if not azure_tenant_ids:
+        return False
+
+    # get compliance Azure reports
+    azure_compliance_reports = lw_provider.compliance_reports_azure(azure_tenant_ids=azure_tenant_ids,lw_provider=lw_provider)
+    azure_compliance_reports = _shared.t_lw.compliance_reports_select_most_noncompliant(azure_compliance_reports)
+
+    #flatten
+    azure_compliance_reports = sum(map(lambda kv: kv[1], azure_compliance_reports.items()), [])
+
+    # set table classes
+    compliance_detail = _shared.t_lw.compliance_reports_raw_azure(azure_compliance_reports)
+    compliance_detail = compliance_detail.style.set_table_attributes('class="compliance_detail"')
+    compliance_summary = _shared.t_lw.compliance_reports_summary_azure(azure_compliance_reports)
+    compliance_summary = compliance_summary.style.set_table_attributes('class="compliance_summary"')
+
+    # get graphics
+    compliance_findings_summary_for_graphic = _shared.t_lw.compliance_reports_summary_for_graphic_azure(azure_compliance_reports)
+
+    compliance_findings_by_account_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_account_bar(compliance_findings_summary_for_graphic, width=1200)
+    compliance_findings_by_account_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_by_account_bar_graphic, 'svg+xml')
+    
+    compliance_reports_summary_by_service_for_graphic = _shared.t_lw.compliance_reports_summary_by_service_for_graphic_azure(azure_compliance_reports)
+    
+    compliance_findings_summary_by_service_bar_graphic = _shared.g_lw_plotly.compliance_findings_summary_by_service_bar(compliance_reports_summary_by_service_for_graphic, width=1200)
+    compliance_findings_summary_by_service_bar_graphic = _shared.common.bytes_to_image_tag(compliance_findings_summary_by_service_bar_graphic, 'svg+xml')
+    
+    if 'Critical' in compliance_findings_summary_for_graphic.columns:
+        critical_finding_count = compliance_findings_summary_for_graphic['Critical'].sum()
+    else:
+        critical_finding_count = 0
+
+    return {
+        'cloud_accounts_count': _shared.t_lw.compliance_reports_total_accounts_evaluated_azure(azure_compliance_reports),
+        'compliance_summary': compliance_summary,
+        'compliance_findings_by_service_bar_graphic': compliance_findings_summary_by_service_bar_graphic,
+        'compliance_findings_by_account_bar_graphic': compliance_findings_by_account_bar_graphic,
+        'compliance_detail': compliance_detail,
+        'critical_finding_count': round(critical_finding_count)
     }
 
 def gather_event_data(_shared, lw_provider):
