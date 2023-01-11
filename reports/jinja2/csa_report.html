@@ -414,9 +414,9 @@
         </div>
       {% endif %}
 
-      {% if event_data %}
+      {% if alerts_data %}
         <div class="box">
-          <span>{{ event_data.high_critical_finding_count}}</span>
+          <span>{{ alerts_data.high_critical_finding_count}}</span>
           <p>Total High / Critical Behaviors Detected</p>
           <div class="gradient"></div>
         </div>
@@ -460,13 +460,13 @@
 
     {% endif %}
 
-    {% if event_data %}
-      <h2>Behavioral & Known-Bad Events - Polygraph Anomalies (last 7 days / top 25)</h2>
+    {% if alerts_data %}
+      <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
       <p>
         Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
       </p>
 
-      {{ event_data.events_raw.to_html(index=False) | safe }}
+      {{ alerts_data.alerts_raw.to_html(index=False) | safe }}
     {% endif %}
 
     {% if host_vulns_data or container_vulns_data %}
