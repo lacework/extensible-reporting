@@ -5,5 +5,5 @@ from . import lw
 
 def integrations():
 	logger.info('Getting integrations')
-	integrations = lw().integrations.get_all()['data']
-	return integrations
+	integrations = lw().cloud_accounts.get()
+	return integrations['data']

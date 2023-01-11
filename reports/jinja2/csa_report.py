@@ -109,7 +109,24 @@ def gather_compliance_data(_shared, lw_provider):
     # get aws accounts
     integrations = lw_provider.integrations()
 
-    aws_config_accounts = _shared.t_lw.integrations_config_accounts(integrations)
+    # api v2 is not returning acct ids, workaround below
+    # aws_config_accounts = _shared.t_lw.integrations_config_accounts(integrations)
+
+    # workaround to get aws config accts using LQL
+    query = """
+            {
+                source {
+                    LW_CFG_AWS_ACCOUNTS a
+                }
+                return distinct {
+                    a.ACCOUNT_ID
+                }
+            }
+        """
+    response = lw_provider.query(query)
+    aws_config_accounts = [d['ACCOUNT_ID'] for d in response]
+    # end workaround
+
     if not aws_config_accounts:
         return False
 
