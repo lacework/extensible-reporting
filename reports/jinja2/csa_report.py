@@ -19,7 +19,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
     host_vulns_data = gather_host_vulns_data(_shared, lw_provider)
     container_vulns_data = gather_container_vulns_data(_shared, lw_provider)
     compliance_data = gather_compliance_data(_shared, lw_provider)
-    event_data = gather_event_data(_shared, lw_provider)
+    alerts_data = gather_alerts_data(_shared, lw_provider)
 
     polygraph_graphic_bytes = _shared.p_local_asset.local_file(os.path.join(basedir, 'assets/lacework/images/polygraph-info.png'))
     polygraph_graphic_html = _shared.common.bytes_to_image_tag(polygraph_graphic_bytes,'png')
@@ -36,7 +36,7 @@ def generate_report(_shared, report_save_path, use_cached_data):
         compliance_data                            = compliance_data,
         host_vulns_data                            = host_vulns_data,
         container_vulns_data                       = container_vulns_data,
-        event_data                                 = event_data
+        alerts_data                                = alerts_data
     )
 
     logger.info('Saving report to: ' + report_save_path)
@@ -171,17 +171,16 @@ def gather_compliance_data(_shared, lw_provider):
         'critical_finding_count': critical_finding_count
     }
 
-def gather_event_data(_shared, lw_provider):
-    events = lw_provider.events(_shared._7_days_ago,_shared._now)
-    if not events:
+def gather_alerts_data(_shared, lw_provider):
+    alerts = lw_provider.alerts(_shared._7_days_ago,_shared._now)
+    if not alerts:
         return False
 
-    events_raw = _shared.t_lw.events_raw(events, limit=25)
-
+    alerts_raw = _shared.t_lw.alerts_raw(alerts, limit=25)
     
-    high_critical_finding_count = len(events_raw[events_raw['Severity'].isin(['Critical','High'])])
+    high_critical_finding_count = len(alerts_raw[alerts_raw['Severity'].isin(['Critical','High'])])
 
     return {
-        'events_raw': events_raw,
+        'alerts_raw': alerts_raw,
         'high_critical_finding_count': high_critical_finding_count
     }
