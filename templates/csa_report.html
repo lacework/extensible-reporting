@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSA Report</title>
+    <link rel="stylesheet" href="https://fonts.xz.style/serve/inter.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+  <style type="text/css">
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --nc-tx-1: #000000;
+      --nc-tx-2: #1A1A1A;
+      --nc-bg-1: #FFFFFF;
+      --nc-bg-2: #F6F8FA;
+      --nc-bg-3: #E5E7EB;
+      --nc-lk-1: #0070F3;
+      --nc-lk-2: #0366D6;
+      --nc-lk-tx: #FFFFFF;
+      --nc-ac-1: #79FFE1;
+      --nc-ac-tx: #0C4047;
+    }
+  }
+
+  @font-face {
+    font-family: 'NB International';
+    src: url('https://www.lacework.com/wp-content/themes/lacework/build/fonts/nb-international/NBInternationalProReg.woff') format('woff');
+  }
+
+  body {
+    font-family: 'NB International';
+    width: 95%;
+        max-width: 95%;
+    background: transparent linear-gradient(180deg, #F2F5FA 0%, #FCFCFE 5%, #FFFFFF 100%) 0% 0% no-repeat padding-box;
+  }
+
+  header {
+    background: #fff;
+    box-shadow: 0px 10px 20px #0000000D;
+    padding: 2rem;
+    margin: -2rem -2rem 0;
+  }
+
+  header img {
+    height: 35px;
+
+  }
+
+  .section-one h1 {
+    font-size: 45px;
+    line-height: 60px;
+    letter-spacing: 0px;
+    color: #000538;
+    border-bottom: none;
+  }
+
+  .section-one h4 {
+    font-size: 26px;
+    line-height: 29px;
+    letter-spacing: 0px;
+    color: #000538;
+  }
+  
+  .section-one p {
+    font-size: 18px;
+    line-height: 23px;
+    letter-spacing: 0px;
+    color: #1540F3;
+    margin-top: .5rem;
+    font-family: monospace;
+    font-weight: normal;
+  }
+
+  .section-one blockquote {
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: 0px;
+    color: #01023B;
+    border-left: 13px solid #E5ECF6;
+    background: #F7F7F7;
+    padding: 1em;
+    margin-bottom: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .section-two {
+    background-image: url('https://www.lacework.com/wp-content/uploads/2022/10/executive_summary_background.png');
+    padding-left: 2rem ;
+    padding-right: 2rem;
+    margin: 3rem 0 4rem;
+    padding-top: 1rem;
+    padding-bottom: 3rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+  }
+
+  .section-two h2 {
+    font-size: 40px;
+    line-height: 61px;
+    letter-spacing: 0px;
+    color: #fff;
+    border-bottom: none;
+    margin-bottom: 1rem;
+  }
+
+  .section-two p {
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: 0px;
+    color: #fff;
+  }
+
+  .section-two ul {
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: 0px;
+    color: #fff;
+  }
+
+  .section-two li {
+    list-style: none;
+  }
+
+  .section-two li::before {
+    content: "\2022";
+    color: #00F8F8;
+    display: inline-block;
+    font-size: 12px;
+    padding-right: 12px;
+  }
+
+  .section-two .boxes {
+   display: flex;
+   margin-top: 3rem;
+ justify-content: center;
+  }
+
+  .section-two .box {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 75%;
+    margin-left: 15px;
+  }
+
+  .section-two .box:first-child {
+    margin-left: 0;
+  }
+
+  .section-two .box span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 58px;
+    line-height: 85px;
+    letter-spacing: 0px;
+    color: #1540F3;
+    background: #fff;
+    padding: 15px 20px;
+  }
+
+  .section-two .box p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    line-height: 25px;
+    letter-spacing: 0px;
+    color: #01023B;
+    background: #E5ECF6;
+    padding: 15px 20px;
+    margin-bottom: 0;
+    text-align: center;
+  }
+
+  .section-two .box .gradient {
+    background: transparent linear-gradient(90deg, #00F8F8 0%, #1540F3 100%) 0% 0% no-repeat padding-box;
+    height: 7px;
+    width: 100%;
+  }
+
+  .section-three b {
+    font-size: 18px;
+    line-height: 23px;
+    letter-spacing: 0px;
+    color: #1540F3;
+    font-family: monospace;
+    font-weight: normal;
+  }
+
+  p b {
+    color: #000538;
+  }
+
+  h2  {
+    font-size: 40px;
+    line-height: 61px;
+    letter-spacing: 0px;
+    color: #01023B;
+    border-bottom: none;
+  }
+
+  h3 {
+    font-size: 42px;
+    line-height: 46px;
+    letter-spacing: 0px;
+    color: #000538;
+    border-bottom: none;
+  }
+
+  h4  {
+    font-size: 26px;
+    line-height: 29px;
+    letter-spacing: 0px;
+    color: #000538;
+  }
+
+  ol {
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #636672;
+    counter-reset: item;
+    margin-left: 25px;
+  }
+
+  ol li { 
+    display: block; 
+    position: relative;
+  }
+  
+  ol li:before {
+      content: counter(item) ". ";
+      counter-increment: item;
+      color: #1540F3;
+      position: absolute;
+      left: -25px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 25px;
+    letter-spacing: 0px;
+    color: #636672;
+  }
+
+  table {
+    margin-top: 1.5rem;
+  }
+
+  th {
+    background: unset;
+  }
+
+  thead th {
+    background: #1540F3;
+    color: #fff;
+    font-size: 18px;
+    line-height: 23px;
+    letter-spacing: 0px;
+    font-weight: normal;
+  }
+
+  tr:nth-child(even) {
+    background: #F7F7F7;
+  }
+
+  th {
+    padding: 1.5rem;
+  }
+
+  thead .blank, tbody .level0 {
+    padding: 0.5rem;
+    text-align: center;
+    border-left: unset;
+    width: 50px;
+  }
+
+  td, th {
+    border-left: 2px solid #B7B7B7;
+    border-bottom: unset;
+    border-top: unset;
+    border-right: unset;
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0px;
+    color: #000000;
+    font-weight: normal;
+  }
+
+  td {
+    padding: 1.5rem;
+  }
+
+  .recommendations p {
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0px;
+    color: #636672;
+  }
+
+  img {
+    margin-top: 1rem;
+  }
+
+  blockquote { font-size:.7em; padding:.7em }
+
+  * {
+    font-size: .9em;
+  }
+
+  </style>
+  <style type="text/css">
+
+    table.host_vulns_summary_by_host td.col1.col1 {
+      white-space: pre;
+      text-align: left;
+    }
+    table.host_vulns_summary_by_host th.row_heading.col1 {
+      white-space: nowrap;
+      width: 15px;
+    }
+
+    table.container_vulns_summary_by_image td.col2 {
+      white-space: pre; text-align:left
+    }
+    table.container_vulns_summary_by_image th.row_heading {
+      white-space: nowrap; width: 15px
+    }
+    table.container_vulns_summary_by_image td.col0 {
+      white-space: nowrap
+    }
+    table.container_vulns_summary_by_image td.col1 {
+      white-space: nowrap
+    }
+    table.container_vulns_summary_by_image td.col3 {
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px
+    }
+
+    table.compliance_detail td.col0 {
+      white-space: nowrap
+    }
+    table.compliance_detail .col3 {
+      white-space: nowrap
+    }
+    table.compliance_detail .col4 {
+      white-space: nowrap
+    }
+    table.compliance_detail th.col_heading {
+      white-space: nowrap; 
+    }
+    table.compliance_detail th.row_heading {
+      white-space: nowrap; width: 15px
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://d33wubrfki0l68.cloudfront.net/d3b93ffb077063fc6238de3e13b896becc6f907b/98bc1/img/logo.png" />
+  </header>
+  <div class="section-one">
+    <h1>Lacework Cloud Security Assessment Report</h1>
+    <h4>Report created for {{customer}}</h4>
+    <p>{{date}}</p>
+    <blockquote>
+      Generated by {{author}}<br/>
+      Confidential - Subject to NDA and License Terms<br/>
+
+      {% set summary_data = [] %}
+      {% if compliance_data %}
+        {% set _ = summary_data.append('Cloud Accounts Analyzed: ' ~ compliance_data.cloud_accounts_count) %}
+      {% endif %}
+      {% if host_vulns_data %}
+        {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
+      {% endif %}
+      {% if container_vulns_data %}
+        {% set _ = summary_data.append('Containers Scanned: ' ~ container_vulns_data.containers_scanned_count) %}
+      {% endif %}
+      {{ summary_data | join(', ') }}
+    </blockquote>
+  </div>
+
+  <div class="section-two">  
+    <h2>Executive Summary</h2>
+    <p>
+      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {{customer}}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
+    </p>
+    <p>
+      Below are quick findings identified by the CSA and additional detail is explained on subsequent pages:
+    </p>
+    
+    <div class="boxes">
+      {% if container_vulns_data %}
+        <div class="box">
+          <span>{{container_vulns_data.critical_vuln_count}}</span>
+          <p>Total Containers with Critical Vulnerabilities</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+
+      {% if host_vulns_data %}
+        <div class="box">
+          <span>{{host_vulns_data.critical_vuln_count}}</span>
+          <p>Hosts with Critical Vulnerabilities</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+      
+      {% if compliance_data %}
+        <div class="box">
+          <span>{{compliance_data.critical_finding_count}}</span>
+          <p>Total Critical Cloud Compliance Findings</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+
+      {% if event_data %}
+        <div class="box">
+          <span>{{ event_data.high_critical_finding_count}}</span>
+          <p>Total High / Critical Behaviors Detected</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <p>
+    <b><u>
+      The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers:
+    </u></b>
+  </p>
+
+  <div class="section-three">
+    <p><b>
+      <ul>
+        <li>Reduce alerts 100:1</li>
+        <li>Speed up security investigations by 80%</li>
+        <li>Decrease SIEM ingestion costs by 50%</li>
+        <li>Improve detections of anomalous behaviors in cloud accounts and workloads</li>
+        <li>Accelerate security throughout development with less effort</li>
+      </ul>
+    </b></p>
+
+    <div>
+      {{ polygraph_graphic_html | safe }}
+    </div>
+
+    {% if compliance_data %}
+      <h3>Cloud Compliance Findings</h3>
+      <p>
+        Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
+      </p>
+      <p><b>
+        Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
+      </b></p>
+
+      {{ compliance_data.compliance_summary.to_html(index=False) | safe }}
+      {{ compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+
+    {% endif %}
+
+    {% if event_data %}
+      <h2>Behavioral & Known-Bad Events - Polygraph Anomalies (last 7 days / top 25)</h2>
+      <p>
+        Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
+      </p>
+
+      {{ event_data.events_raw.to_html(index=False) | safe }}
+    {% endif %}
+
+    {% if host_vulns_data or container_vulns_data %}
+      <h2>Workload Vulnerability Assessment</h2>
+      <p>
+        Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. If the Lacework agent was not installed as part of this assessment it may be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
+      </p>
+        
+      {% if host_vulns_data %}
+        <p><b>
+          Total Hosts Scanned: {{host_vulns_data.hosts_scanned_count}}
+        </b></p>
+      {% endif %}
+
+      {% if container_vulns_data %}
+        <p><b>
+        Total Container Images Scanned: {{container_vulns_data.containers_scanned_count}}
+        </b></p>
+      <br/>
+      {% endif %}
+    {% endif %}
+    
+
+    {% if host_vulns_data %}
+      <h3>Host Vulnerability Summary</h3>
+      {{ host_vulns_data.host_vulns_summary.to_html(index=False) | safe }}
+      {{ host_vulns_data.host_vulns_summary_bar_graphic | safe }}
+    {% endif %}
+
+    {% if container_vulns_data %}
+      <h3>Container Vulnerability Summary</h3>
+      {{ container_vulns_data.container_vulns_summary.to_html(index=False) | safe }}
+      {{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
+    {% endif %} 
+    
+    {% if host_vulns_data or container_vulns_data or compliance_data %}
+      <h2>Appendix of Detailed Findings</h2>
+      <p>This section contains additional details on the findings that were summarized above:</p>
+
+      {% if host_vulns_data %}
+        <h3>Detailed CVE Breakdown</h3>
+        <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
+        {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
+      {% endif %}
+
+      {% if container_vulns_data %}
+        <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
+        {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
+      {% endif %}
+
+      <br/>
+      {% if compliance_data %}
+        <h3>Detailed Cloud Compliance Findings</h3>
+        <p></p>
+        {{ compliance_data.compliance_detail.to_html() | safe }}
+      {% endif %}
+    {% endif %}
+  </div>
+  <div class="recommendations">
+    <h3>Recommendations</h3>
+    <p>
+      Based on the findings of this assessment, Lacework recommends the following action plan and next steps:
+    </p>
+    <ol>
+      <li>Engage with your Lacework account team and partner to review services offerings to prioritize and remediate the findings</li>
+      <li>Complete a recurring Cloud Security Assessment once a wider Lacework deployment has been completed to baseline and trend improvements to your cloud security posture.</li>
+    </ol>
+  </div>
+</body>
+</html>
