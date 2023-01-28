@@ -3,10 +3,11 @@ from laceworksdk import exceptions
 from logzero import logger
 from modules.host_vulnerabilities import HostVulnerabilities
 from modules.container_vulnerabilities import ContainerVulnerabilities
-from modules.events import Events
+from modules.alerts import Alerts
 from modules.compliance import Compliance
 import functools
 import pickle
+import requests
 from pathlib import Path
 import json
 
@@ -30,6 +31,7 @@ def cache_results(func):
                         pickle.dump(result, f)
             else:
                 result = func(*args, **kwargs)
+                logger.info(f"Writing cache file {str(file_path)}. You must delete this file manually to generate a new cache.")
                 with file_path.open("wb") as f:
                     pickle.dump(result, f)
         else:
@@ -40,11 +42,21 @@ def cache_results(func):
 
 class LaceworkInterface:
 
-    def __init__(self, lacework_sdk=None, use_cache=False):
-        if not lacework_sdk:
-            self.lacework = LaceworkClient()
+    def __init__(self, api_key_file=None, use_cache=False):
+        if api_key_file:
+            if 'subAccount' in api_key_file:
+                self.lacework = LaceworkClient(account=api_key_file['account'],
+                                               subaccount=api_key_file['subAccount'],
+                                               api_key=api_key_file['keyId'],
+                                               api_secret=api_key_file['secret']
+                                               )
+            else:
+                self.lacework = LaceworkClient(account=api_key_file['account'],
+                                               api_key=api_key_file['keyId'],
+                                               api_secret=api_key_file['secret']
+                                               )
         else:
-            self.lacework = lacework_sdk
+            self.lacework = LaceworkClient()
         self.use_cache = use_cache
         self.compliance_report_lookup = {'AwsCfg':
                                              {'CIS': 'AWS_CIS_14',
@@ -55,7 +67,7 @@ class LaceworkInterface:
                                               'PCI': 'AZURE_PCI_DSS_3_2_1_CIS_1_5',
                                               },
                                          'GcpCfg':
-                                             {'CIS': 'GCP_CIS13',
+                                             {'CIS': 'GCP_CIS',
                                               'PCI': 'GCP_PCI_Rev2',
                                               }
                                          }
@@ -73,11 +85,14 @@ class LaceworkInterface:
                                         'secondary_query_id': config_account['data']['id'],
                                         })
             elif config_account['type'] == 'AzureCfg':
-                account_details.append({'name': config_account['name'],
-                                        'type': config_account['type'],
-                                        'primary_query_id': config_account['data']['tenantId'],
-                                        'secondary_query_id': None,
-                                        })
+                tenant_data = self.lacework.configs.azure_subscriptions.get(tenantId=config_account['data']['tenantId'])['data']
+                for subscription in tenant_data[0]['subscriptions']:
+                    logger.info(f"Adding tenant:{config_account['data']['tenantId']} Subscription:{str(subscription).split(' ')[0]}")
+                    account_details.append({'name': config_account['name'],
+                                            'type': config_account['type'],
+                                            'primary_query_id': config_account['data']['tenantId'],
+                                            'secondary_query_id': str(subscription).split(' ')[0],
+                                            })
             elif config_account['type'] == 'AwsCfg':
                 arn_elements = config_account['data']['crossAccountCredentials']['roleArn'].split(':')
                 account_details.append({'name': config_account['name'],
@@ -88,10 +103,20 @@ class LaceworkInterface:
         return account_details
 
     @cache_results
-    def get_events(self, start_time, end_time):
-        raw_results = self.lacework.events.get_for_date_range(start_time=start_time, end_time=end_time)['data']
-        events = Events(raw_results)
-        return events
+    def get_alerts(self, start_time, end_time):
+        logger.info(f'Getting alerts from {start_time} to {end_time}:')
+        alerts_list = []
+        raw_results = self.lacework.alerts.get(start_time=start_time, end_time=end_time)
+        while True:
+            alerts_list.extend(raw_results['data'])
+            next_page_url = raw_results['paging']['urls']['nextPage']
+            if next_page_url:
+                raw_results = self.lacework._session.get(next_page_url).json()
+            else:
+                break
+        logger.info(f'{len(alerts_list)} alerts returned.')
+        alerts = Alerts(alerts_list)
+        return alerts
 
     @cache_results
     def get_host_vulns(self, start_time, end_time):
@@ -155,19 +180,24 @@ class LaceworkInterface:
         compliance_reports = []
         compliance_accounts = self.get_cfg_account_ids()
         for compliance_account in compliance_accounts:
-            if compliance_account['type'] == "GcpCfg": continue
+            # skipping Azure and GCP for now due to API issues
+            if compliance_account['type'] == "AzureCfg" or compliance_account['type'] == "GcpCfg": continue
+            #if compliance_account['type'] == "GcpCfg": continue
             report_query_string = self.compliance_report_lookup[compliance_account['type']][report_type]
             logger.info(f"Getting {report_query_string} report for {compliance_account}")
             report = self.lacework.reports.get(primary_query_id=compliance_account['primary_query_id'],
                                                secondary_query_id=compliance_account['secondary_query_id'],
                                                format="json",
+                                               latest=True,
                                                report_type=report_query_string)
-
-            compliance_reports.append({'type': compliance_account['type'],
-                                       'primary_query_id': compliance_account['primary_query_id'],
-                                       'secondary_query_id': compliance_account['secondary_query_id'],
-                                       'report': report
-                                       })
+            if report['data']:
+                compliance_reports.append(report['data'][0])
+                # compliance_reports.append({'type': compliance_account['type'],
+                #                            'primary_query_id': compliance_account['primary_query_id'],
+                #                            'secondary_query_id': compliance_account['secondary_query_id'],
+                #                            'report': report
+                #                            })
+        compliance_reports = Compliance(compliance_reports)
         return compliance_reports
 
 

@@ -1,16 +1,15 @@
 [tool.poetry]
-name = "extensible-reporting-next"
+name = "extensible-reporting"
 version = "0.1.0"
 description = ""
 authors = ["Tim MacDonald"]
 readme = "README.md"
-packages = [{include = "extensible_reporting_next"}]
+packages = [{include = "extensible_reporting"}]
 
 [tool.poetry.dependencies]
 
 python = ">=3.8,<3.11"
 pandas = "^1.5.0"
-laceworksdk = "^1.6.1"
 coloredlogs = "^15.0.1"
 jinja2 = "^3.1.2"
 plotly = "^5.10.0"
@@ -18,6 +17,8 @@ kaleido = "0.2.1"
 datapane = "^0.15.3"
 logzero = "^1.7.0"
 pytest = "^7.2.1"
+python-dotenv = "^0.21.1"
+laceworksdk = "^1.8.1"
 
 [tool.poetry.dev-dependencies]
 pyinstaller = "^5.4.1"
