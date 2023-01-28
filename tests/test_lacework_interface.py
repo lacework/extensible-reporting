@@ -15,10 +15,10 @@ def test_lacework_interface_reports():
     assert reports is not False
 
 
-def test_lacework_interface_events():
+def test_lacework_interface_alerts():
     lw = LaceworkInterface()
-    events = lw.get_events(minus_7d, now)
-    assert events is not False
+    alerts = lw.get_alerts(minus_7d, now)
+    assert alerts is not False
 
 
 def test_lacework_interface_container_vulns():

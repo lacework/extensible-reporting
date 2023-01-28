@@ -1,36 +1,54 @@
 import sys
 import os
-import argparse
-
+import json
 import logzero
-
+from logzero import logger
+from modules.utils import get_validated_arguments
 from modules.reportgen import ReportGenCSA
-from laceworksdk import LaceworkClient
-
-
-def get_arguments():
-    parser = argparse.ArgumentParser(description=
-                                     """Tool to generate a Lacework customer security assessment report.
-                                     Requires that the Lacework CLI is installed and configured.
-                                     https://docs.lacework.com/cli""")
-    parser.add_argument("--report-path", help="Filename to save report", default="report.html")
-    parser.add_argument("--author", help="Author of report", type=str, required=True)
-    parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
-    parser.add_argument("--cache", help="Create/use locally cached copies of Lacework data", action='store_true')
-    return parser.parse_args()
+from modules.utils import LaceworkTime
 
 
 def main():
+
+    # Get the base directory where this script is running from
+    # Required for Pyinstaller as it temporarily extracts all files to a temp folder before running
     if getattr(sys, 'frozen', False):
         basedir = sys._MEIPASS
     else:
         basedir = os.path.dirname(os.path.abspath(__file__))
 
-    args = get_arguments()
+    # Set up default logging level
     logzero.loglevel(logzero.INFO)
     logzero.logfile('lw_report_gen.log')
-    csa = ReportGenCSA(basedir, use_cache=args.cache)
-    report = csa.generate(str(args.customer), str(args.author))
+
+    # Get command line args and process them
+    args = get_validated_arguments()
+    vulns_start_time = LaceworkTime(args.vulns_start_time)
+    vulns_end_time = LaceworkTime(args.vulns_end_time)
+    alerts_start_time = LaceworkTime(args.alerts_start_time)
+    alerts_end_time = LaceworkTime(args.alerts_end_time)
+    api_key_file = None
+    if args.api_key_file:
+        try:
+            with open(args.api_key_file, 'r') as file:
+                api_key_file = json.load(file)
+        except Exception as e:
+            logger.error(f"Failed to read keyfile: {str(e)}")
+            sys.exit()
+
+
+
+
+    # Execute the CSA report
+    csa = ReportGenCSA(basedir, use_cache=args.cache_data, api_key_file=api_key_file)
+    report = csa.generate(args.customer,
+                          args.author,
+                          vulns_start_time=vulns_start_time,
+                          vulns_end_time=vulns_end_time,
+                          alerts_start_time=alerts_start_time,
+                          alerts_end_time=alerts_end_time)
+
+    # Write out the report file
     with open(str(args.report_path), 'w') as file:
         file.write(report)
 

@@ -175,41 +175,33 @@ event_short_to_long = {
  'VPNGatewayChange': 'VPN Gateway Change'
 }
 
-class Events:
+
+class Alerts:
 
     def __init__(self, raw_data):
         self.data = raw_data
 
-    def processed_events(self, severities=["Critical", "High"],
-                   excluded_event_types=["CloudTrailDefaultAlert", "CloudActivityLogIngestionFailed", "NewViolations",
+    def processed_alerts(self, severities=["Critical", "High"],
+                         excluded_alert_types=["CloudTrailDefaultAlert", "CloudActivityLogIngestionFailed", "NewViolations",
                                          "ComplianceChanged"], limit=False):
         df = pd.DataFrame(self.data)
-
-        # filter out excluded events
-        df = df[~df['EVENT_TYPE'].isin(excluded_event_types)]
-
-        # replace short event types with long
-        event_lookup = pd.Series(event_short_to_long, name='EVENT_TYPE')
-        df = pd.merge(df, event_lookup, how='left', left_on='EVENT_TYPE', right_index=True, suffixes=['', '_LONG'])
-        df["EVENT_TYPE_LONG"] = df["EVENT_TYPE_LONG"].fillna(df["EVENT_TYPE"])
-
+        # filter out excluded alerts
+        df = df[~df['alertType'].isin(excluded_alert_types)]
         # sort & filter by sev
-        df = df.sort_values(by=['SEVERITY', 'START_TIME'], ascending=[True, False])
-        df = df.replace({'SEVERITY': {"1": "Critical", "2": "High", "3": "Medium", "4": "Low", "5": "Info"}})
-        df = df[df['SEVERITY'].isin(severities)]
+        df['severity'] = pd.Categorical(df['severity'], ["Critical", "High", "Medium", "Low", "Info"])
+        df = df.sort_values(by=['severity', 'startTime'], ascending=[True, False])
+        df = df[df['severity'].isin(severities)]
 
         # format time
-        df['START_TIME'] = df['START_TIME'].apply(
-            lambda x: datetime.strptime(x, "%Y-%m-%dT%H:%M:%SZ").strftime("%B %d, %Y %I:%M%p"))
-
+        df['startTime'] = df['startTime'].apply(
+         lambda x: datetime.fromisoformat(x.replace("Z", "+00:00")).strftime("%B %d, %Y %I:%M%p"))
         # delete extra columns
-        df = df[['EVENT_ID', 'SEVERITY', 'START_TIME', 'EVENT_TYPE_LONG']]
-
+        df = df[['alertId', 'severity', 'startTime', 'alertName']]
         # rename columns
-        df.rename(columns={'EVENT_ID': 'Event ID', 'SEVERITY': 'Severity', 'START_TIME': 'Event Time',
-                           'EVENT_TYPE_LONG': 'Event Type'}, inplace=True)
-
+        df.rename(
+         columns={'alertId': 'Alert ID', 'severity': 'Severity', 'startTime': 'Alert Time', 'alertName': 'Alert Name'},
+         inplace=True)
         if limit:
-            df = df.head(limit)
+         df = df.head(limit)
 
         return df

@@ -1,24 +1,26 @@
 import os
 import jinja2
 import base64
-from modules.lacework_interface import LaceworkInterface
-from datetime import datetime, timezone, timedelta
+from datetime import datetime
 from logzero import logger
+from modules.lacework_interface import LaceworkInterface
+from modules.compliance import Compliance
+from modules.alerts import Alerts
+from modules.host_vulnerabilities import HostVulnerabilities
+from modules.container_vulnerabilities import ContainerVulnerabilities
+from modules.utils import LaceworkTime
 
 
 class ReportGen:
 
-    def __init__(self, basedir, use_cache=False):
+    def __init__(self, basedir, use_cache=False, api_key_file=None):
         self.basedir = basedir
         self.use_cache = False
-        self.lacework_interface = LaceworkInterface(use_cache=use_cache)
+        self.lacework_interface = LaceworkInterface(use_cache=use_cache, api_key_file=api_key_file)
 
     def bytes_to_image_tag(self, img_bytes: bytes, file_format: str) -> str:
         b64content = base64.b64encode(img_bytes).decode('utf-8')
         return f"<img src='data:image/{file_format};base64,{b64content}'/>"
-
-    def generate_time_string(self, days=0, hours=0) -> str:
-        return (datetime.now(timezone.utc) - timedelta(days=days, hours=hours)).strftime("%Y-%m-%dT%H:%M:%S%Z")
 
     def load_binary_file(self, path: str) -> bytes:
         full_path = os.path.join(self.basedir, path)
@@ -26,17 +28,23 @@ class ReportGen:
             file_bytes = in_file.read()
         return file_bytes
 
+    def generate(self,
+                 customer: str,
+                 author: str,
+                 vulns_start_time: LaceworkTime,
+                 vulns_end_time: LaceworkTime,
+                 alerts_start_time: LaceworkTime,
+                 alerts_end_time: LaceworkTime):
+        pass
+
 
 class ReportGenCSA(ReportGen):
 
-    def __init__(self, basedir, use_cache=False):
-        super().__init__(basedir, use_cache=use_cache)
-        self.time_now = self.generate_time_string()
-        self.time_minus_25h = self.generate_time_string(hours=25)
-        self.time_minus_7d = self.generate_time_string(days=7)
+    def __init__(self, basedir, use_cache=False, api_key_file=None):
+        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
 
     def gather_host_vulnerability_data(self, begin_time: str, end_time: str, host_limit: int = 25):
-        host_vulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
+        host_vulnerabilities: HostVulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
         if not host_vulnerabilities:
             logger.error("No host vulnerabilities were returned by Lacework.")
             return False
@@ -58,7 +66,7 @@ class ReportGenCSA(ReportGen):
         }
 
     def gather_container_vulnerability_data(self, begin_time: str, end_time: str, container_limit: int = 25):
-        container_vulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
+        container_vulnerabilities: ContainerVulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
         if not container_vulnerabilities:
             logger.error("No container vulnerabilities were returned by Lacework.")
             return False
@@ -81,18 +89,52 @@ class ReportGenCSA(ReportGen):
         }
 
     def gather_compliance_data(self):
-        return False
+        compliance_reports: Compliance = self.lacework_interface.get_compliance_reports()
+        if not compliance_reports.data:
+            return False
+        # set table classes
+        details = compliance_reports.get_compliance_details()
+        details.style.set_table_attributes('class="compliance_detail"')
+        summary = compliance_reports.get_compliance_summary()
+        summary.style.set_table_attributes('class="compliance_summary"')
+        # get graphics
+        findings_by_account_bar_graph = compliance_reports.get_summary_by_account_bar_graph(width=1200)
+        findings_by_account_bar_graph_encoded = self.bytes_to_image_tag(findings_by_account_bar_graph, 'svg+xml')
 
-    def gather_event_data(self, begin_time: str, end_time: str):
-        events = self.lacework_interface.get_events(begin_time, end_time)
-        processed_events = events.processed_events(limit=25)
-        high_critical_finding_count = len(processed_events[processed_events['Severity'].isin(['Critical', 'High'])])
+        findings_summary_by_service_bar_graph = compliance_reports.get_summary_by_service_bar_graph(width=1200)
+        findings_summary_by_service_bar_graph_encoded = self.bytes_to_image_tag(findings_summary_by_service_bar_graph, 'svg+xml')
+
+        summary_by_account = compliance_reports.get_summary_by_account()
+        if 'Critical' in summary_by_account.columns:
+            critical_finding_count = summary_by_account['Critical'].sum()
+        else:
+            critical_finding_count = 0
+
         return {
-            'events_raw': processed_events,
+            'cloud_accounts_count': compliance_reports.get_total_accounts_evaluated(),
+            'compliance_summary': summary,
+            'compliance_findings_by_service_bar_graphic': findings_summary_by_service_bar_graph,
+            'compliance_findings_by_account_bar_graphic': findings_by_account_bar_graph,
+            'compliance_detail': details,
+            'critical_finding_count': critical_finding_count
+        }
+
+    def gather_alert_data(self, begin_time: str, end_time: str):
+        alerts: Alerts = self.lacework_interface.get_alerts(begin_time, end_time)
+        processed_alerts = alerts.processed_alerts(limit=25)
+        high_critical_finding_count = len(processed_alerts[processed_alerts['Severity'].isin(['Critical', 'High'])])
+        return {
+            'alerts_raw': processed_alerts,
             'high_critical_finding_count': high_critical_finding_count
         }
 
-    def generate(self, customer: str, author: str):
+    def generate(self,
+                 customer: str,
+                 author: str,
+                 vulns_start_time: LaceworkTime,
+                 vulns_end_time: LaceworkTime,
+                 alerts_start_time: LaceworkTime,
+                 alerts_end_time: LaceworkTime):
         polygraph_graphic_bytes = self.load_binary_file('assets/polygraph-info.png')
         polygraph_graphic_html = self.bytes_to_image_tag(polygraph_graphic_bytes, 'png')
         template_loader = jinja2.FileSystemLoader(searchpath=os.path.join(self.basedir, "templates/"))
@@ -105,9 +147,9 @@ class ReportGenCSA(ReportGen):
             author=str(author),
             polygraph_graphic_html=polygraph_graphic_html,
             compliance_data=self.gather_compliance_data(),
-            host_vulns_data=self.gather_host_vulnerability_data(self.time_minus_25h, self.time_now),
-            container_vulns_data=self.gather_container_vulnerability_data(self.time_minus_25h, self.time_now),
-            event_data=self.gather_event_data(self.time_minus_7d, self.time_now)
+            host_vulns_data=self.gather_host_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string()),
+            container_vulns_data=self.gather_container_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string()),
+            alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
         )
         return html
 
