@@ -1,4 +1,6 @@
 import os
+import sys
+
 import jinja2
 import base64
 from datetime import datetime
@@ -13,6 +15,9 @@ from modules.utils import LaceworkTime
 
 class ReportGen:
 
+    report_short_name = 'Base'
+    report_name = "Base Report Class"
+    report_description = "This is the base report class, it should be inherited from, not imported directly."
     def __init__(self, basedir, use_cache=False, api_key_file=None):
         self.basedir = basedir
         self.use_cache = False
@@ -28,25 +33,28 @@ class ReportGen:
             file_bytes = in_file.read()
         return file_bytes
 
-    def generate(self,
-                 customer: str,
-                 author: str,
-                 vulns_start_time: LaceworkTime,
-                 vulns_end_time: LaceworkTime,
-                 alerts_start_time: LaceworkTime,
-                 alerts_end_time: LaceworkTime):
-        pass
+    def get_jinja2_template(self, file_name: str) -> jinja2.Template:
+        template_loader = jinja2.FileSystemLoader(searchpath=os.path.join(self.basedir, "templates/"))
+        template_env = jinja2.Environment(loader=template_loader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
+        template_file = file_name
+        try:
+            return template_env.get_template(template_file)
+        except Exception as e:
+            logger.error(f'Could not load html template {str(file_name)}, EXITING: {str(e)}')
+            sys.exit()
 
-
-class ReportGenCSA(ReportGen):
-
-    def __init__(self, basedir, use_cache=False, api_key_file=None):
-        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
+    def get_current_date(self) -> str:
+        return datetime.now().strftime("%A %B %d, %Y")
 
     def gather_host_vulnerability_data(self, begin_time: str, end_time: str, host_limit: int = 25):
-        host_vulnerabilities: HostVulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
-        if not host_vulnerabilities:
-            logger.error("No host vulnerabilities were returned by Lacework.")
+        try:
+            host_vulnerabilities: HostVulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
+        except Exception as e:
+            logger.error(
+                f'Failed to retrieve host vulnerability data from Lacework, omitting it from the report.')
+            return False
+        if not host_vulnerabilities.data:
+            logger.error("No host vulnerability data was returned by Lacework, omitting it from the report.")
             return False
         total_evaluated = host_vulnerabilities.total_evaluated()
         summary_by_host = host_vulnerabilities.summary_by_host(limit=host_limit)
@@ -66,9 +74,14 @@ class ReportGenCSA(ReportGen):
         }
 
     def gather_container_vulnerability_data(self, begin_time: str, end_time: str, container_limit: int = 25):
-        container_vulnerabilities: ContainerVulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
-        if not container_vulnerabilities:
-            logger.error("No container vulnerabilities were returned by Lacework.")
+        try:
+            container_vulnerabilities: ContainerVulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
+        except Exception as e:
+            logger.error(
+                f'Failed to retrieve container vulnerability data from Lacework, omitting it from the report.')
+            return False
+        if not container_vulnerabilities.data:
+            logger.error("No container vulnerability data was returned by Lacework, omitting it from the report.")
             return False
         total_evaluated = container_vulnerabilities.total_evaluated()
         summary_by_image = container_vulnerabilities.summary_by_image(limit=container_limit)
@@ -88,9 +101,14 @@ class ReportGenCSA(ReportGen):
             'container_vulns_summary_by_image_limit': container_limit
         }
 
-    def gather_compliance_data(self):
-        compliance_reports: Compliance = self.lacework_interface.get_compliance_reports()
-        if not compliance_reports.data:
+    def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS' ):
+        try:
+            compliance_reports: Compliance = self.lacework_interface.get_compliance_reports(cloud_provider=cloud_provider, report_type=report_type)
+        except Exception as e:
+            logger.error(f'Failed to retrieve {report_type} report(s) for {cloud_provider}, omitting them from the report.')
+            return False
+        if not compliance_reports.reports:
+            logger.error(f'Reports of type {report_type} from {cloud_provider} came back empty. Omitting them from the report.')
             return False
         # set table classes
         details = compliance_reports.get_compliance_details()
@@ -135,22 +153,7 @@ class ReportGenCSA(ReportGen):
                  vulns_end_time: LaceworkTime,
                  alerts_start_time: LaceworkTime,
                  alerts_end_time: LaceworkTime):
-        polygraph_graphic_bytes = self.load_binary_file('assets/polygraph-info.png')
-        polygraph_graphic_html = self.bytes_to_image_tag(polygraph_graphic_bytes, 'png')
-        template_loader = jinja2.FileSystemLoader(searchpath=os.path.join(self.basedir, "templates/"))
-        template_env = jinja2.Environment(loader=template_loader, autoescape=True, trim_blocks=True, lstrip_blocks=True)
-        template_file = "csa_report.html"
-        template = template_env.get_template(template_file)
-        html = template.render(
-            customer=str(customer),
-            date=datetime.now().strftime("%A %B %d, %Y"),
-            author=str(author),
-            polygraph_graphic_html=polygraph_graphic_html,
-            compliance_data=self.gather_compliance_data(),
-            host_vulns_data=self.gather_host_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string()),
-            container_vulns_data=self.gather_container_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string()),
-            alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
-        )
-        return html
+        pass
+
 
 

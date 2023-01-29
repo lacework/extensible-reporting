@@ -65,13 +65,38 @@ Once the report is generated, you may edit the html with your own company logo o
 
 ## Specifying a Lacework instance and credentials:
 
-Though it is not required, you may wish to install and configure the Lacework CLI. Instructions to do so can be found here: https://docs.lacework.com/cli/
+You must have a valid Lacework API key for your Lacework instance to run this tool. You can read about creating and downloading 
+an API key here: 
 
-Configuring the Lacework CLI with a default account and credentials will create a .lacework.toml in your home directory which this tool will then use by default. 
+https://docs.lacework.com/api/api-access-keys-and-tokens
 
-If you do not choose to set up the CLI you may download an API key json file from your Lacework instance and specify it using the ````"--api-key-file"```` command line
-parameter.
+Once you have created an API key There are three ways to specify the Lacework API instance/credentials used when generating a report:
 
+1. Install and configure the Lacework CLI to setup a credentials file which this tool will read.
+2. Specify a JSON file containing your API instance/credentials. 
+3. Specify your credentials via variables.
+
+### Method 1: Lacework CLI
+Though it is not required, you may wish to install and configure the Lacework CLI to create a .lacework.toml file containing your API credentials. Instructions to do so can be found here: https://docs.lacework.com/cli/
+
+### Method 2: JSON File
+
+You may download an API key JSON file from your Lacework instance (Settings > Configuration > API keys) and specify it using the ````"--api-key-file"```` command line
+parameter. 
+
+### Method 3: Environment Variables
+
+If you wish to configure the LaceworkClient instance using environment variables, this tool honors the same
+variables used by the Lacework CLI. The `account`, `subaccount`, `api_key`, `api_secret`, and `profile` parameters
+can all be configured as specified below.
+
+| Environment Variable | Description                                                          | Required |
+| -------------------- | -------------------------------------------------------------------- | :------: |
+| `LW_PROFILE`         | Lacework CLI profile to use (configured at ~/.lacework.toml)         |    N     |
+| `LW_ACCOUNT`         | Lacework account/organization domain (i.e. `<account>`.lacework.net) |    Y     |
+| `LW_SUBACCOUNT`      | Lacework sub-account                                                 |    N     |
+| `LW_API_KEY`         | Lacework API Access Key                                              |    Y     |
+| `LW_API_SECRET`      | Lacework API Access Secret                                           |    Y     |
 ## Query Time Ranges
 
 By default the tool will query Lacework for data in the following time ranges:
@@ -116,6 +141,29 @@ The script will generate a log file called ```lw_report_gen.log```If you encount
 ## Contributing
 
 Open a pull request!
+
+## Creating Your Own Custom Report
+
+Since this tool outputs html by default the most approachable (but manual) way to create a custom report is to modify the
+html report it generates. If however you want to modify the tool itself to automatically create reports for you then read  on...
+
+First you must download the source code. There is not currently a way to automatically create custom reports using the executable binary version of this tool.
+You should have some familiarity with python object-oriented programming if you are going to attempt automating a custom report. 
+
+To create your own report you must create a custom python module containing a class that inherits from```modules.reportgen```. Place that module file in the
+```modules/reports```folder. Be sure to define the following class variables (strings) to ensure that the dynamic module loader can read the class metadata:
+
+```
+report_short_name
+report_name
+report_description
+```
+
+Have a look at the default CSA report in `modules/reports/reportgen_csa.py`  for an example.
+
+This tool uses the "jinja2" templating engine to generate the report HTML. Depending on how customized
+you want your report to be you may also need to create a custom jinja2 template and 
+put it in the `templates` folder. You can then reference this template in your custom report class.  
 
 ## License and Copyright
 
