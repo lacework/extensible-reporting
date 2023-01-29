@@ -1,8 +1,13 @@
 from datetime import datetime, timezone, timedelta
 import re
-import argparse
-import sys
-import os
+import hashlib
+import json
+import functools
+import pathlib
+import pickle
+import importlib
+import ast
+from pathlib import Path
 from logzero import logger
 
 
@@ -17,78 +22,82 @@ class LaceworkTime:
         return (datetime.now(timezone.utc) - timedelta(days=self.delta_days, hours=self.delta_hours)).strftime("%Y-%m-%dT%H:%M:%S%Z")
 
 
-def validate_time_string(time_string: str) -> bool:
-    pattern = re.compile(r"\d{1,2}:\d{1,2}")
-    if re.fullmatch(pattern, time_string):
-        return True
-    else:
+def generate_md5_from_obj(obj_to_hash):
+    json_object = json.dumps(obj_to_hash)
+    return hashlib.md5(json_object.encode()).hexdigest()
+
+
+def cache_results(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        use_cache = args[0].use_cache
+        if use_cache:
+            func_name = func.__name__
+            kwargs_hash = generate_md5_from_obj(kwargs)
+            file_path = Path(f"lw_csa_{func_name}{kwargs_hash}.cache")
+            if file_path.is_file():
+                try:
+                    logger.info(f"Reading cache file {str(file_path)}")
+                    with file_path.open("rb") as f:
+                        result = pickle.load(f)
+                except Exception as e:
+                    logger.error(f"Cache file {str(file_path)} exists but could not be loaded: {str(e)}")
+                    result = func(*args, **kwargs)
+                    with file_path.open("wb") as f:
+                        pickle.dump(result, f)
+            else:
+                result = func(*args, **kwargs)
+                logger.info(f"Writing cache file {str(file_path)}. You must delete this file manually to generate a new cache.")
+                with file_path.open("wb") as f:
+                    pickle.dump(result, f)
+        else:
+            result = func(*args, **kwargs)
+        return result
+    return wrapper
+
+
+def get_report_class_name_from_file(file: pathlib.Path):
+
+    try:
+        with file.open('r') as f:
+            contents = f.read()
+    except Exception as e:
+        logger.error(f'Could not open report module {str(file)}')
         return False
+    node = ast.parse(contents)
+    report_classes = [n for n in node.body if isinstance(n, ast.ClassDef)]
+    if len(report_classes) == 0:
+        logger.error(f'File {str(file.name)} does not contain a class to import. Skipping')
+        return False
+    return report_classes[0].name
 
 
-def get_arguments():
-    parser = argparse.ArgumentParser(description=
-                                     """Tool to generate a Lacework customer security assessment report.
-                                     
-                                     You must provide an author and customer string, all other flags are optional.
-                                     
-                                     If you do not specify an API Key file (downloaded from the Lacework UI) then
-                                     either the default account/creds in your .lacework.toml file will be used OR you can 
-                                     specify account/creds in the environmental variables as defined on the github page.
-                                     The default query times for vulnerability data and alert data are:
-                                     
-                                     vulns: start-> 25 hours ago   end -> current time
-                                     alerts: start -> 7 days ago   end -> current time
-                                     
-                                     Examples:
-                                     
-                                     Short and Sweet: 
-                                     lw_report_gen --author 'John D' --customer 'Amce Co.'
-                                     
-                                     Using Custom Query Times (setting the vulnerabilities query to start 7 days and 2 hours ago): 
-                                     lw_report_gen --author 'John D' --customer 'Acme Co.' --vulns-start-time 7:2 
-                                     
-                                     see the github page for more info:
-                                     https://github.com/lacework/extensible-reporting
-                                     """, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument("--report-path", type=str, help="Filename to save report", default="report.html")
-    parser.add_argument("--author", help="Author of report", type=str, required=True)
-    parser.add_argument("--customer", help="Customer Name (Company)", type=str, required=True)
-    parser.add_argument("--cache-data", help="Create/use locally cached copies of Lacework data", action='store_true')
-    parser.add_argument("--vulns-start-time", type=str, help="The number of days and hours in the past relative to NOW to start the vulnerability report. In the format <D:H>", default="0:25")
-    parser.add_argument("--vulns-end-time", type=str,
-                        help="The number of days and hours in the past relative to NOW to end the vulnerability report. In the format <D:H> (use 0:0 for now)",
-                        default="0:0")
-    parser.add_argument("--alerts-start-time", type=str,
-                        help="The number of days and hours in the past relative to NOW to start the alert report. In the format <D:H>",
-                        default="7:0")
-    parser.add_argument("--alerts-end-time", type=str,
-                        help="The number of days and hours in the past relative to NOW to end the alert report. In the format <D:H> (use 0:0 for now)",
-                        default="0:0")
-    parser.add_argument("--api-key-file", type=str, help="Read your credentials from an API key file downloaded from the Lacework UI (JSON formatted).")
+def get_available_reports(basedir):
+    # load available reports from the
+    available_reports = []
+    modules_dir = pathlib.Path(basedir + '/modules/reports')
+    modules_dir_contents = modules_dir.glob('*.py')
+    reports_to_load = []
+    for module_path in modules_dir_contents:
+        class_name = get_report_class_name_from_file(module_path)
+        if class_name:
+            module_name = str(str(module_path.name).split('.')[0])
+            reports_to_load.append({'class_name': class_name, 'module_name': module_name})
+        else:
+            continue
+    for report_to_load in reports_to_load:
+        module_name = 'modules.reports.' + report_to_load['module_name']
+        globals()[module_name] = importlib.import_module(module_name)
+        #  These following three lines are confusing:
+        #  First we get the name of the class as a string from the module
+        #  Then we use that string to get the class itself
+        #  Then we instantiate it.
+        #class_name = getattr(globals()[module_name], 'class_name')
+        class_ = getattr(globals()[module_name], report_to_load['class_name'])
+        available_reports.append({'report_class': class_,
+                                  'report_short_name': class_.report_short_name,
+                                  'report_name': class_.report_name,
+                                  'report_description': class_.report_description})
+        logger.info(f'Found and imported class {class_.__name__} from module {module_name}')
+    return available_reports
 
-    return parser.parse_args()
-
-
-def get_validated_arguments():
-    args = get_arguments()
-
-    if not validate_time_string(args.vulns_start_time):
-        logger.error("The vulnerability start time string is not formatted correctly. Use <days>:<hours>. For example '7:0' for 7 days, 0 hours in the past.")
-        sys.exit()
-    elif not validate_time_string(args.vulns_end_time):
-        logger.error("The vulnerability end time string is not formatted correctly. Use <days>:<hours>. For example '7:0' for 7 days, 0 hours in the past.")
-        sys.exit()
-    elif not validate_time_string(args.alerts_start_time):
-        logger.error("The alerts start time string is not formatted correctly. Use <days>:<hours>. For example '7:0' for 7 days, 0 hours in the past.")
-        sys.exit()
-    elif not validate_time_string(args.alerts_end_time):
-        logger.error("The alerts end time string is not formatted correctly. Use <days>:<hours>. For example '7:0' for 7 days, 0 hours in the past.")
-        sys.exit()
-
-    if args.api_key_file:
-
-        if not os.path.isfile(args.api_key_file) or not os.access(args.api_key_file, os.R_OK):
-            logger.error("The API key file you specified either does not exist or is not readable. Please check the file and it's permissions.")
-            sys.exit()
-
-    return args

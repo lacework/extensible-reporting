@@ -1,3 +1,5 @@
+import json
+
 from laceworksdk import LaceworkClient
 from laceworksdk import exceptions
 from logzero import logger
@@ -5,39 +7,7 @@ from modules.host_vulnerabilities import HostVulnerabilities
 from modules.container_vulnerabilities import ContainerVulnerabilities
 from modules.alerts import Alerts
 from modules.compliance import Compliance
-import functools
-import pickle
-import requests
-from pathlib import Path
-import json
-
-
-def cache_results(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        use_cache = args[0].use_cache
-        if use_cache:
-            func_name = func.__name__
-            file_path = Path(f"lw_csa_{func_name}.cache")
-            if file_path.is_file():
-                try:
-                    logger.info(f"Reading cache file {str(file_path)}")
-                    with file_path.open("rb") as f:
-                        result = pickle.load(f)
-                except Exception as e:
-                    logger.error(f"Cache file {str(file_path)} exists but could not be loaded: {str(e)}")
-                    result = func(*args, **kwargs)
-                    with file_path.open("wb") as f:
-                        pickle.dump(result, f)
-            else:
-                result = func(*args, **kwargs)
-                logger.info(f"Writing cache file {str(file_path)}. You must delete this file manually to generate a new cache.")
-                with file_path.open("wb") as f:
-                    pickle.dump(result, f)
-        else:
-            result = func(*args, **kwargs)
-        return result
-    return wrapper
+from modules.utils import cache_results
 
 
 class LaceworkInterface:
@@ -58,6 +28,9 @@ class LaceworkInterface:
         else:
             self.lacework = LaceworkClient()
         self.use_cache = use_cache
+        self.compliance_provider_lookup = {'AWS': 'AwsCfg',
+                                           'GCP': 'GcpCfg',
+                                           'AZURE': 'AzureCfg'}
         self.compliance_report_lookup = {'AwsCfg':
                                              {'CIS': 'AWS_CIS_14',
                                               'PCI': 'AWS_PCI_DSS_3.2.1',
@@ -67,18 +40,28 @@ class LaceworkInterface:
                                               'PCI': 'AZURE_PCI_DSS_3_2_1_CIS_1_5',
                                               },
                                          'GcpCfg':
-                                             {'CIS': 'GCP_CIS',
+                                             {'CIS': 'GCP_CIS13',
                                               'PCI': 'GCP_PCI_Rev2',
                                               }
                                          }
 
+    def write_json_file(self, obj, name):
+        with open(name, 'w') as f:
+            json.dump(obj, f)
+
     @cache_results
     def get_cfg_account_ids(self):
-        accounts = self.lacework.cloud_accounts.get()['data']
+        try:
+            accounts = self.lacework.cloud_accounts.get()['data']
+        except Exception as e:
+            logger.error(f"Failed to retrieve list of cloud accounts from Lacework API:{str(e)}")
+            raise e
         account_details = []
         config_accounts = [account for account in accounts if ("Cfg" in account['type'] and account['enabled'] == 1 and account['state']['ok'] is True)]
         for config_account in config_accounts:
+            logger.debug(f"Found Account: {json.dumps(config_account['data'])}")
             if config_account['type'] == 'GcpCfg':
+                #project_data = self.lacework.configs.gcp_projects.get()
                 account_details.append({'name': config_account['name'],
                                         'type': config_account['type'],
                                         'primary_query_id': None,
@@ -87,7 +70,7 @@ class LaceworkInterface:
             elif config_account['type'] == 'AzureCfg':
                 tenant_data = self.lacework.configs.azure_subscriptions.get(tenantId=config_account['data']['tenantId'])['data']
                 for subscription in tenant_data[0]['subscriptions']:
-                    logger.info(f"Adding tenant:{config_account['data']['tenantId']} Subscription:{str(subscription).split(' ')[0]}")
+                    #logger.info(f"Adding tenant:{config_account['data']['tenantId']} Subscription:{str(subscription).split(' ')[0]}")
                     account_details.append({'name': config_account['name'],
                                             'type': config_account['type'],
                                             'primary_query_id': config_account['data']['tenantId'],
@@ -104,9 +87,13 @@ class LaceworkInterface:
 
     @cache_results
     def get_alerts(self, start_time, end_time):
-        logger.info(f'Getting alerts from {start_time} to {end_time}:')
+        logger.debug(f'Getting alerts from {start_time} to {end_time}:')
         alerts_list = []
-        raw_results = self.lacework.alerts.get(start_time=start_time, end_time=end_time)
+        try:
+            raw_results = self.lacework.alerts.get(start_time=start_time, end_time=end_time)
+        except Exception as e:
+            logger.error(f"Failed to retrieve list of alerts from Lacework API:{str(e)}")
+            raise e
         while True:
             alerts_list.extend(raw_results['data'])
             next_page_url = raw_results['paging']['urls']['nextPage']
@@ -126,9 +113,13 @@ class LaceworkInterface:
                 "endTime": end_time
             }
         }
-        logger.info('Getting Host Vulns with following filters:')
-        logger.info(filters)
-        host_vulns = self.lacework.vulnerabilities.hosts.search(json=filters)
+        logger.debug(f'Getting Host Vulns with following filters:{filters}')
+
+        try:
+            host_vulns = self.lacework.vulnerabilities.hosts.search(json=filters)
+        except Exception as e:
+            logger.error(f"Failed to retrieve list of host vulnerabilities from Lacework API:{str(e)}")
+            raise e
         results = []
         i = 1
         for page in host_vulns:
@@ -158,9 +149,12 @@ class LaceworkInterface:
                 }
             ]
         }
-        logger.info('Getting Container Vulnerabilities with following filters:')
-        logger.info(filters)
-        container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)
+        logger.debug(f'Getting Container Vulnerabilities with following filters:{filters}')
+        try:
+            container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)
+        except Exception as e:
+            logger.error(f"Failed to retrieve list of container vulnerabilities from Lacework API:{str(e)}")
+            raise e
         results = []
         # logger.info('Found ' + len(container_vulns) + ' pages of data')
         i = 1
@@ -176,29 +170,36 @@ class LaceworkInterface:
         return container_vulns
 
     @cache_results
-    def get_compliance_reports(self, report_type='CIS'):
+    def get_compliance_reports(self, cloud_provider='AWS', report_type='CIS'):
+        '''Retrieve all reports of specified type for specified cloud provider.
+            Valid Cloud Providers are: AWS, GCP, AZURE
+            Valid Report Types are: CIS, PCI
+            '''
         compliance_reports = []
+        compliance_provider = self.compliance_provider_lookup[str(cloud_provider).upper()]
         compliance_accounts = self.get_cfg_account_ids()
         for compliance_account in compliance_accounts:
-            # skipping Azure and GCP for now due to API issues
-            if compliance_account['type'] == "AzureCfg" or compliance_account['type'] == "GcpCfg": continue
-            #if compliance_account['type'] == "GcpCfg": continue
-            report_query_string = self.compliance_report_lookup[compliance_account['type']][report_type]
-            logger.info(f"Getting {report_query_string} report for {compliance_account}")
-            report = self.lacework.reports.get(primary_query_id=compliance_account['primary_query_id'],
-                                               secondary_query_id=compliance_account['secondary_query_id'],
-                                               format="json",
-                                               latest=True,
-                                               report_type=report_query_string)
-            if report['data']:
-                compliance_reports.append(report['data'][0])
-                # compliance_reports.append({'type': compliance_account['type'],
-                #                            'primary_query_id': compliance_account['primary_query_id'],
-                #                            'secondary_query_id': compliance_account['secondary_query_id'],
-                #                            'report': report
-                #                            })
-        compliance_reports = Compliance(compliance_reports)
-        return compliance_reports
+            if compliance_account['type'] == compliance_provider:
+                report_query_string = self.compliance_report_lookup[compliance_account['type']][report_type]
+                logger.debug(f"Getting {report_query_string} report for {compliance_account}")
+                try:
+                    report = self.lacework.reports.get(primary_query_id=compliance_account['primary_query_id'],
+                                                       secondary_query_id=compliance_account['secondary_query_id'],
+                                                       format="json",
+                                                       latest=True,
+                                                       report_type=report_query_string)
+                except Exception as e:
+                    logger.error(f"Failed to retrieve {report_type} report for {cloud_provider} from Lacework API:{str(e)}")
+                    raise e
+
+                logger.info(f"{cloud_provider}:{report_type}:{compliance_account['primary_query_id']}:{compliance_account['secondary_query_id']}:"
+                            f"Compliance Results:{len(report['data'][0]['recommendations']) if report['data'] else 0}")
+                if report['data']:
+                    compliance_reports.append(report['data'][0])
+        results = Compliance({'cloud_provider': cloud_provider,
+                              'report_type': report_type,
+                              'reports': compliance_reports})
+        return results
 
 
 

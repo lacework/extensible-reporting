@@ -367,8 +367,14 @@
       Confidential - Subject to NDA and License Terms<br/>
 
       {% set summary_data = [] %}
-      {% if compliance_data %}
-        {% set _ = summary_data.append('Cloud Accounts Analyzed: ' ~ compliance_data.cloud_accounts_count) %}
+      {% if aws_compliance_data %}
+        {% set _ = summary_data.append('AWS Accounts Analyzed: ' ~ aws_compliance_data.cloud_accounts_count) %}
+      {% endif %}
+      {% if azure_compliance_data %}
+        {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ azure_compliance_data.cloud_accounts_count) %}
+      {% endif %}
+      {% if gcp_compliance_data %}
+        {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
       {% endif %}
       {% if host_vulns_data %}
         {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
@@ -406,14 +412,30 @@
         </div>
       {% endif %}
       
-      {% if compliance_data %}
+      {% if aws_compliance_data %}
         <div class="box">
-          <span>{{compliance_data.critical_finding_count}}</span>
-          <p>Total Critical Cloud Compliance Findings</p>
+          <span>{{aws_compliance_data.critical_finding_count}}</span>
+          <p>Total Critical AWS Compliance Findings</p>
           <div class="gradient"></div>
         </div>
       {% endif %}
 
+      {% if azure_compliance_data %}
+        <div class="box">
+          <span>{{azure_compliance_data.critical_finding_count}}</span>
+          <p>Total Critical Azure Compliance Findings</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+
+      {% if gcp_compliance_data %}
+        <div class="box">
+          <span>{{gcp_compliance_data.critical_finding_count}}</span>
+          <p>Total Critical GCP Compliance Findings</p>
+          <div class="gradient"></div>
+        </div>
+      {% endif %}
+      
       {% if alerts_data %}
         <div class="box">
           <span>{{ alerts_data.high_critical_finding_count}}</span>
@@ -444,20 +466,39 @@
     <div>
       {{ polygraph_graphic_html | safe }}
     </div>
-
-    {% if compliance_data %}
-      <h3>Cloud Compliance Findings</h3>
-      <p>
-        Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
+    {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
+              <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
       </p>
+    {% endif %}
+    {% if aws_compliance_data %}
+      <h4>AWS Compliance Findings</h4>
       <p><b>
-        Total Cloud Accounts Analyzed: {{compliance_data.cloud_accounts_count}}
+        Total AWS Accounts Analyzed: {{aws_compliance_data.cloud_accounts_count}}
       </b></p>
 
-      {{ compliance_data.compliance_summary.to_html(index=False) | safe }}
-      {{ compliance_data.compliance_findings_by_service_bar_graphic | safe }}
-      {{ compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+      {{ aws_compliance_data.compliance_summary.to_html(index=False) | safe }}
+      {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ aws_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+    {% endif %}
 
+    {% if azure_compliance_data %}
+      <h4>Azure Compliance Findings</h4>
+      <p><b>
+        Total Azure Subscriptions Analyzed: {{azure_compliance_data.cloud_accounts_count}}
+      </b></p>
+      {{ azure_compliance_data.compliance_summary.to_html(index=False) | safe }}
+      {{ azure_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ azure_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+    {% endif %}
+
+    {% if gcp_compliance_data %}
+      <h4>GCP Compliance Findings</h4>
+      <p><b>
+        Total GCP Subscriptions Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
+      </b></p>
+      {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
+      {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
     {% endif %}
 
     {% if alerts_data %}
@@ -502,7 +543,7 @@
       {{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
     {% endif %} 
     
-    {% if host_vulns_data or container_vulns_data or compliance_data %}
+    {% if host_vulns_data or container_vulns_data or aws_compliance_data or azure_compliance_data or gcp_compliance_data%}
       <h2>Appendix of Detailed Findings</h2>
       <p>This section contains additional details on the findings that were summarized above:</p>
 
@@ -518,10 +559,26 @@
       {% endif %}
 
       <br/>
-      {% if compliance_data %}
+      {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
         <h3>Detailed Cloud Compliance Findings</h3>
         <p></p>
-        {{ compliance_data.compliance_detail.to_html() | safe }}
+        {% if aws_compliance_data %}
+          <h4>AWS</h4>
+          <p></p>
+          {{ aws_compliance_data.compliance_detail.to_html() | safe }}
+        {% endif %}
+
+        {% if azure_compliance_data %}
+          <h4>Azure</h4>
+          <p></p>
+          {{ azure_compliance_data.compliance_detail.to_html(index=False) | safe }}
+        {% endif %}
+
+        {% if gcp_compliance_data %}
+          <h4>GCP</h4>
+          <p></p>
+          {{ gcp_compliance_data.compliance_detail.to_html(index=False) | safe }}
+        {% endif %}
       {% endif %}
     {% endif %}
   </div>
