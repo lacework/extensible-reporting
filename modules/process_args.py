@@ -46,7 +46,7 @@ def get_arguments():
                                      """, formatter_class=argparse.RawTextHelpFormatter)
 
 
-    parser.add_argument("--report-path", type=str, help="Filename to save report", default="report.html")
+    parser.add_argument("--report-path", type=str, help="Filename to save report")
     parser.add_argument("--author", help="Author of report", type=str, default="John Doe")
     parser.add_argument("--customer", help="Customer Name (Company)", type=str, default="Some Company")
     parser.add_argument("--cache-data", help="Create/use locally cached copies of Lacework data", action='store_true')
