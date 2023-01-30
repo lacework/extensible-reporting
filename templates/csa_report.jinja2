@@ -563,19 +563,19 @@
         <h3>Detailed Cloud Compliance Findings</h3>
         <p></p>
         {% if aws_compliance_data %}
-          <h4>AWS</h4>
+          <h4>AWS - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ aws_compliance_data.compliance_detail.to_html() | safe }}
         {% endif %}
 
         {% if azure_compliance_data %}
-          <h4>Azure</h4>
+          <h4>Azure - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ azure_compliance_data.compliance_detail.to_html(index=False) | safe }}
         {% endif %}
 
         {% if gcp_compliance_data %}
-          <h4>GCP</h4>
+          <h4>GCP - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ gcp_compliance_data.compliance_detail.to_html(index=False) | safe }}
         {% endif %}
