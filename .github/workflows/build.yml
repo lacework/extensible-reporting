@@ -40,12 +40,12 @@ jobs:
           - os: macos-latest
             TARGET: macos
             CMD_BUILD: pyinstaller generate_csa_report_mac.spec
-            OUT_FILE_NAME: generate_csa_report_mac
+            OUT_FILE_NAME: lw_report_gen_mac
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
             CMD_BUILD: pyinstaller generate_csa_report_win.spec
-            OUT_FILE_NAME: generate_csa_report_win.exe
+            OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
     steps:
     - uses: actions/checkout@v1
