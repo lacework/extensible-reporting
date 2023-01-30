@@ -59,7 +59,7 @@ python lw_report_gen.py --author your_name --customer your_customer
 ```
 On a Mac you may need to specify "python3" instead of "python" ("python" references python 2, which won't work). so...
 ```
-python lw_report_gen.py --author your_name --customer your_customer
+python3 lw_report_gen.py --author your_name --customer your_customer
 ```
 Once the report is generated, you may edit the html with your own company logo or add in new content. From there, simply print as a PDF and your report is ready to be shared. 
 
