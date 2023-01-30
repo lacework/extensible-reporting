@@ -1,6 +1,6 @@
 {
     "DO NOT UPDATE THIS FILE": "CI MANAGES THIS",
     "tag_ref": "https://api.github.com/repos/lacework/extensible-reporting/releases/latest",
-    "tag_val": "v0.10.0",
+    "tag_val": "v1.0.0",
     "upgrade_url": "https://github.com/lacework/extensible-reporting/releases/latest"
 }
