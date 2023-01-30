@@ -47,6 +47,7 @@ class ReportGen:
         return datetime.now().strftime("%A %B %d, %Y")
 
     def gather_host_vulnerability_data(self, begin_time: str, end_time: str, host_limit: int = 25):
+        print('Gathering vulnerability data for hosts.')
         try:
             host_vulnerabilities: HostVulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
         except Exception as e:
@@ -74,6 +75,7 @@ class ReportGen:
         }
 
     def gather_container_vulnerability_data(self, begin_time: str, end_time: str, container_limit: int = 25):
+        print('Gathering vulnerability data for containers.')
         try:
             container_vulnerabilities: ContainerVulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
         except Exception as e:
@@ -102,6 +104,7 @@ class ReportGen:
         }
 
     def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS' ):
+        print(f'Getting {report_type} compliance reports for {cloud_provider}')
         try:
             compliance_reports: Compliance = self.lacework_interface.get_compliance_reports(cloud_provider=cloud_provider, report_type=report_type)
         except Exception as e:
@@ -138,9 +141,12 @@ class ReportGen:
         }
 
     def gather_alert_data(self, begin_time: str, end_time: str):
+        print('Getting alert data...')
         alerts: Alerts = self.lacework_interface.get_alerts(begin_time, end_time)
+        print(f'Found {alerts.count_alerts()} total alerts.')
         processed_alerts = alerts.processed_alerts(limit=25)
         high_critical_finding_count = len(processed_alerts[processed_alerts['Severity'].isin(['Critical', 'High'])])
+        print(f'Found {high_critical_finding_count} high and critical alerts.')
         return {
             'alerts_raw': processed_alerts,
             'high_critical_finding_count': high_critical_finding_count

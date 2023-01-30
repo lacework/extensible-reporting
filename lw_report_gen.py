@@ -2,6 +2,7 @@ import sys
 import os
 import json
 import logzero
+import datetime
 from logzero import logger
 from modules.process_args import get_validated_arguments
 from modules.utils import LaceworkTime
@@ -40,7 +41,6 @@ def main():
         print('')
         sys.exit()
 
-
     # Set loglevel to standard out based on verbosity arg
     if args.v:
         logzero.loglevel(logzero.INFO)
@@ -61,7 +61,6 @@ def main():
             logger.error(f"Failed to read keyfile: {str(e)}")
             sys.exit()
 
-
     # search the list of available reports for the one specified on the command line. CSA is the default arg
     report_to_run = [report['report_class'] for report in available_reports if report['report_short_name'] == args.report][0]
     # Execute the selected report
@@ -79,10 +78,15 @@ def main():
         logger.debug(str(e))
         sys.exit()
 
+    # Generate a filename if one was not specified
+    if not args.report_path:
+        report_file_name = f'{args.customer}_{args.report}_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+    else:
+        report_file_name = args.report_path
     # Write out the report file
     logger.info(f'Writing report to {args.report_path}')
     try:
-        with open(str(args.report_path), 'w') as file:
+        with open(str(report_file_name), 'w') as file:
             file.write(report)
     except Exception as e:
         logger.debug(f'Failed writing report file {args.report_path}: {str(e)}')
