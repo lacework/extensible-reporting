@@ -7,7 +7,7 @@ from logzero import logger
 from modules.process_args import get_validated_arguments
 from modules.utils import LaceworkTime
 from modules.utils import get_available_reports
-
+from modules.utils import alert_new_release
 
 def main():
 
@@ -22,6 +22,9 @@ def main():
     logzero.loglevel(logzero.WARNING)
     # Setup up log file, always write verbose logs
     logzero.logfile('lw_report_gen.log', loglevel=logzero.DEBUG)
+
+    # check github for updates
+    alert_new_release()
 
     # Dynamically import report classes from "modules/reports" subdirectory
     available_reports: list = get_available_reports(basedir)
