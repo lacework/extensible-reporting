@@ -11,7 +11,7 @@ jobs:
         cache: 'pip' # cache pip dependencies
     - run: pip install -r requirements.txt
     - run: pip --version
-    - run: python generate_report.py reports/jinja2/csa_report.py --author Author --customer Customer
+    - run: python lw_report_gen.py --author Author --customer Customer
       env:
         LW_ACCOUNT: ${{ secrets.LW_ACCOUNT }}
         LW_SUBACCOUNT: ${{ secrets.LW_SUBACCOUNT }}
