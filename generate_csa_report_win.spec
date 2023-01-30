@@ -3,8 +3,7 @@ block_cipher = None
 added_files = [
     ( 'templates/*', 'templates' ),
     ( 'assets/*', 'assets' ),
-    ( 'modules/*', 'modules' ),
-    ( 'VERSION', '.')
+    ( 'modules/*', 'modules' )
     ]
 block_cipher = None
 a = Analysis(
