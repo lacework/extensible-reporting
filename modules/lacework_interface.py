@@ -134,20 +134,12 @@ class LaceworkInterface:
         return host_vulns
 
     @cache_results
-    def get_container_vulns(self, start_time, end_time, severities=["Critical", "High"]):
+    def get_container_vulns(self, start_time, end_time):
         filters = {
             "timeFilters": {
                 "startTime": start_time,
                 "endTime": end_time
-            },
-            "filters": [
-                {"field": "status", "expression": "eq", "value": "VULNERABLE"},
-                {
-                    "field": "severity",
-                    "expression": "in",
-                    "values": severities,
-                }
-            ]
+            }
         }
         logger.debug(f'Getting Container Vulnerabilities with following filters:{filters}')
         try:

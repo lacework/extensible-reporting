@@ -105,7 +105,7 @@ class ReportGen:
             'container_vulns_summary_by_image_limit': container_limit
         }
 
-    def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS' ):
+    def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS'):
         print(f'Getting {report_type} compliance reports for {cloud_provider}')
         try:
             compliance_reports: Compliance = self.lacework_interface.get_compliance_reports(cloud_provider=cloud_provider, report_type=report_type)
@@ -145,7 +145,13 @@ class ReportGen:
 
     def gather_alert_data(self, begin_time: str, end_time: str):
         print('Getting alert data...')
-        alerts: Alerts = self.lacework_interface.get_alerts(begin_time, end_time)
+        try:
+            alerts: Alerts = self.lacework_interface.get_alerts(begin_time, end_time)
+        except Exception as e:
+            logger.error(
+                f'Failed to retrieve alert data from Lacework, omitting it from the report.')
+            logger.error(f"Exception: {str(e)}")
+            return False
         print(f'Found {alerts.count_alerts()} total alerts.')
         processed_alerts = alerts.processed_alerts(limit=25)
         high_critical_finding_count = len(processed_alerts[processed_alerts['Severity'].isin(['Critical', 'High'])])
