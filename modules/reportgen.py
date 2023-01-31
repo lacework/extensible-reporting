@@ -53,6 +53,7 @@ class ReportGen:
         except Exception as e:
             logger.error(
                 f'Failed to retrieve host vulnerability data from Lacework, omitting it from the report.')
+            logger.error(f"Exception: {str(e)}")
             return False
         if not host_vulnerabilities.data:
             logger.error("No host vulnerability data was returned by Lacework, omitting it from the report.")
@@ -81,6 +82,7 @@ class ReportGen:
         except Exception as e:
             logger.error(
                 f'Failed to retrieve container vulnerability data from Lacework, omitting it from the report.')
+            logger.error(f"Exception: {str(e)}")
             return False
         if not container_vulnerabilities.data:
             logger.error("No container vulnerability data was returned by Lacework, omitting it from the report.")
@@ -109,6 +111,7 @@ class ReportGen:
             compliance_reports: Compliance = self.lacework_interface.get_compliance_reports(cloud_provider=cloud_provider, report_type=report_type)
         except Exception as e:
             logger.error(f'Failed to retrieve {report_type} report(s) for {cloud_provider}, omitting them from the report.')
+            logger.error(f"Exception: {str(e)}")
             return False
         if not compliance_reports.reports:
             logger.error(f'Reports of type {report_type} from {cloud_provider} came back empty. Omitting them from the report.')
