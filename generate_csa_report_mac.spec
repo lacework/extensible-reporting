@@ -4,6 +4,7 @@ added_files = [
     ( 'templates/*', 'templates' ),
     ( 'assets/*', 'assets' ),
     ( 'modules/*', 'modules' ),
+    ( 'modules/reports/*', 'modules/reports' ),
     ( 'VERSION', '.')
     ]
 
