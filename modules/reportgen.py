@@ -84,6 +84,7 @@ class ReportGen:
                 f'Failed to retrieve container vulnerability data from Lacework, omitting it from the report.')
             logger.error(f"Exception: {str(e)}")
             return False
+
         if not container_vulnerabilities.data:
             logger.error("No container vulnerability data was returned by Lacework, omitting it from the report.")
             return False

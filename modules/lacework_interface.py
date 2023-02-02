@@ -108,7 +108,7 @@ class LaceworkInterface:
     @cache_results
     def get_host_vulns(self, start_time, end_time):
         filters = {
-            "timeFilters": {
+            "timeFilter": {
                 "startTime": start_time,
                 "endTime": end_time
             }
@@ -136,7 +136,7 @@ class LaceworkInterface:
     @cache_results
     def get_container_vulns(self, start_time, end_time):
         filters = {
-            "timeFilters": {
+            "timeFilter": {
                 "startTime": start_time,
                 "endTime": end_time
             }
