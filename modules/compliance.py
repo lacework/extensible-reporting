@@ -16,6 +16,9 @@ class Compliance:
         if self.cloud_provider == 'AZURE':
             self.account_id_string = 'TENANT_ID'
             self.account_id_rename_string = 'Tenant ID'
+        if self.cloud_provider == 'GCP':
+            self.account_id_string = 'PROJECT_ID'
+            self.account_id_rename_string = 'Project ID'
 
     def get_all_recommendations(self):
         results = []

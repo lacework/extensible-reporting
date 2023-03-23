@@ -4,6 +4,7 @@ import json
 import logzero
 from pathlib import Path
 import datetime
+import traceback
 from logzero import logger
 from modules.process_args import get_validated_arguments
 from modules.utils import LaceworkTime
@@ -90,6 +91,7 @@ def main():
         logger.error(f"Report Generation failed for report {args.report}, did you specify one that exists? Check what's available with the '--list-reports' flag.")
         logger.error("Exiting....")
         logger.error(str(e))
+        logger.error(traceback.format_exc())
         sys.exit()
 
     # Generate a filename if one was not specified
