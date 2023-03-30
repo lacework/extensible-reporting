@@ -6,3 +6,5 @@ notes
 *.log
 /ps/
 __pycache__/
+/dist/
+/build/
