@@ -31,7 +31,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='lw_report_gen_mac',
+    name='lw_report_gen_mac_x86_64',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -41,7 +41,7 @@ exe = EXE(
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
-    target_arch='universal2',
+    target_arch='x86_64',
     codesign_identity=None,
     entitlements_file=None,
 )
