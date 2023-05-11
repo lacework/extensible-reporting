@@ -11,6 +11,7 @@ from pathlib import Path
 from logzero import logger
 import os, sys, requests, json, time
 
+
 class LaceworkTime:
 
     def __init__(self, time_input: str):
