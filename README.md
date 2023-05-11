@@ -63,6 +63,11 @@ python3 lw_report_gen.py --author your_name --customer your_customer
 ```
 Once the report is generated, you may edit the html with your own company logo or add in new content. From there, simply print as a PDF and your report is ready to be shared. 
 
+## GUI Mode
+
+A new GUI mode has been added to the script. To run the script in GUI mode use the "--gui"
+command line flag. 
+
 ## Specifying a Lacework instance and credentials:
 
 You must have a valid Lacework API key for your Lacework instance to run this tool. You can read about creating and downloading 
