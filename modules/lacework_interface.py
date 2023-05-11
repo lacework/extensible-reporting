@@ -106,13 +106,21 @@ class LaceworkInterface:
         return alerts
 
     @cache_results
-    def get_host_vulns(self, start_time, end_time):
+    def get_host_vulns(self, start_time, end_time, min_severity="Medium"):
         filters = {
             "timeFilter": {
                 "startTime": start_time,
                 "endTime": end_time
+            },
+            "filters":
+                [
+                    {
+                        "field": "severity",
+                        "expression": "ge",
+                        "value": str(min_severity)
+                    }
+                ]
             }
-        }
         logger.debug(f'Getting Host Vulns with following filters:{filters}')
 
         try:
@@ -134,13 +142,21 @@ class LaceworkInterface:
         return host_vulns
 
     @cache_results
-    def get_container_vulns(self, start_time, end_time):
+    def get_container_vulns(self, start_time, end_time, min_severity="Medium"):
         filters = {
             "timeFilter": {
                 "startTime": start_time,
                 "endTime": end_time
+            },
+        "filters":
+        [
+            {
+                "field": "severity",
+                "expression": "ge",
+                "value": str(min_severity)
             }
-        }
+        ]
+    }
         logger.debug(f'Getting Container Vulnerabilities with following filters:{filters}')
         try:
             container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)

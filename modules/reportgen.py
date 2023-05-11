@@ -1,6 +1,6 @@
 import os
 import sys
-
+import traceback
 import jinja2
 import base64
 from datetime import datetime
@@ -20,12 +20,12 @@ class ReportGen:
     report_description = "This is the base report class, it should be inherited from, not imported directly."
     def __init__(self, basedir, use_cache=False, api_key_file=None):
         self.basedir = basedir
-        self.use_cache = False
+        self.use_cache = use_cache
         self.lacework_interface = LaceworkInterface(use_cache=use_cache, api_key_file=api_key_file)
 
-    def bytes_to_image_tag(self, img_bytes: bytes, file_format: str) -> str:
+    def bytes_to_image_tag(self, img_bytes: bytes, file_format: str, align="left") -> str:
         b64content = base64.b64encode(img_bytes).decode('utf-8')
-        return f"<img src='data:image/{file_format};base64,{b64content}'/>"
+        return f"<img src='data:image/{file_format};base64,{b64content}' align='{align}' />"
 
     def load_binary_file(self, path: str) -> bytes:
         full_path = os.path.join(self.basedir, path)
@@ -49,11 +49,13 @@ class ReportGen:
     def gather_host_vulnerability_data(self, begin_time: str, end_time: str, host_limit: int = 25):
         print('Gathering vulnerability data for hosts.')
         try:
+            self.lacework_interface.use_cache = self.use_cache
             host_vulnerabilities: HostVulnerabilities = self.lacework_interface.get_host_vulns(begin_time, end_time)
         except Exception as e:
             logger.error(
                 f'Failed to retrieve host vulnerability data from Lacework, omitting it from the report.')
             logger.error(f"Exception: {str(e)}")
+            logger.error(traceback.format_exc())
             return False
         if not host_vulnerabilities.data:
             logger.error("No host vulnerability data was returned by Lacework, omitting it from the report.")
@@ -78,11 +80,13 @@ class ReportGen:
     def gather_container_vulnerability_data(self, begin_time: str, end_time: str, container_limit: int = 25):
         print('Gathering vulnerability data for containers.')
         try:
+            self.lacework_interface.use_cache = self.use_cache
             container_vulnerabilities: ContainerVulnerabilities = self.lacework_interface.get_container_vulns(begin_time, end_time)
         except Exception as e:
             logger.error(
                 f'Failed to retrieve container vulnerability data from Lacework, omitting it from the report.')
             logger.error(f"Exception: {str(e)}")
+            logger.error(traceback.format_exc())
             return False
 
         if not container_vulnerabilities.data:
@@ -109,10 +113,12 @@ class ReportGen:
     def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS'):
         print(f'Getting {report_type} compliance reports for {cloud_provider}')
         try:
+            self.lacework_interface.use_cache = self.use_cache
             compliance_reports: Compliance = self.lacework_interface.get_compliance_reports(cloud_provider=cloud_provider, report_type=report_type)
         except Exception as e:
             logger.error(f'Failed to retrieve {report_type} report(s) for {cloud_provider}, omitting them from the report.')
             logger.error(f"Exception: {str(e)}")
+            logger.error(traceback.format_exc())
             return False
         if not compliance_reports.reports:
             logger.error(f'Reports of type {report_type} from {cloud_provider} came back empty. Omitting them from the report.')
@@ -147,11 +153,13 @@ class ReportGen:
     def gather_alert_data(self, begin_time: str, end_time: str):
         print('Getting alert data...')
         try:
+            self.lacework_interface.use_cache = self.use_cache
             alerts: Alerts = self.lacework_interface.get_alerts(begin_time, end_time)
         except Exception as e:
             logger.error(
                 f'Failed to retrieve alert data from Lacework, omitting it from the report.')
             logger.error(f"Exception: {str(e)}")
+            logger.error(traceback.format_exc())
             return False
         print(f'Found {alerts.count_alerts()} total alerts.')
         processed_alerts = alerts.processed_alerts(limit=25)
@@ -162,6 +170,16 @@ class ReportGen:
             'high_critical_finding_count': high_critical_finding_count
         }
 
+    def gather_data(self,
+                 vulns_start_time: LaceworkTime,
+                 vulns_end_time: LaceworkTime,
+                 alerts_start_time: LaceworkTime,
+                 alerts_end_time: LaceworkTime):
+        pass
+
+    def render(self, customer, author):
+        pass
+
     def generate(self,
                  customer: str,
                  author: str,
@@ -169,7 +187,11 @@ class ReportGen:
                  vulns_end_time: LaceworkTime,
                  alerts_start_time: LaceworkTime,
                  alerts_end_time: LaceworkTime):
-        pass
+        self.gather_data(vulns_start_time,
+                         vulns_end_time,
+                         alerts_start_time,
+                         alerts_end_time)
+        return self.render(customer, author)
 
 
 
