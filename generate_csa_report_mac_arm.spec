@@ -8,13 +8,13 @@ added_files = [
     ( 'VERSION', '.'),
     ( 'qt.conf', '.')
     ]
-block_cipher = None
+
 a = Analysis(
     ['lw_report_gen.py'],
     pathex=[],
     binaries=[],
     datas=added_files,
-    hiddenimports=[],
+    hiddenimports=['jinja2'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -32,7 +32,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='lw_report_gen_win',
+    name='lw_report_gen_mac_arm',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -42,7 +42,7 @@ exe = EXE(
     console=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
-    target_arch=None,
+    target_arch='arm64',
     codesign_identity=None,
     entitlements_file=None,
 )
