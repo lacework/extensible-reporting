@@ -8,3 +8,4 @@ notes
 __pycache__/
 /dist/
 /build/
+/.idea/
