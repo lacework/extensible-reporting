@@ -3,6 +3,7 @@ import os
 import logzero
 import datetime
 import traceback
+import platform
 from logzero import logger
 from modules.process_args import get_validated_arguments, pre_process_args
 from modules.gui_main import ExtensibleReportingGUI
@@ -17,7 +18,8 @@ def main():
     # Required for Pyinstaller as it temporarily extracts all files to a temp folder before running
     if getattr(sys, 'frozen', False):
         basedir = sys._MEIPASS
-        os.environ["QTWEBENGINE_RESOURCES_PATH"] = basedir
+        if platform.system() == "Darwin":
+            os.environ["QTWEBENGINE_RESOURCES_PATH"] = basedir
     else:
         basedir = os.path.dirname(os.path.abspath(__file__))
 
