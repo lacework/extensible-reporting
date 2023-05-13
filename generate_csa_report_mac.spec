@@ -5,8 +5,7 @@ added_files = [
     ( 'assets/*', 'assets' ),
     ( 'modules/*', 'modules' ),
     ( 'modules/reports/*', 'modules/reports' ),
-    ( 'VERSION', '.'),
-    ( 'qt.conf', '.')
+    ( 'VERSION', '.')
     ]
 
 a = Analysis(

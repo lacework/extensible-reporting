@@ -17,6 +17,7 @@ def main():
     # Required for Pyinstaller as it temporarily extracts all files to a temp folder before running
     if getattr(sys, 'frozen', False):
         basedir = sys._MEIPASS
+        os.environ["QTWEBENGINE_RESOURCES_PATH"] = basedir
     else:
         basedir = os.path.dirname(os.path.abspath(__file__))
 
