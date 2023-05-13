@@ -40,7 +40,7 @@ jobs:
           - os: macos-latest
             TARGET: macos
             CMD_BUILD: pyinstaller generate_csa_report_mac.spec
-            OUT_FILE_NAME: lw_report_gen_mac
+            OUT_FILE_NAME: lw_report_gen_mac_x86_64
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
