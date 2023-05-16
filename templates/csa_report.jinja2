@@ -483,13 +483,14 @@
       </b></p>
 
       {{ aws_compliance_data.compliance_summary.to_html(index=False) | safe }}
-      {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+      {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe  }}
       {{ aws_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
     {% endif %}
 
     {% if azure_compliance_data %}
+       <p>
       <h4>Azure Compliance Findings</h4>
-      <p><b>
+      <b>
         Total Azure Subscriptions Analyzed: {{azure_compliance_data.cloud_accounts_count}}
       </b></p>
       {{ azure_compliance_data.compliance_summary.to_html(index=False) | safe }}
@@ -498,8 +499,9 @@
     {% endif %}
 
     {% if gcp_compliance_data %}
+    <p>
       <h4>GCP Compliance Findings</h4>
-      <p><b>
+      <b>
         Total GCP Subscriptions Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
       </b></p>
       {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
@@ -508,8 +510,9 @@
     {% endif %}
 
     {% if alerts_data %}
+    <p>
       <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
-      <p>
+
         Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
       </p>
 

@@ -25,6 +25,7 @@ class ReportGen:
 
     def bytes_to_image_tag(self, img_bytes: bytes, file_format: str, align="left") -> str:
         b64content = base64.b64encode(img_bytes).decode('utf-8')
+
         return f"<img src='data:image/{file_format};base64,{b64content}' align='{align}' />"
 
     def load_binary_file(self, path: str) -> bytes:
@@ -144,8 +145,8 @@ class ReportGen:
         return {
             'cloud_accounts_count': compliance_reports.get_total_accounts_evaluated(),
             'compliance_summary': summary,
-            'compliance_findings_by_service_bar_graphic': findings_summary_by_service_bar_graph,
-            'compliance_findings_by_account_bar_graphic': findings_by_account_bar_graph,
+            'compliance_findings_by_service_bar_graphic': findings_summary_by_service_bar_graph_encoded,
+            'compliance_findings_by_account_bar_graphic': findings_by_account_bar_graph_encoded,
             'compliance_detail': details,
             'critical_finding_count': critical_finding_count
         }
