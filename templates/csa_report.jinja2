@@ -380,7 +380,7 @@
         {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ azure_compliance_data.cloud_accounts_count) %}
       {% endif %}
       {% if gcp_compliance_data %}
-        {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
+        {% set _ = summary_data.append('GCP Subscriptions Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
       {% endif %}
       {% if host_vulns_data %}
         {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
@@ -468,6 +468,13 @@
         <li>Accelerate security throughout development with less effort</li>
       </ul>
     </b></p>
+
+  {% if recommendations %}
+      <div class="recommendations">
+      {{ recommendations | safe }}
+
+      </div>
+  {% endif %}
 
     <div>
       {{ polygraph_graphic_html | safe }}
@@ -588,11 +595,6 @@
       {% endif %}
     {% endif %}
   </div>
-  {% if recommendations %}
-      <div class="recommendations">
-      {{ recommendations | safe }}
 
-      </div>
-  {% endif %}
 </body>
 </html>

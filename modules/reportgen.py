@@ -125,9 +125,12 @@ class ReportGen:
             return False
         # set table classes
         details = compliance_reports.get_compliance_details()
+
         details.style.set_table_attributes('class="compliance_detail"')
+        print(details)
         summary = compliance_reports.get_compliance_summary()
         summary.style.set_table_attributes('class="compliance_summary"')
+        print(summary)
         # get graphics
         findings_by_account_bar_graph = compliance_reports.get_summary_by_account_bar_graph(width=1200)
         findings_by_account_bar_graph_encoded = self.bytes_to_image_tag(findings_by_account_bar_graph, 'svg+xml')
