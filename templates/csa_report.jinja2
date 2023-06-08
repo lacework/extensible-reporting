@@ -201,6 +201,7 @@
     letter-spacing: 0px;
     color: #01023B;
     border-bottom: none;
+    clear: both;
   }
 
   h3 {
@@ -209,6 +210,7 @@
     letter-spacing: 0px;
     color: #000538;
     border-bottom: none;
+    clear: both;
   }
 
   h4  {
@@ -216,6 +218,7 @@
     line-height: 29px;
     letter-spacing: 0px;
     color: #000538;
+    clear: both;
   }
 
   ol {
@@ -245,6 +248,7 @@
     line-height: 25px;
     letter-spacing: 0px;
     color: #636672;
+    clear: both;
   }
 
   table {
@@ -304,6 +308,7 @@
 
   img {
     margin-top: 1rem;
+    clear: both;
   }
 
   blockquote { font-size:.7em; padding:.7em }
@@ -380,7 +385,7 @@
         {% set _ = summary_data.append('Azure Subscriptions Analyzed: ' ~ azure_compliance_data.cloud_accounts_count) %}
       {% endif %}
       {% if gcp_compliance_data %}
-        {% set _ = summary_data.append('GCP Subscriptions Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
+        {% set _ = summary_data.append('GCP Projects Analyzed: ' ~ gcp_compliance_data.cloud_accounts_count) %}
       {% endif %}
       {% if host_vulns_data %}
         {% set _ = summary_data.append('Hosts Scanned: ' ~ host_vulns_data.hosts_scanned_count) %}
@@ -487,11 +492,12 @@
       <h4>AWS Compliance Findings</h4>
       <p><b>
         Total AWS Accounts Analyzed: {{aws_compliance_data.cloud_accounts_count}}
-      </b></p>
+      </b>
 
       {{ aws_compliance_data.compliance_summary.to_html(index=False) | safe }}
       {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe  }}
       {{ aws_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+      </p>
     {% endif %}
 
     {% if azure_compliance_data %}
@@ -499,10 +505,11 @@
       <h4>Azure Compliance Findings</h4>
       <b>
         Total Azure Subscriptions Analyzed: {{azure_compliance_data.cloud_accounts_count}}
-      </b></p>
+      </b>
       {{ azure_compliance_data.compliance_summary.to_html(index=False) | safe }}
       {{ azure_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
       {{ azure_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+      </p>
     {% endif %}
 
     {% if gcp_compliance_data %}
@@ -510,10 +517,11 @@
       <h4>GCP Compliance Findings</h4>
       <b>
         Total GCP Subscriptions Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
-      </b></p>
+      </b>
       {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
       {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
       {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+      </p>
     {% endif %}
 
     {% if alerts_data %}
