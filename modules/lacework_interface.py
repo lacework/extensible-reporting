@@ -106,73 +106,77 @@ class LaceworkInterface:
         return alerts
 
     @cache_results
-    def get_host_vulns(self, start_time, end_time, min_severity="Medium"):
-        filters = {
-            "timeFilter": {
-                "startTime": start_time,
-                "endTime": end_time
-            },
-            "filters":
-                [
-                    {
-                        "field": "severity",
-                        "expression": "ge",
-                        "value": str(min_severity)
-                    }
-                ]
-            }
-        logger.debug(f'Getting Host Vulns with following filters:{filters}')
-
-        try:
-            host_vulns = self.lacework.vulnerabilities.hosts.search(json=filters)
-        except Exception as e:
-            logger.error(f"Failed to retrieve list of host vulnerabilities from Lacework API:{str(e)}")
-            raise e
+    def get_host_vulns(self, start_time, end_time, severities=["Critical", "High", "Medium"]):
         results = []
-        i = 1
-        for page in host_vulns:
-            logger.info('Saving page ' + str(i))
-            i = i + 1
-            results.extend(page['data'])
-        if i > 100:
-            logger.warning(
-                "Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
+        for severity in severities:
+            filters = {
+                "timeFilter": {
+                    "startTime": start_time,
+                    "endTime": end_time
+                },
+                "filters":
+                    [
+                        {
+                            "field": "severity",
+                            "expression": "eq",
+                            "value": str(severity)
+                        }
+                    ]
+                }
+            logger.debug(f'Getting Host Vulns with following filters:{filters}')
+
+            try:
+                host_vulns = self.lacework.vulnerabilities.hosts.search(json=filters)
+            except Exception as e:
+                logger.error(f"Failed to retrieve list of host vulnerabilities from Lacework API:{str(e)}")
+                raise e
+
+            i = 1
+            for page in host_vulns:
+                logger.info('Saving page ' + str(i))
+                i = i + 1
+                results.extend(page['data'])
+            if i > 100:
+                logger.warning(
+                    "Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
 
         host_vulns = HostVulnerabilities(results)
         return host_vulns
 
     @cache_results
-    def get_container_vulns(self, start_time, end_time, min_severity="Medium"):
-        filters = {
-            "timeFilter": {
-                "startTime": start_time,
-                "endTime": end_time
-            },
-        "filters":
-        [
-            {
-                "field": "severity",
-                "expression": "ge",
-                "value": str(min_severity)
-            }
-        ]
-    }
-        logger.debug(f'Getting Container Vulnerabilities with following filters:{filters}')
-        try:
-            container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)
-        except Exception as e:
-            logger.error(f"Failed to retrieve list of container vulnerabilities from Lacework API:{str(e)}")
-            raise e
+    def get_container_vulns(self, start_time, end_time, severities=["Critical", "High", "Medium"]):
         results = []
-        # logger.info('Found ' + len(container_vulns) + ' pages of data')
-        i = 1
-        for page in container_vulns:
-            logger.info('Saving page ' + str(i))
-            i = i + 1
-            results.extend(page['data'])
-        if i > 100:
-            logger.warning(
-                "Lacework API returned maximum pages of container vuln results (100 pages). Processed dataset is likely incomplete.")
+        for severity in severities:
+            filters = {
+                "timeFilter": {
+                    "startTime": start_time,
+                    "endTime": end_time
+                },
+            "filters":
+            [
+                {
+                    "field": "severity",
+                    "expression": "eq",
+                    "value": severity
+                }
+            ]
+        }
+            logger.debug(f'Getting Container Vulnerabilities with following filters:{filters}')
+            try:
+                container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)
+            except Exception as e:
+                logger.error(f"Failed to retrieve list of container vulnerabilities from Lacework API:{str(e)}")
+                raise e
+
+            # logger.info('Found ' + len(container_vulns) + ' pages of data')
+            i = 1
+            for page in container_vulns:
+                logger.info('Saving page ' + str(i))
+                i = i + 1
+                results.extend(page['data'])
+            if i > 100:
+                logger.warning(
+                    "Lacework API returned maximum pages of container vuln results (100 pages). Processed dataset is likely incomplete.")
 
         container_vulns = ContainerVulnerabilities(results)
         return container_vulns
