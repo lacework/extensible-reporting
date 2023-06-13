@@ -1,0 +1,10 @@
+pandas
+coloredlogs
+jinja2
+plotly
+kaleido
+datapane
+logzero
+pytest
+python-dotenv
+laceworksdk
