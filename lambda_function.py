@@ -32,13 +32,17 @@ def lambda_handler(event, context):
     report_gen = ReportGenCSA(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
 
-    s3_key_name = f'{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+    s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
     aws_s3_client = boto3.client('s3', region_name='us-east-2')
     response = aws_s3_client.put_object(
         Bucket=s3_bucket,
         Body=report,
         Key=s3_key_name
     )
+    presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
+    presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
+
+    return presigned_url
 
 
 
