@@ -2,7 +2,7 @@ from modules.reports.reportgen_csa import ReportGenCSA
 import os
 import datetime
 import boto3
-
+import pdfkit
 
 def lambda_handler(event, context):
     '''
@@ -29,16 +29,23 @@ def lambda_handler(event, context):
 
     # S3 Bucket to write report to
     s3_bucket = "csareports"
+    # create report html
     report_gen = ReportGenCSA(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
-
-    s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+    # generate pdf from html
+    pdfkit_config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
+    pdf_file_name = "report.pdf"
+    pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
+    s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     aws_s3_client = boto3.client('s3', region_name='us-east-2')
-    response = aws_s3_client.put_object(
-        Bucket=s3_bucket,
-        Body=report,
-        Key=s3_key_name
-    )
+    response = aws_s3_client.upload_file(
+        pdf_file_name,
+        s3_bucket,
+        s3_key_name)
+    # response = aws_s3_client.put_object(
+    #     Bucket=s3_bucket,
+    #     Body=report,
+    #     Key=s3_key_name)
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
 
