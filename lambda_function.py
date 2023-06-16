@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     report = report_gen.generate(event['customer'], 'Lacework')
 
     s3_key_name = f'{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
-    aws_s3_client = boto3.client('s3')
+    aws_s3_client = boto3.client('s3', verify=False)
     response = aws_s3_client.put_object(
         Bucket=s3_bucket,
         Body=report,
