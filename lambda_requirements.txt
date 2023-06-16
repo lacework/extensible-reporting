@@ -1,4 +1,5 @@
 pandas
+certifi
 coloredlogs
 jinja2
 plotly
