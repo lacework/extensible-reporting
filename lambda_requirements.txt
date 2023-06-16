@@ -9,3 +9,4 @@ logzero
 pytest
 python-dotenv
 laceworksdk
+pdfkit
