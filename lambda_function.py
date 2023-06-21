@@ -56,6 +56,7 @@ def lambda_handler(event, context):
 
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
+    marketo_presigned_url = presigned_url.removeprefix('https://')
 
     if 'marketo_email' in event:
         # find marketo lead and update
@@ -74,11 +75,11 @@ def lambda_handler(event, context):
                     "details": str(e),
                     "download_url": presigned_url}
 
-        csa_leads = [lead for lead in leads if '_CSA' in str(lead['Most_Recent_Campaign_Name__c'])]
+        csa_leads = [lead for lead in leads if lead['CSA_Program_Member']]
         if csa_leads:
-            csa_lead=csa_leads[0]
+            csa_lead = csa_leads[0]
             csa_lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
-            csa_lead['Marketplace_CSA_Report_Link__c'] = presigned_url
+            csa_lead['Marketplace_CSA_Report_Link__c'] = marketo_presigned_url
             updated_leads = [csa_lead]
 
             try:
