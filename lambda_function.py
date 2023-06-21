@@ -25,6 +25,7 @@ def lambda_handler(event, context):
     '''
 
     # set credentials for Lacework
+    print(f'Event param:{event}')
     basedir = os.path.dirname(os.path.abspath(__file__))
     os.environ['LW_ACCOUNT'] = event['lacework_instance']
     if 'lacework_subaccount' in event:
