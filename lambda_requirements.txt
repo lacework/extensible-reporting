@@ -10,3 +10,4 @@ pytest
 python-dotenv
 laceworksdk
 pdfkit
+marketorestpython

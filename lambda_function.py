@@ -1,4 +1,5 @@
 from modules.reports.reportgen_csa import ReportGenCSA
+from marketorestpython.client import MarketoClient
 import os
 import datetime
 import boto3
@@ -21,11 +22,17 @@ def lambda_handler(event, context):
     :return:
     '''
 
+    # set credentials for Lacework
     basedir = os.path.dirname(os.path.abspath(__file__))
     os.environ['LW_ACCOUNT'] = event['lacework_account']
     os.environ['LW_SUBACCOUNT'] = event['lacework_subaccount']
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
+
+    # Get credentials for marketo
+    marketo_munchkin_id = os.getenv('MUNCHKIN_ID')
+    marketo_client_id = os.getenv('CLIENT_ID')
+    marketo_client_secret = os.getenv('CLIENT_SECRET')
 
     # S3 Bucket to write report to
     s3_bucket = "csareports"
@@ -49,7 +56,23 @@ def lambda_handler(event, context):
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
 
-    return presigned_url
+    # find marketo lead and update
+    mc = MarketoClient(marketo_munchkin_id, marketo_client_id, marketo_client_secret, None, None,
+                       requests_timeout=(3.0, 10.0))
+    leads = mc.execute(method='get_multiple_leads_by_filter_type',
+                       filterType='email',
+                       filterValues=[event['email']],
+                       fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
+                               'Marketplace_CSA_Report_Link__c'],
+                       batchSize=None)
+    lead = leads[0]
+    lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
+    lead['Marketplace_CSA_Report_Link__c'] = presigned_url
+    updated_leads = []
+    updated_leads.append(lead)
+    response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly', lookupField='id',
+                          asyncProcessing='false', partitionName='Default')
+    return response
 
 
 
