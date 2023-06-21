@@ -76,7 +76,9 @@ def lambda_handler(event, context):
         updated_leads.append(lead)
         response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly', lookupField='id',
                               asyncProcessing='false', partitionName='Default')
-    return json.dumps({'Status'})
+        return response
+    else:
+        return json.dumps({'Status': "Wrote file to S3"})
 
 
 
