@@ -52,10 +52,7 @@ def lambda_handler(event, context):
         pdf_file_name,
         s3_bucket,
         s3_key_name)
-    # response = aws_s3_client.put_object(
-    #     Bucket=s3_bucket,
-    #     Body=report,
-    #     Key=s3_key_name)
+
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
 
@@ -63,22 +60,45 @@ def lambda_handler(event, context):
         # find marketo lead and update
         mc = MarketoClient(marketo_munchkin_id, marketo_client_id, marketo_client_secret, None, None,
                            requests_timeout=(3.0, 10.0))
-        leads = mc.execute(method='get_multiple_leads_by_filter_type',
+        try:
+            leads = mc.execute(method='get_multiple_leads_by_filter_type',
                            filterType='email',
                            filterValues=[event['marketplace_email']],
                            fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
-                                   'Marketplace_CSA_Report_Link__c'],
+                                   'Marketplace_CSA_Report_Link__c', 'Most_Recent_Campaign_Name__c'],
                            batchSize=None)
-        lead = leads[0]
-        lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
-        lead['Marketplace_CSA_Report_Link__c'] = presigned_url
-        updated_leads = []
-        updated_leads.append(lead)
-        response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly', lookupField='id',
-                              asyncProcessing='false', partitionName='Default')
-        return response
+        except Exception as e:
+            return {"statusCode": 502,
+                    "message": "Failed to query Marketo. Here is the download link..",
+                    "details": str(e),
+                    "download_url": presigned_url}
+
+        csa_leads = [lead for lead in leads if '_CSA' in str(lead['Most_Recent_Campaign_Name__c'])]
+        if csa_leads:
+            csa_lead=csa_leads[0]
+            csa_lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
+            csa_lead['Marketplace_CSA_Report_Link__c'] = presigned_url
+            updated_leads = [csa_lead]
+
+            try:
+                response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly',
+                                      lookupField='id',
+                                      asyncProcessing='false', partitionName='Default')
+            except Exception as e:
+                return {"statusCode": 502,
+                        "message": "Found Marketo lead but failed to update it",
+                        "details": str(e)}
+        else:
+            return {"statusCode": 502,
+                    "message": "No CSA Marketo lead found. Could not complete workflow. Here's the download URL",
+                    "download_url": presigned_url}
+        return {"statusCode": 200,
+                "message": "Report generated and Marketo lead updated."}
     else:
-        return json.dumps({'Status': "Wrote file to S3"})
+        return {"statusCode": 200,
+                "message": "No marketo email provided, here's the report download link",
+                "download_url": presigned_url
+                }
 
 
 

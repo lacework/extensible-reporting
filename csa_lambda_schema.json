@@ -1,0 +1,42 @@
+{
+	"$schema": "https://json-schema.org/draft/2019-09/schema",
+	"title": "Lacework CSA",
+	"description": "Generate a Lacework CSA report",
+	"type": "object",
+	"properties": {
+		"lacework_instance": {
+			"type": "string",
+			"description": "The fqdn of the Lacework account"
+		},
+		"lacework_subaccount": {
+			"type": "string",
+			"description": "The subaccount of the lacework instance. Not required"
+		},
+		"key": {
+			"description": "The  API key for the Lacework instance",
+			"type": "string"
+		},
+		"secret": {
+			"description": "The  API secret for the Lacework instance",
+			"type": "string"
+		},
+		"customer": {
+			"description": "The name of the customer",
+			"type": "string"
+		},
+		"marketo_email": {
+			"description": "The email tied to the marketo lead to attach to (optional)",
+			"type": "string"
+		},
+		"author": {
+			"description": "The name of the author (usually a company name)",
+			"type": "string"
+		},
+		"email": {
+			"description": "The email to send the report to",
+			"type": "string"
+		}
+	},
+	"required": ["lacework_instance", "key", "secret", "customer", "author", "email"]
+
+}
