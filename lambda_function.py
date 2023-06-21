@@ -4,6 +4,7 @@ import os
 import datetime
 import boto3
 import pdfkit
+import json
 
 def lambda_handler(event, context):
     '''
@@ -26,7 +27,8 @@ def lambda_handler(event, context):
     # set credentials for Lacework
     basedir = os.path.dirname(os.path.abspath(__file__))
     os.environ['LW_ACCOUNT'] = event['lacework_instance']
-    os.environ['LW_SUBACCOUNT'] = event['lacework_subaccount']
+    if 'lacework_subaccount' in event:
+        os.environ['LW_SUBACCOUNT'] = event['lacework_subaccount']
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
 
@@ -57,23 +59,24 @@ def lambda_handler(event, context):
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
 
-    # find marketo lead and update
-    mc = MarketoClient(marketo_munchkin_id, marketo_client_id, marketo_client_secret, None, None,
-                       requests_timeout=(3.0, 10.0))
-    leads = mc.execute(method='get_multiple_leads_by_filter_type',
-                       filterType='email',
-                       filterValues=[event['marketplace_email']],
-                       fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
-                               'Marketplace_CSA_Report_Link__c'],
-                       batchSize=None)
-    lead = leads[0]
-    lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
-    lead['Marketplace_CSA_Report_Link__c'] = presigned_url
-    updated_leads = []
-    updated_leads.append(lead)
-    response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly', lookupField='id',
-                          asyncProcessing='false', partitionName='Default')
-    return response
+    if 'marketo_email' in event:
+        # find marketo lead and update
+        mc = MarketoClient(marketo_munchkin_id, marketo_client_id, marketo_client_secret, None, None,
+                           requests_timeout=(3.0, 10.0))
+        leads = mc.execute(method='get_multiple_leads_by_filter_type',
+                           filterType='email',
+                           filterValues=[event['marketplace_email']],
+                           fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
+                                   'Marketplace_CSA_Report_Link__c'],
+                           batchSize=None)
+        lead = leads[0]
+        lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
+        lead['Marketplace_CSA_Report_Link__c'] = presigned_url
+        updated_leads = []
+        updated_leads.append(lead)
+        response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly', lookupField='id',
+                              asyncProcessing='false', partitionName='Default')
+    return json.dumps({'Status'})
 
 
 
