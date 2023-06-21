@@ -16,6 +16,7 @@ def lambda_handler(event, context):
         'key': Str,                                         # the Lacework API key
         'secret': Str,                                      # the Lacework API secret
         'customer': Str,                                    # the name of the Customer
+        'marketplace_email': Str                            # the email tied to original aws marketplace request (and Marketo Lead)
         'email': Str,                                       # the email to send the download link to
 
     :param context:
@@ -61,7 +62,7 @@ def lambda_handler(event, context):
                        requests_timeout=(3.0, 10.0))
     leads = mc.execute(method='get_multiple_leads_by_filter_type',
                        filterType='email',
-                       filterValues=[event['email']],
+                       filterValues=[event['marketplace_email']],
                        fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
                                'Marketplace_CSA_Report_Link__c'],
                        batchSize=None)
