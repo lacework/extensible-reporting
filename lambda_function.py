@@ -25,7 +25,7 @@ def lambda_handler(event, context):
 
     # set credentials for Lacework
     basedir = os.path.dirname(os.path.abspath(__file__))
-    os.environ['LW_ACCOUNT'] = event['lacework_account']
+    os.environ['LW_ACCOUNT'] = event['lacework_instance']
     os.environ['LW_SUBACCOUNT'] = event['lacework_subaccount']
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
