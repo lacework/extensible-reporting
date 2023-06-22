@@ -81,6 +81,8 @@ def lambda_handler(event, context):
             csa_lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
             csa_lead['Marketplace_CSA_Report_Link__c'] = marketo_presigned_url
             updated_leads = [csa_lead]
+            print("Marketo lead to update:")
+            print(json.dumps(updated_leads, indent=4))
 
             try:
                 response = mc.execute(method='create_update_leads', leads=updated_leads, action='updateOnly',
