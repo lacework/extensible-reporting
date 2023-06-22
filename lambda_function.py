@@ -95,7 +95,8 @@ def lambda_handler(event, context):
                     "message": "No CSA Marketo lead found. Could not complete workflow. Here's the download URL",
                     "download_url": presigned_url}
         return {"statusCode": 200,
-                "message": "Report generated and Marketo lead updated."}
+                "message": "Report generated and Marketo lead updated.",
+                "details": response}
     else:
         return {"statusCode": 200,
                 "message": "No marketo email provided, here's the report download link",
