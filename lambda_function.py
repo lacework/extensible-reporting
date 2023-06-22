@@ -65,9 +65,9 @@ def lambda_handler(event, context):
         try:
             leads = mc.execute(method='get_multiple_leads_by_filter_type',
                            filterType='email',
-                           filterValues=[event['marketplace_email']],
+                           filterValues=[event['marketo_email']],
                            fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
-                                   'Marketplace_CSA_Report_Link__c', 'Most_Recent_Campaign_Name__c'],
+                                   'Marketplace_CSA_Report_Link__c', 'CSA_Program_Member'],
                            batchSize=None)
         except Exception as e:
             return {"statusCode": 502,
