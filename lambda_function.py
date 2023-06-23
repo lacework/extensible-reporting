@@ -106,8 +106,8 @@ def lambda_handler(event, context):
         if csa_leads:
             csa_lead = csa_leads[0]
             csa_lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
-            #csa_lead['Marketplace_CSA_Report_Link__c'] = marketo_presigned_url
-            csa_lead['MktoCompanyNotes'] = marketo_presigned_url
+            csa_lead['Marketplace_CSA_Report_Link__c'] = marketo_presigned_url
+            #csa_lead['MktoCompanyNotes'] = marketo_presigned_url
             updated_leads = [csa_lead]
             print("Marketo lead to update:")
             print(json.dumps(updated_leads, indent=4))
