@@ -29,7 +29,7 @@ def get_secret(secret_name, region_name):
     # Decrypts secret using the associated KMS key.
     secret = get_secret_value_response['SecretString']
 
-    return secret
+    return json.loads(secret)
 
 
 def lambda_handler(event, context):
@@ -60,9 +60,7 @@ def lambda_handler(event, context):
     os.environ['LW_API_SECRET'] = event['secret']
 
     # Get credentials for marketo
-    secret_json = get_secret("marketo", "us-east-2")
-    secret = json.loads(secret_json)
-    print(secret)
+    secret = get_secret("marketo", "us-east-2")
     marketo_munchkin_id = secret['munchkin_id']
     marketo_client_id = secret['client_id']
     marketo_client_secret = secret['client_secret']
