@@ -64,7 +64,7 @@ def lambda_handler(event, context):
 
     # Get credentials for marketo
     secret = get_secret()
-    print(type(secret))
+    print(secret)
     marketo_munchkin_id = os.getenv('MUNCHKIN_ID')
     marketo_client_id = os.getenv('CLIENT_ID')
     marketo_client_secret = os.getenv('CLIENT_SECRET')
