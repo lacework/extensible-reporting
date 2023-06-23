@@ -73,13 +73,23 @@ def lambda_handler(event, context):
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
     pdf_file_name = "report.pdf"
-    pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
+    try:
+        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
+    except Exception as e:
+        return {"statusCode": 502,
+                "message": "Failed to create pdf",
+                "details": str(e)}
     s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
-    aws_s3_client = boto3.client('s3', region_name='us-east-2')
-    response = aws_s3_client.upload_file(
-        pdf_file_name,
-        s3_bucket,
-        s3_key_name)
+    try:
+        aws_s3_client = boto3.client('s3', region_name='us-east-2')
+        response = aws_s3_client.upload_file(
+            pdf_file_name,
+            s3_bucket,
+            s3_key_name)
+    except Exception as e:
+        return {"statusCode": 502,
+                "message": "Failed to write pdf to S3",
+                "details": str(e)}
 
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
@@ -94,7 +104,7 @@ def lambda_handler(event, context):
                            filterType='email',
                            filterValues=[event['marketo_email']],
                            fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
-                                   'Marketplace_CSA_Report_Link__c', 'CSA_Program_Member', 'MktoCompanyNotes'],
+                                   'Marketplace_CSA_Report_Link__c', 'CSA_Program_Member'],
                            batchSize=None)
         except Exception as e:
             return {"statusCode": 502,
@@ -124,9 +134,15 @@ def lambda_handler(event, context):
             return {"statusCode": 502,
                     "message": "No CSA Marketo lead found. Could not complete workflow. Here's the download URL",
                     "download_url": presigned_url}
-        return {"statusCode": 200,
-                "message": "Report generated and Marketo lead updated.",
-                "details": response}
+        if response['status'] == 'updated':
+            return {"statusCode": 200,
+                    "message": "Report generated and Marketo lead updated.",
+                    "details": response}
+        else:
+            return {"statusCode": 502,
+                    "message": "Report generated but failed to update Marketo lead.",
+                    "details": response,
+                    "download_url": presigned_url}
     else:
         return {"statusCode": 200,
                 "message": "No marketo email provided, here's the report download link",
