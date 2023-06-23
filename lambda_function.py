@@ -72,9 +72,11 @@ def lambda_handler(event, context):
     report = report_gen.generate(event['customer'], 'Lacework')
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
+    print(f"Able to write to /tmp?: {os.access('/tmp', os.W_OK)}")
     pdf_file_name = "/tmp/report.pdf"
+
     try:
-        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
+        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options={"enable-local-file-access": ""})
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
