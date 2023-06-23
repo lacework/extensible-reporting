@@ -8,10 +8,7 @@ import json
 from botocore.exceptions import ClientError
 
 
-def get_secret():
-
-    secret_name = "marketo"
-    region_name = "us-east-2"
+def get_secret(secret_name, region_name):
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
@@ -63,11 +60,10 @@ def lambda_handler(event, context):
     os.environ['LW_API_SECRET'] = event['secret']
 
     # Get credentials for marketo
-    secret = get_secret()
-    print(secret)
-    marketo_munchkin_id = os.getenv('MUNCHKIN_ID')
-    marketo_client_id = os.getenv('CLIENT_ID')
-    marketo_client_secret = os.getenv('CLIENT_SECRET')
+    secret = get_secret("marketo", "us-east-2")
+    marketo_munchkin_id = secret['munchkin_id']
+    marketo_client_id = secret['client_id']
+    marketo_client_secret = secret['client_secret']
 
     # S3 Bucket to write report to
     s3_bucket = "csareports"
@@ -98,7 +94,7 @@ def lambda_handler(event, context):
                            filterType='email',
                            filterValues=[event['marketo_email']],
                            fields=['firstName', 'middleName', 'lastName', 'Marketplace_CSA_Alternate_Email_Address__c',
-                                   'Marketplace_CSA_Report_Link__c', 'CSA_Program_Member'],
+                                   'Marketplace_CSA_Report_Link__c', 'CSA_Program_Member', 'MktoCompanyNotes'],
                            batchSize=None)
         except Exception as e:
             return {"statusCode": 502,
@@ -111,6 +107,7 @@ def lambda_handler(event, context):
             csa_lead = csa_leads[0]
             csa_lead['Marketplace_CSA_Alternate_Email_Address__c'] = event['email']
             csa_lead['Marketplace_CSA_Report_Link__c'] = marketo_presigned_url
+            csa_lead['MktoCompanyNotes'] = marketo_presigned_url
             updated_leads = [csa_lead]
             print("Marketo lead to update:")
             print(json.dumps(updated_leads, indent=4))
