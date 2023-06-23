@@ -72,7 +72,7 @@ def lambda_handler(event, context):
     report = report_gen.generate(event['customer'], 'Lacework')
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
-    pdf_file_name = "report.pdf"
+    pdf_file_name = "/tmp/report.pdf"
     try:
         pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
     except Exception as e:
