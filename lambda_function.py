@@ -136,7 +136,7 @@ def lambda_handler(event, context):
             return {"statusCode": 502,
                     "message": "No CSA Marketo lead found. Could not complete workflow. Here's the download URL",
                     "download_url": presigned_url}
-        if json.loads(response[0])['status'] == 'updated':
+        if response[0]['status'] == 'updated':
             return {"statusCode": 200,
                     "message": "Report generated and Marketo lead updated.",
                     "details": response}
