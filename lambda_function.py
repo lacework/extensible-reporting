@@ -50,8 +50,17 @@ def lambda_handler(event, context):
     :return:
     '''
 
+    print(f"lacework instance:{event['lacework_instance']}")
+    if 'lacework_subaccount' in event:
+        print(f"lacework subaccount:{event['lacework_subaccount']}")
+    print(f"last 4 of lacework key:{str(event['key'])[-4:]}")
+    print(f"last 4 of lacework secret:{str(event['secret'])[-4:]}")
+    print(f"customer:{event['customer']}")
+    print(f"author:{event['author']}")
+    print(f"email:{event['email']}")
+    if 'marketo_email' in event:
+        print(f"marketo email:{event['marketo_email']}")
     # set credentials for Lacework
-    print(f'Event param:{event}')
     basedir = os.path.dirname(os.path.abspath(__file__))
     os.environ['LW_ACCOUNT'] = event['lacework_instance']
     if 'lacework_subaccount' in event:
@@ -59,14 +68,19 @@ def lambda_handler(event, context):
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
 
+    # S3 Bucket to write report to
+    s3_bucket = os.getenv('S3_BUCKET')
+    # aws region we're in
+    aws_region = os.getenv('AWS_REGION')
+
     # Get credentials for marketo
-    secret = get_secret("marketo", "us-east-2")
+    secret = get_secret("marketo", aws_region)
     marketo_munchkin_id = secret['munchkin_id']
     marketo_client_id = secret['client_id']
     marketo_client_secret = secret['client_secret']
 
-    # S3 Bucket to write report to
-    s3_bucket = "csareports"
+
+
     # create report html
     report_gen = ReportGenCSA(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
@@ -83,7 +97,7 @@ def lambda_handler(event, context):
                 "details": str(e)}
     s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     try:
-        aws_s3_client = boto3.client('s3', region_name='us-east-2')
+        aws_s3_client = boto3.client('s3', region_name=aws_region)
         response = aws_s3_client.upload_file(
             pdf_file_name,
             s3_bucket,
