@@ -89,7 +89,7 @@ def lambda_handler(event, context):
     pdf_file_name = "/tmp/report.pdf"
 
     try:
-        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options={"page-size": "A4"})
+        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
