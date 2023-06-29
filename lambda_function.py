@@ -85,8 +85,7 @@ def lambda_handler(event, context):
     report_gen = ReportGenCSA(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
     # generate pdf from html
-    pdfkit_config = pdfkit.configuration(wkhtmltopdf='/opt/bin/wkhtmltopdf')
-    print(f"Able to write to /tmp?: {os.access('/tmp', os.W_OK)}")
+    pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdf_file_name = "/tmp/report.pdf"
 
     try:
