@@ -1,4 +1,4 @@
-from modules.reports.reportgen_csa import ReportGenCSA
+from modules.reports.reportgen_csa_detailed import ReportGenCSADetailed
 from marketorestpython.client import MarketoClient
 import os
 import datetime
@@ -82,14 +82,14 @@ def lambda_handler(event, context):
 
 
     # create report html
-    report_gen = ReportGenCSA(basedir)
+    report_gen = ReportGenCSADetailed(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdf_file_name = "/tmp/report.pdf"
-
+    pdfkit_options = {"enable-local-file-access": None}
     try:
-        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config)
+        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
