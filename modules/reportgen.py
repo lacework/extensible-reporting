@@ -18,15 +18,29 @@ class ReportGen:
     report_short_name = 'Base'
     report_name = "Base Report Class"
     report_description = "This is the base report class, it should be inherited from, not imported directly."
+
     def __init__(self, basedir, use_cache=False, api_key_file=None):
         self.basedir = basedir
         self.use_cache = use_cache
         self.lacework_interface = LaceworkInterface(use_cache=use_cache, api_key_file=api_key_file)
 
+    def file_to_image_tag(self, img_file: str, file_format: str, align="left") -> str:
+        img_bytes = self.load_binary_file(img_file)
+        return self.bytes_to_image_tag(img_bytes,file_format, align=align)
+
     def bytes_to_image_tag(self, img_bytes: bytes, file_format: str, align="left") -> str:
         b64content = base64.b64encode(img_bytes).decode('utf-8')
+        return f"<img src='data:image/{file_format}; charset=utf-8; base64,{b64content}' align='{align}' />"
 
-        return f"<img src='data:image/{file_format};base64,{b64content}' align='{align}' />"
+    def file_to_css_background(self, img_file: str, file_format: str) -> str:
+        img_bytes = self.load_binary_file(img_file)
+        b64content = base64.b64encode(img_bytes).decode('utf-8')
+        return f"background-image: url(data:image/{file_format};base64,{b64content}>);"
+
+    def file_to_css_font(self, font_file: str, file_format: str) -> str:
+        font_bytes = self.load_binary_file(font_file)
+        b64content = base64.b64encode(font_bytes).decode('utf-8')
+        return f"src: url('data:font/{file_format}; charset=utf-8; base64, {b64content}') format('{file_format}');"
 
     def load_binary_file(self, path: str) -> bytes:
         full_path = os.path.join(self.basedir, path)

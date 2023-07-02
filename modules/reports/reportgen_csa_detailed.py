@@ -2,11 +2,11 @@ from modules.reportgen import ReportGen
 from modules.utils import LaceworkTime
 
 
-class ReportGenCSA(ReportGen):
+class ReportGenCSADetailed(ReportGen):
 
-    report_short_name = 'CSA'
-    report_name = 'Cloud Security Assessment (CIS)'
-    report_description = "This is the Lacework provided Cloud Security Assessment with CIS compliance reporting."
+    report_short_name = 'CSA Detailed'
+    report_name = 'Detailed Cloud Security Assessment (CIS)'
+    report_description = "This is the detailed version of the Lacework Cloud Security Assessment with CIS compliance reporting."
     default_recommendations = """<h3>Recommendations</h3>
             <p>
               Based on the findings of this assessment, Lacework recommends the following action plan and next steps:
@@ -26,12 +26,14 @@ class ReportGenCSA(ReportGen):
                     alerts_start_time: LaceworkTime,
                     alerts_end_time: LaceworkTime,
                     custom_logo=None):
+
         self.polygraph_graphic_html = self.file_to_image_tag('assets/polygraph-info.png', 'png')
+
         if custom_logo:
             self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
         else:
             self.custom_logo_html = None
-        self.template = self.get_jinja2_template('csa_report.jinja2')
+        self.template = self.get_jinja2_template('csa_detailed_report.jinja2')
         self.aws_compliance_data=self.gather_compliance_data(cloud_provider='AWS')
         self.azure_compliance_data=self.gather_compliance_data(cloud_provider='AZURE')
         self.gcp_compliance_data=self.gather_compliance_data(cloud_provider='GCP')
