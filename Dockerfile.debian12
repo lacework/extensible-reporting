@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/function"
 
-public.ecr.aws/docker/library/python:bookworm as build-image
+FROM public.ecr.aws/docker/library/python:bookworm as build-image
 
 ARG FUNCTION_DIR="/function"
 
@@ -25,7 +25,7 @@ RUN pip install \
         -r lambda_requirements.txt
 
 
-public.ecr.aws/docker/library/python:bookworm
+FROM public.ecr.aws/docker/library/python:bookworm
 RUN apt-get install -y wget
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 RUN apt install wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
