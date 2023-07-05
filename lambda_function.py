@@ -1,3 +1,5 @@
+import sys
+
 from modules.reports.reportgen_csa_detailed import ReportGenCSADetailed
 from marketorestpython.client import MarketoClient
 import os
@@ -74,10 +76,20 @@ def lambda_handler(event, context):
     aws_region = os.getenv('AWS_REGION')
 
     # Get credentials for marketo
-    secret = get_secret("marketo", aws_region)
-    marketo_munchkin_id = secret['munchkin_id']
-    marketo_client_id = secret['client_id']
-    marketo_client_secret = secret['client_secret']
+    try:
+        secret = get_secret("marketo", aws_region)
+        marketo_munchkin_id = secret['munchkin_id']
+        marketo_client_id = secret['client_id']
+        marketo_client_secret = secret['client_secret']
+    except:
+        print('Failed to get Marketo credentials from secret, trying ENV variables instead.')
+        try:
+            marketo_munchkin_id = os.getenv('munchkin_id')
+            marketo_client_id = os.getenv('client_id')
+            marketo_client_secret = os.getenv('client_secret')
+        except:
+            print('Failed to get Marketo credentials from ENV variables too. Exiting...')
+            sys.exit()
 
 
 
@@ -107,7 +119,7 @@ def lambda_handler(event, context):
                 "details": str(e)}
 
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
-    presigned_url = aws_s3_client.generate_presigned_url('get_object', presigned_url_args, 604800)
+    presigned_url = aws_s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
     marketo_presigned_url = presigned_url.removeprefix('https://')
 
     if 'marketo_email' in event:
