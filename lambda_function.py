@@ -99,9 +99,9 @@ def lambda_handler(event, context):
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdf_file_name = "/tmp/report.pdf"
-    pdfkit_options = {"enable-local-file-access": None}
+    #pdfkit_options = {"enable-local-file-access": None}
     try:
-        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
+        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, verbose=True)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
