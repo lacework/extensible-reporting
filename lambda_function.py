@@ -84,9 +84,9 @@ def lambda_handler(event, context):
     except:
         print('Failed to get Marketo credentials from secret, trying ENV variables instead.')
         try:
-            marketo_munchkin_id = os.getenv('munchkin_id')
-            marketo_client_id = os.getenv('client_id')
-            marketo_client_secret = os.getenv('client_secret')
+            marketo_munchkin_id = os.getenv('MUNCHKIN_ID')
+            marketo_client_id = os.getenv('CLIENT_ID')
+            marketo_client_secret = os.getenv('CLIENT_SECRET')
         except:
             print('Failed to get Marketo credentials from ENV variables too. Exiting...')
             sys.exit()
