@@ -26,18 +26,19 @@ RUN pip install \
 
 
 FROM public.ecr.aws/docker/library/python:bookworm
-RUN apt-get install -y curl
-RUN curl -o /tmp/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
-RUN dpkg -i /tmp/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
-
-# Include global arg in this stage of the build
 ARG FUNCTION_DIR
+RUN apt-get install -y curl
+RUN curl -o wkhtmltox_0.12.6.1-3.bookworm_amd64.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+RUN dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+
+
+
 # Set working directory to function root directory
 WORKDIR ${FUNCTION_DIR}
 
 # Copy in the built dependencies
 COPY --from=build-image ${FUNCTION_DIR} ${FUNCTION_DIR}
-COPY lambda_function.py ${LAMBDA_TASK_ROOT}
+COPY lambda_function.py ${FUNCTION_DIR}
 COPY assets ${FUNCTION_DIR}/assets
 COPY modules ${FUNCTION_DIR}/modules
 COPY templates ${FUNCTION_DIR}/templates
