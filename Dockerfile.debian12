@@ -28,9 +28,7 @@ RUN pip install \
 FROM public.ecr.aws/docker/library/python:bookworm
 ARG FUNCTION_DIR
 RUN apt-get install -y curl
-RUN curl -o wkhtmltox_0.12.6.1-3.bookworm_amd64.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
-RUN sum wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
-RUN dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
+RUN curl -o wkhtmltox_0.12.6.1-3.bookworm_amd64.deb https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-3/wkhtmltox_0.12.6.1-3.bookworm_amd64.deb && dpkg -i wkhtmltox_0.12.6.1-3.bookworm_amd64.deb
 
 
 
