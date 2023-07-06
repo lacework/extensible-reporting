@@ -1,5 +1,5 @@
 #FROM public.ecr.aws/lambda/python:3.10
-umihico/aws-lambda-selenium-python:latest
+FROM umihico/aws-lambda-selenium-python:latest
 
 RUN curl "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm" -L -o wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm
 RUN yum install -y openssl xorg-x11-fonts-75dpi xorg-x11-fonts-Type1
