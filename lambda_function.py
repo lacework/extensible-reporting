@@ -96,16 +96,28 @@ def lambda_handler(event, context):
     # create report html
     report_gen = ReportGenCSADetailed(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
+    s3_key_name = f'html/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+    try:
+        aws_s3_client = boto3.client('s3', region_name=aws_region)
+        response = aws_s3_client.put_object(
+            Body=report,
+            Bucket=s3_bucket,
+            Key=s3_key_name)
+    except Exception as e:
+        return {"statusCode": 502,
+                "message": "Failed to write html to S3",
+                "details": str(e)}
     # generate pdf from html
     pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdf_file_name = "/tmp/report.pdf"
     #pdfkit_options = {"enable-local-file-access": None}
     try:
-        pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, verbose=True)
+        result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, verbose=True)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
                 "details": str(e)}
+    print(f"Converting to PDF:{result}")
     s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     try:
         aws_s3_client = boto3.client('s3', region_name=aws_region)
