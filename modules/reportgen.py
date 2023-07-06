@@ -30,7 +30,7 @@ class ReportGen:
 
     def bytes_to_image_tag(self, img_bytes: bytes, file_format: str, align="left") -> str:
         b64content = base64.b64encode(img_bytes).decode('utf-8')
-        return f"<img src='data:image/{file_format}; charset=utf-8; base64,{b64content}' align='{align}' />"
+        return f"<img src='data:image/{file_format};charset=utf-8;base64,{b64content}' align='{align}'/>"
 
     def file_to_css_background(self, img_file: str, file_format: str) -> str:
         img_bytes = self.load_binary_file(img_file)
