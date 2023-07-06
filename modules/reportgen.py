@@ -40,7 +40,7 @@ class ReportGen:
     def file_to_css_font(self, font_file: str, file_format: str) -> str:
         font_bytes = self.load_binary_file(font_file)
         b64content = base64.b64encode(font_bytes).decode('utf-8')
-        return f"src: url('data:font/{file_format}; charset=utf-8; base64, {b64content}') format('{file_format}');"
+        return f"src: url('data:font/{file_format};charset=utf-8;base64,{b64content}') format('{file_format}');"
 
     def load_binary_file(self, path: str) -> bytes:
         full_path = os.path.join(self.basedir, path)
