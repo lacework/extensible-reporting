@@ -11,3 +11,4 @@ python-dotenv
 laceworksdk
 pdfkit
 marketorestpython
+boto3
