@@ -28,7 +28,7 @@ class ReportGenCSADetailed(ReportGen):
                     custom_logo=None):
 
         self.polygraph_graphic_html = self.file_to_image_tag('assets/polygraph-info.png', 'png')
-        self.font_html = self.file_to_css_font('assets/NBInternationalProReg.woff', 'woff')
+
 
         if custom_logo:
             self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
@@ -47,7 +47,6 @@ class ReportGenCSADetailed(ReportGen):
             customer=str(customer),
             date=self.get_current_date(),
             author=str(author),
-            font=self.font_html,
             custom_logo_html=self.custom_logo_html,
             polygraph_graphic_html=self.polygraph_graphic_html,
             aws_compliance_data=self.aws_compliance_data,
