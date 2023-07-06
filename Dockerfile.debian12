@@ -21,7 +21,7 @@ RUN pip install \
         awslambdaric
 RUN pip install \
     --target ${FUNCTION_DIR} \
-        -r lambda_requirements.txt
+        -r ${FUNCTION_DIR}/lambda_requirements.txt
 
 
 FROM public.ecr.aws/docker/library/python:bookworm
