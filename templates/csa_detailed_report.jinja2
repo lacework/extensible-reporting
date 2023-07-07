@@ -468,7 +468,7 @@
 
 
 
-  <div class="section-three">
+  < class="section-three">
       <p>
     <b><u>
       The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers:
@@ -541,6 +541,7 @@
     {% endif %}
 
     {% if alerts_data %}
+    <div class="alerts">
     <p>
       <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
 
@@ -548,9 +549,11 @@
       </p>
 
       {{ alerts_data.alerts_raw.to_html(index=False) | safe }}
+      </div>
     {% endif %}
 
     {% if host_vulns_data or container_vulns_data %}
+    <div class="vulnerabilities">
       <h2>Workload Vulnerability Assessment</h2>
       <p>
         Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. If the Lacework agent was not installed as part of this assessment it may be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
@@ -560,46 +563,60 @@
         <p><b>
           Total Hosts Scanned: {{host_vulns_data.hosts_scanned_count}}
         </b></p>
+
       {% endif %}
 
       {% if container_vulns_data %}
+
         <p><b>
         Total Container Images Scanned: {{container_vulns_data.containers_scanned_count}}
         </b></p>
       <br/>
+
       {% endif %}
+      </div>
     {% endif %}
     
 
     {% if host_vulns_data %}
+      <div class="host_vulns_summary">
       <h3>Host Vulnerability Summary</h3>
       {{ host_vulns_data.host_vulns_summary.to_html(index=False) | safe }}
       {{ host_vulns_data.host_vulns_summary_bar_graphic | safe }}
+        </div>
     {% endif %}
 
     {% if container_vulns_data %}
+      <div class="container_vulns_summary">
       <h3>Container Vulnerability Summary</h3>
       {{ container_vulns_data.container_vulns_summary.to_html(index=False) | safe }}
       {{ container_vulns_data.container_vulns_summary_by_package_bar_graphic | safe }}
+        </div>
     {% endif %} 
     
     {% if host_vulns_data or container_vulns_data or aws_compliance_data or azure_compliance_data or gcp_compliance_data%}
+      <div class="detailed_findings">
       <h2>Appendix of Detailed Findings</h2>
       <p>This section contains additional details on the findings that were summarized above:</p>
 
       {% if host_vulns_data %}
+        <div class="detailed_host_vulns">
         <h3>Detailed CVE Breakdown</h3>
         <h4>Top {{ host_vulns_data.host_vulns_summary_by_host_limit }} Hosts by CVE Posture</h4>
         {{ host_vulns_data.host_vulns_summary_by_host.to_html() | safe }}
+          </div>
       {% endif %}
 
       {% if container_vulns_data %}
+        <div class="detailed_container_vulns">
         <h4>Top {{ container_vulns_data.container_vulns_summary_by_image_limit }} Containers by CVE Posture</h4>
         {{ container_vulns_data.container_vulns_summary_by_image.to_html() | safe }}
+          </div>
       {% endif %}
 
       <br/>
       {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
+        <div class="detailed_compliance">
         <h3>Detailed Cloud Compliance Findings</h3>
         <p></p>
         {% if aws_compliance_data %}
@@ -619,7 +636,9 @@
           <p></p>
           {{ gcp_compliance_data.compliance_detail.to_html(index=False) | safe }}
         {% endif %}
+          </div>
       {% endif %}
+        </div>
     {% endif %}
   </div>
 
