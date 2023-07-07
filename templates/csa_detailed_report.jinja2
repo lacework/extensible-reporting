@@ -464,11 +464,11 @@
         </div>
       {% endif %}
     </div>
-  </div>
 
 
 
-  <div class="section-three">
+
+
       <p>
     <b><u>
       The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers:
@@ -485,19 +485,20 @@
     </p>
 
   {% if recommendations %}
-      <div class="recommendations">
       {{ recommendations | safe }}
-
-      </div>
   {% endif %}
 
-    <div>
-      {{ polygraph_graphic_html | safe }}
-    </div>
+  {% if polygraph_graphic_html %}
+  {{ polygraph_graphic_html | safe }}
+    {% endif %}
+  </div>
+   <div class="section-three">
     {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
               <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
       </p>
     {% endif %}
+
+
     {% if aws_compliance_data %}
       <div class="aws_compliance">
       <h4>AWS Compliance Findings</h4>
