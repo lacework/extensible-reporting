@@ -5,7 +5,9 @@ from marketorestpython.client import MarketoClient
 import os
 import datetime
 import boto3
-import pdfkit
+from weasyprint import HTML, CSS
+from weasyprint.text.fonts import FontConfiguration
+#import pdfkit
 import json
 from botocore.exceptions import ClientError
 
@@ -108,19 +110,23 @@ def lambda_handler(event, context):
                 "message": "Failed to write html to S3",
                 "details": str(e)}
     # generate pdf from html
-    pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    # pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
     pdf_file_name = "/tmp/report.pdf"
-    pdfkit_options = {"enable-local-file-access": None,
-                      "viewport-size": "1920x1080",
-                      "page-size": "A3",
-                      "disable-smart-shrinking": True}
+    # pdfkit_options = {"enable-local-file-access": None,
+    #                   "viewport-size": "1920x1080",
+    #                   "page-size": "A3",
+    #                   "disable-smart-shrinking": True}
+
+
     try:
-        result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
+        #result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
+        font_config = FontConfiguration()
+        html = HTML(string=report)
+        html.write_pdf(pdf_file_name, font_config=font_config)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
                 "details": str(e)}
-    print(f"Converting to PDF:{result}")
     s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     try:
         aws_s3_client = boto3.client('s3', region_name=aws_region)
