@@ -29,9 +29,8 @@ ARG FUNCTION_DIR
 RUN apt-get update && \
     apt-get install -y xfonts-75dpi xfonts-base
 RUN apt install -y python3-pip python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0
-RUN mkdir -p ~/.aws-lambda-rie && \
-    curl -Lo ~/.aws-lambda-rie/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie && \
-    chmod +x ~/.aws-lambda-rie/aws-lambda-rie
+RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
+    && chmod +x /usr/local/bin/aws-lambda-rie
 
 
 # Set working directory to function root directory
@@ -43,7 +42,9 @@ COPY lambda_function.py ${FUNCTION_DIR}
 COPY assets ${FUNCTION_DIR}/assets
 COPY modules ${FUNCTION_DIR}/modules
 COPY templates ${FUNCTION_DIR}/templates
-ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
+COPY ./entry_script.sh /entry_script.sh
+ENTRYPOINT [ "/entry_script.sh" ]
+#ENTRYPOINT [ "/usr/local/bin/python", "-m", "awslambdaric" ]
 CMD ["lambda_function.lambda_handler"]
 
 
