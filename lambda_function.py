@@ -112,6 +112,7 @@ def lambda_handler(event, context):
     pdf_file_name = "/tmp/report.pdf"
     pdfkit_options = {"enable-local-file-access": None,
                       "viewport-size": "1920x1080",
+                      "javascript-delay": 1000,
                       "disable-smart-shrinking": True}
     try:
         result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
