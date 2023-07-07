@@ -9,6 +9,6 @@ logzero
 pytest
 python-dotenv
 laceworksdk
-pdfkit
+weasyprint
 marketorestpython
 boto3
