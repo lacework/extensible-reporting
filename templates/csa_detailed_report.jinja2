@@ -201,7 +201,7 @@
   }
 
   p b {
-    color: #000538;
+    color: #FFF;
   }
 
   h2  {
@@ -493,12 +493,13 @@
     {% endif %}
   </div>
    <div class="section-three">
+       <div class="compliance_findings">
     {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
               <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
       </p>
     {% endif %}
 
-    <div class="compliance_findings">
+
     {% if aws_compliance_data %}
 
       <h4>AWS Compliance Findings</h4>
