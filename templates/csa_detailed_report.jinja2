@@ -21,10 +21,15 @@
       --nc-ac-tx: #0C4047;
     }
   }
-  @page {
-    size: a3 landscape;
+  @media print {
+    body {transform: scale(.7);}
+    table {page-break-inside: avoid;}
+    @page {
+      size: a3 landscape;
 
     }
+  }
+
   @font-face {
     font-family: 'NB International';
     src: url('https://www.lacework.com/wp-content/themes/lacework/build/fonts/nb-international/NBInternationalProReg.woff') format('woff');
