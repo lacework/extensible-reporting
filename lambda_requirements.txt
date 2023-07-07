@@ -9,6 +9,6 @@ logzero
 pytest
 python-dotenv
 laceworksdk
-weasyprint
+weasyprint==52.5
 marketorestpython
 boto3
