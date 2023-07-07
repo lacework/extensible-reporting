@@ -3,7 +3,7 @@ FROM public.ecr.aws/lambda/python:3.10
 
 RUN curl "https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm" -L -o wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm
 RUN yum install -y openssl xorg-x11-fonts-75dpi xorg-x11-fonts-Type1 google-noto-fonts-common google-noto-sans-vf-fonts
-RUN yum -y install wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm
+RUN yum -y install ./wkhtmltox-0.12.6-1.amazonlinux2.x86_64.rpm
 RUN yum -y install libxslt-devel libxml2-devel gcc
 COPY lambda_requirements.txt .
 
