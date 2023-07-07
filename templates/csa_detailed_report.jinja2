@@ -499,6 +499,7 @@
       </p>
     {% endif %}
     {% if aws_compliance_data %}
+      <div class="aws_compliance">
       <h4>AWS Compliance Findings</h4>
       <p><b>
         Total AWS Accounts Analyzed: {{aws_compliance_data.cloud_accounts_count}}
@@ -508,9 +509,11 @@
       {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe  }}
       {{ aws_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       </p>
+        </div>
     {% endif %}
 
     {% if azure_compliance_data %}
+    <div class="azure_compliance">
        <p>
       <h4>Azure Compliance Findings</h4>
       <b>
@@ -520,9 +523,11 @@
       {{ azure_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
       {{ azure_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       </p>
+      </div>
     {% endif %}
 
     {% if gcp_compliance_data %}
+    <div class="gcp_compliance">
     <p>
       <h4>GCP Compliance Findings</h4>
       <b>
@@ -532,6 +537,7 @@
       {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
       {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       </p>
+      </div>
     {% endif %}
 
     {% if alerts_data %}
