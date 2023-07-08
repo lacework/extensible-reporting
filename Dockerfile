@@ -19,19 +19,19 @@ COPY lambda_requirements.txt ${FUNCTION_DIR}
 RUN pip install \
     --target ${FUNCTION_DIR} \
         awslambdaric
-RUN pip install \
-    --target ${FUNCTION_DIR} \
-        -r ${FUNCTION_DIR}/lambda_requirements.txt
+
 
 
 FROM public.ecr.aws/docker/library/python:bookworm
 ARG FUNCTION_DIR
 RUN apt-get update && \
-    apt-get install -y xfonts-75dpi xfonts-base libgl1 libxkbcommon-x11-0 libegl1 libdbus-1-3 libnss3 libxcomposite1 libxdamage1
+    apt-get install -y xfonts-75dpi xfonts-base libgl1 libxkbcommon-x11-0 libegl1 libdbus-1-3 libnss3 libxcomposite1 libxdamage1 libXrandr2
 RUN apt install -y python3-pip python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0
 RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
     && chmod +x /usr/local/bin/aws-lambda-rie
-
+RUN pip install \
+    --target ${FUNCTION_DIR} \
+        -r ${FUNCTION_DIR}/lambda_requirements.txt
 
 # Set working directory to function root directory
 WORKDIR ${FUNCTION_DIR}
