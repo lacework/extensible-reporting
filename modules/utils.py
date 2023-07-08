@@ -20,7 +20,7 @@ class LaceworkTime:
         self.delta_days: int = int(days_and_hours[0])
 
     def generate_time_string(self) -> str:
-        return (datetime.now(timezone.utc) - timedelta(days=self.delta_days, hours=self.delta_hours)).strftime("%Y-%m-%dT%H:%M:%S%Z")
+        return (datetime.now(timezone.utc) - timedelta(days=self.delta_days, hours=self.delta_hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def generate_md5_from_obj(obj_to_hash):
