@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 from logzero import logger
 
@@ -56,6 +58,37 @@ class ContainerVulnerabilities:
 
         if limit:
             df = df.head(limit)
+        return df
+
+    def fixable_vulns(self, severities=("Critical", "High"), limit=False):
+        df = pd.json_normalize(self.data,
+                               meta=[['evalCtx', 'image_info', 'repo'],
+                                     'imageId',
+                                     ['featureKey', 'name'],
+                                     'vulnId',
+                                     'severity',
+                                     ['fixInfo', 'fix_available'],
+                                     ['fixInfo', 'fixed_version'],
+                                     ['featureKey', 'version']])
+        if 'severity' not in df:
+            df['severity'] = False
+        df = df[df['severity'].isin(severities)]
+        df = df[df['fixInfo.fix_available'] == 1]
+        df = df[['evalCtx.image_info.repo', 'imageId', 'severity', 'featureKey.name', 'featureKey.version', 'vulnId', 'fixInfo.fixed_version']]
+        df = df.groupby(['evalCtx.image_info.repo', 'imageId', 'severity', 'featureKey.name', 'featureKey.version', 'vulnId'],
+                        as_index=False).agg(pd.unique).applymap(lambda x: x[0] if len(x) == 1 else x)
+        df = df.groupby(['evalCtx.image_info.repo', 'imageId', 'severity', 'featureKey.name', 'fixInfo.fixed_version', 'featureKey.version'], as_index=False).agg({'vulnId': ', '.join})
+
+        df.rename(columns={'evalCtx.image_info.repo': 'Repository',
+                           'imageId': 'Image ID',
+                           'severity': 'Severity',
+                           'vulnId': 'CVE',
+                           'featureKey.name': 'Package Name',
+                           "fixInfo.fixed_version": "Fixed Version(s)",
+                           'featureKey.version': "Installed Version"},
+                  inplace=True)
+        # re-order the columns
+        df = df[['Repository', 'Image ID', 'CVE', 'Severity', 'Package Name', 'Installed Version', 'Fixed Version(s)']]
         return df
 
     def summary(self, severities=["Critical", "High", "Medium", "Low"]):

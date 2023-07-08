@@ -1,8 +1,15 @@
 import pandas as pd
+
 import plotly.graph_objects as go
 from logzero import logger
 
 
+def process_compliance_violations(violations):
+    output_string = ''
+    for violation in violations:
+        formatted_string = f"Region:{violation['region']}" + '\n' + f"Resource: {violation['resource']}" + '\n' + f"Reasons: {violation['reasons']}" + '\n\n'
+        output_string += formatted_string
+    return output_string
 class Compliance:
 
     def __init__(self, data: dict):
@@ -36,7 +43,6 @@ class Compliance:
     def get_compliance_details(self, severities=["Critical", "High"]):
         df = pd.DataFrame(self.all_recommendations)
         df = df[df['STATUS'].isin(["NonCompliant"])]
-
         df['RESOURCE_COUNT'] = (df['VIOLATIONS'].str.len())
 
         df = df.sort_values(by=['SEVERITY', 'RESOURCE_COUNT'], ascending=[True, False])
@@ -52,6 +58,19 @@ class Compliance:
         df.rename(columns={self.account_id_string: self.account_id_rename_string, 'CATEGORY': 'Category',
                            'TITLE': 'Title', 'SEVERITY': 'Severity'},
                   inplace=True)
+
+        return df
+
+    def critical_compliance_details(self):
+        df = pd.DataFrame(self.all_recommendations)
+        df = df[df['STATUS'].isin(["NonCompliant"])]
+        df = df[df['SEVERITY'] == 1]
+        df = df[[self.account_id_string, 'CATEGORY', 'TITLE', 'VIOLATIONS']]
+        df.rename(columns={self.account_id_string: self.account_id_rename_string,
+                           'CATEGORY': 'Category',
+                           'TITLE': 'Control',
+                           'VIOLATIONS': 'Violations'}, inplace=True)
+        df['Violations'] = df['Violations'].apply(process_compliance_violations)
 
         return df
 

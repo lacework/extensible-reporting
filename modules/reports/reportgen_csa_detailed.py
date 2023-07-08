@@ -41,6 +41,7 @@ class ReportGenCSADetailed(ReportGen):
         self.host_vulns_data=self.gather_host_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string())
         self.container_vulns_data=self.gather_container_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string())
         self.alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
+        self.secrets_data=self.gather_secrets(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
 
     def render(self, customer, author):
         return self.template.render(
@@ -55,6 +56,7 @@ class ReportGenCSADetailed(ReportGen):
             host_vulns_data=self.host_vulns_data,
             container_vulns_data=self.container_vulns_data,
             alerts_data=self.alerts_data,
+            secrets_data=self.secrets_data,
             recommendations=self.recommendations
         )
 

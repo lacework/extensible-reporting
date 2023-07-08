@@ -14,7 +14,7 @@ class HostVulnerabilities:
         unique_hosts = df.mid.nunique()
         return unique_hosts
 
-    def summary_by_host(self, severities=["Critical", "High", "Medium", "Low"], limit=False):
+    def summary_by_host(self, severities=("Critical", "High", "Medium", "Low"), limit=False):
         df = pd.json_normalize(self.data,
                                meta=[['cveProps', 'metadata'], ['evalCtx', 'hostname'], ['featureKey', 'name'],
                                      'vulnId', 'severity', 'mid'])
@@ -47,7 +47,37 @@ class HostVulnerabilities:
             df = df.head(limit)
         return df
 
-    def summary(self, severities=["Critical", "High", "Medium", "Low"]):
+    def fixable_vulns(self, severities=("Critical", "High"), limit=False):
+        df = pd.json_normalize(self.data,
+                               meta=[['evalCtx', 'hostname'],
+                                     ['featureKey', 'name'],
+                                     'vulnId',
+                                     'severity',
+                                     ['fixInfo', 'fix_available'],
+                                     ['fixInfo', 'fixed_version'],
+                                     ['featureKey', 'version_installed']])
+        if 'severity' not in df:
+            df['severity'] = False
+        df = df[df['severity'].isin(severities)]
+        df = df[df['fixInfo.fix_available'] == '1']
+        df = df[['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed', 'fixInfo.fixed_version']]
+        # df = df.groupby(['evalCtx.hostname', 'featureKey.name', 'featureKey.version_installed', 'severity', 'vulnId'],
+        #                 as_index=False).agg({'fixInfo.fixed_version': ', '.join})
+        df = df.groupby(['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed'],
+                        as_index=False).agg(pd.unique).applymap(lambda x: x[0] if len(x) == 1 else x)
+        df = df.groupby(['evalCtx.hostname', 'severity', 'featureKey.name', 'fixInfo.fixed_version','featureKey.version_installed' ], as_index=False).agg({'vulnId': ', '.join})
+        # rename columns
+        df.rename(columns={'evalCtx.hostname': 'Hostname',
+                           'severity': 'Severity',
+                           'vulnId': 'CVE',
+                           'featureKey.name': 'Package Name',
+                           "fixInfo.fixed_version": "Fixed Version(s)",
+                           'featureKey.version_installed': "Installed Version"},
+                  inplace=True)
+        df = df[['Hostname', 'CVE', 'Severity', 'Package Name', 'Installed Version', 'Fixed Version(s)']]
+        return df
+
+    def summary(self, severities=("Critical", "High", "Medium", "Low")):
         df = pd.json_normalize(self.data,
                                meta=[['evalCtx', 'hostname'], ['featureKey', 'name'], 'vulnId', 'severity', 'mid'])
 

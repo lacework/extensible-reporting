@@ -10,6 +10,7 @@ from modules.compliance import Compliance
 from modules.alerts import Alerts
 from modules.host_vulnerabilities import HostVulnerabilities
 from modules.container_vulnerabilities import ContainerVulnerabilities
+from modules.secrets import Secrets
 from modules.utils import LaceworkTime
 
 
@@ -83,13 +84,15 @@ class ReportGen:
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Hosts Affected'].values[0]
         summary_bar_graphic = host_vulnerabilities.host_vulns_by_severity_bar(width=1200)
         summary_bar_graphic_encoded = self.bytes_to_image_tag(summary_bar_graphic, "svg+xml")
+        fixable_vulns = host_vulnerabilities.fixable_vulns()
         return {
             'hosts_scanned_count': total_evaluated,
             'host_vulns_summary': summary,
             'host_vulns_summary_bar_graphic': summary_bar_graphic_encoded,
             'host_vulns_summary_by_host': summary_by_host,
             'critical_vuln_count': critical_vulnerability_count,
-            'host_vulns_summary_by_host_limit': host_limit
+            'host_vulns_summary_by_host_limit': host_limit,
+            'fixable_vulns': fixable_vulns
         }
 
     def gather_container_vulnerability_data(self, begin_time: str, end_time: str, container_limit: int = 25):
@@ -115,14 +118,15 @@ class ReportGen:
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Images Affected'].values[0]
         summary_by_package_bar = container_vulnerabilities.top_packages_bar(width=1200)
         summary_by_package_bar_encoded = self.bytes_to_image_tag(summary_by_package_bar, 'svg+xml')
-
+        fixable_vulns = container_vulnerabilities.fixable_vulns()
         return {
             'containers_scanned_count': total_evaluated,
             'container_vulns_summary': summary,
             'container_vulns_summary_by_package_bar_graphic': summary_by_package_bar_encoded,
             'container_vulns_summary_by_image': summary_by_image,
             'critical_vuln_count': critical_vulnerability_count,
-            'container_vulns_summary_by_image_limit': container_limit
+            'container_vulns_summary_by_image_limit': container_limit,
+            'fixable_vulns': fixable_vulns
         }
 
     def gather_compliance_data(self, cloud_provider='AWS', report_type='CIS'):
@@ -152,7 +156,7 @@ class ReportGen:
 
         findings_summary_by_service_bar_graph = compliance_reports.get_summary_by_service_bar_graph(width=1200)
         findings_summary_by_service_bar_graph_encoded = self.bytes_to_image_tag(findings_summary_by_service_bar_graph, 'svg+xml')
-
+        critical_details = compliance_reports.critical_compliance_details()
         summary_by_account = compliance_reports.get_summary_by_account()
         if 'Critical' in summary_by_account.columns:
             critical_finding_count = summary_by_account['Critical'].sum()
@@ -165,7 +169,26 @@ class ReportGen:
             'compliance_findings_by_service_bar_graphic': findings_summary_by_service_bar_graph_encoded,
             'compliance_findings_by_account_bar_graphic': findings_by_account_bar_graph_encoded,
             'compliance_detail': details,
-            'critical_finding_count': critical_finding_count
+            'critical_finding_count': critical_finding_count,
+            'critical_details': critical_details
+        }
+
+    def gather_secrets(self, begin_time: str, end_time: str):
+        print('Getting secrets...')
+        try:
+            self.lacework_interface.use_cache = self.use_cache
+            secrets: Secrets = self.lacework_interface.get_secrets(begin_time, end_time)
+        except Exception as e:
+            logger.error(
+                f'Failed to retrieve secrets data from Lacework, omitting it from the report.')
+            logger.error(f"Exception: {str(e)}")
+            logger.error(traceback.format_exc())
+            return False
+        print(f'Found {secrets.count_secrets()} total secrets')
+        processed_secrets = secrets.processed_secrets()
+        return {
+            "secrets_raw": processed_secrets,
+            "secrets_count": secrets.count_secrets()
         }
 
     def gather_alert_data(self, begin_time: str, end_time: str):

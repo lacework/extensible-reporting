@@ -7,6 +7,7 @@ from modules.host_vulnerabilities import HostVulnerabilities
 from modules.container_vulnerabilities import ContainerVulnerabilities
 from modules.alerts import Alerts
 from modules.compliance import Compliance
+from modules.secrets import Secrets
 from modules.utils import cache_results
 
 
@@ -86,24 +87,55 @@ class LaceworkInterface:
         return account_details
 
     @cache_results
-    def get_alerts(self, start_time, end_time):
+    def get_alerts(self, start_time, end_time, severities=('Critical', 'High')):
         logger.debug(f'Getting alerts from {start_time} to {end_time}:')
         alerts_list = []
-        try:
-            raw_results = self.lacework.alerts.get(start_time=start_time, end_time=end_time)
-        except Exception as e:
-            logger.error(f"Failed to retrieve list of alerts from Lacework API:{str(e)}")
-            raise e
-        while True:
-            alerts_list.extend(raw_results['data'])
-            next_page_url = raw_results['paging']['urls']['nextPage']
-            if next_page_url:
-                raw_results = self.lacework._session.get(next_page_url).json()
-            else:
-                break
+        for severity in severities:
+            filters = {
+                "timeFilter": {
+                    "startTime": start_time,
+                    "endTime": end_time
+                },
+                "filters":
+                    [
+                        {
+                            "field": "severity",
+                            "expression": "eq",
+                            "value": severity
+                        }
+                    ]
+            }
+
+            try:
+                alerts = self.lacework.alerts.search(json=filters)
+            except Exception as e:
+                logger.error(f"Failed to retrieve list of alerts from Lacework API:{str(e)}")
+                raise e
+            i = 1
+            for page in alerts:
+                logger.info('Saving page ' + str(i))
+                i = i + 1
+                alerts_list.extend(page['data'])
+            if i > 100:
+                logger.warning(
+                    "Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
         logger.info(f'{len(alerts_list)} alerts returned.')
         alerts = Alerts(alerts_list)
         return alerts
+
+    @cache_results
+    def get_secrets(self, start_time, end_time):
+        logger.debug(f'Getting secrets from {start_time} to {end_time}:')
+        lql_query = "{source { LW_HE_SECRETS_SSH_PRIVATE_KEYS } return {HOSTNAME, FILE_PATH, SSH_KEY_TYPE} }"
+        lql_query_args = {"StartTimeRange": start_time,
+                          "EndTimeRange": end_time}
+
+        try:
+            secrets = self.lacework.queries.execute(query_text=lql_query, arguments=lql_query_args)
+        except Exception as e:
+            logger.error(f"Failed to retrieve list of secrets from Lacework API:{str(e)}")
+            raise e
+        return Secrets(secrets)
 
     @cache_results
     def get_host_vulns(self, start_time, end_time, severities=("Critical", "High", "Medium")):
