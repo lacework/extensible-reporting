@@ -7,7 +7,6 @@ import datetime
 import boto3
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
-from modules.pdf_printer import create_pdf
 #import pdfkit
 import json
 from botocore.exceptions import ClientError
@@ -73,8 +72,6 @@ def lambda_handler(event, context):
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
 
-    # tell qt not to look for an xserver
-    os.environ['QT_QPA_PLATFORM'] = 'offscreen'
     # S3 Bucket to write report to
     s3_bucket = os.getenv('S3_BUCKET')
     # aws region we're in
@@ -123,10 +120,10 @@ def lambda_handler(event, context):
 
     try:
         #result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
-        # font_config = FontConfiguration()
-        # html = HTML(string=report)
-        # html.write_pdf(pdf_file_name, font_config=font_config)
-        result = create_pdf(report, pdf_file_name)
+        font_config = FontConfiguration()
+        html = HTML(string=report)
+        html.write_pdf(pdf_file_name, font_config=font_config)
+
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
