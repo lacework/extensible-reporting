@@ -19,6 +19,7 @@ class ReportGenCSA(ReportGen):
     def __init__(self, basedir, use_cache=False, api_key_file=None):
         super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
         self.recommendations = self.default_recommendations
+        self.template = self.get_jinja2_template('csa_report.jinja2')
 
     def gather_data(self,
                     vulns_start_time: LaceworkTime,
@@ -31,7 +32,7 @@ class ReportGenCSA(ReportGen):
             self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
         else:
             self.custom_logo_html = None
-        self.template = self.get_jinja2_template('csa_report.jinja2')
+
         self.aws_compliance_data=self.gather_compliance_data(cloud_provider='AWS')
         self.azure_compliance_data=self.gather_compliance_data(cloud_provider='AZURE')
         self.gcp_compliance_data=self.gather_compliance_data(cloud_provider='GCP')
