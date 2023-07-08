@@ -14,12 +14,14 @@ RUN apt-get update && \
 
 # Copy function code
 RUN mkdir -p ${FUNCTION_DIR}
-
+COPY lambda_requirements.txt ${FUNCTION_DIR}
 # Install the function's dependencies
 RUN pip install \
     --target ${FUNCTION_DIR} \
         awslambdaric
-
+RUN pip install \
+    --target ${FUNCTION_DIR} \
+        -r ${FUNCTION_DIR}/lambda_requirements.txt
 
 
 FROM public.ecr.aws/docker/library/python:bookworm
@@ -29,10 +31,8 @@ RUN apt-get update && \
 RUN apt install -y python3-pip python3-cffi python3-brotli libpango-1.0-0 libpangoft2-1.0-0
 RUN curl -Lo /usr/local/bin/aws-lambda-rie https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie \
     && chmod +x /usr/local/bin/aws-lambda-rie
-COPY lambda_requirements.txt ${FUNCTION_DIR}
-RUN pip install \
-    --target ${FUNCTION_DIR} \
-        -r ${FUNCTION_DIR}/lambda_requirements.txt
+
+
 
 # Set working directory to function root directory
 WORKDIR ${FUNCTION_DIR}
