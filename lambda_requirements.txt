@@ -13,3 +13,4 @@ weasyprint
 marketorestpython
 boto3
 awslambdaric
+pyside6
