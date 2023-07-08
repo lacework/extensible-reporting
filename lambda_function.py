@@ -73,6 +73,8 @@ def lambda_handler(event, context):
     os.environ['LW_API_KEY'] = event['key']
     os.environ['LW_API_SECRET'] = event['secret']
 
+    # tell qt not to look for an xserver
+    os.environ['QT_QPA_PLATFORM'] = 'offscreen'
     # S3 Bucket to write report to
     s3_bucket = os.getenv('S3_BUCKET')
     # aws region we're in
