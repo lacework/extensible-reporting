@@ -8,7 +8,6 @@ class Secrets:
     def __init__(self, raw_data):
 
         self.data = raw_data['data']
-        print(self.data)
 
     def count_secrets(self):
         return len(self.data)
