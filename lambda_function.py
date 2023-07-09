@@ -120,7 +120,7 @@ def lambda_handler(event, context):
     lambda_client = boto3.client('lambda', region_name=aws_region)
     s3_key_name_pdf = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     function_params = {'uri': f's3://csareports/{s3_key_name_html}',
-                       'filename': s3_key_name_pdf}
+                       'fileName': s3_key_name_pdf}
 
     try:
         response = lambda_client.invoke(
@@ -150,7 +150,7 @@ def lambda_handler(event, context):
     #             "message": "Failed to write pdf to S3",
     #             "details": str(e)}
 
-    presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name}
+    presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name_pdf}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
     marketo_presigned_url = presigned_url.removeprefix('https://')
 
