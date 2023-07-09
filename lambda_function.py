@@ -96,7 +96,7 @@ def lambda_handler(event, context):
 
     # create report html
     report_gen = ReportGenCSADetailed(basedir)
-    report = report_gen.generate(event['customer'], 'Lacework')
+    report = report_gen.generate(event['customer'], 'Lacework', pagesize='a2')
     s3_key_name_html = f'html/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
     try:
         aws_s3_client = boto3.client('s3', region_name=aws_region)

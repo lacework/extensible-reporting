@@ -218,7 +218,7 @@ class ReportGen:
                  alerts_end_time: LaceworkTime):
         pass
 
-    def render(self, customer, author):
+    def render(self, customer, author, pagesize="a3"):
         pass
 
     def generate(self,

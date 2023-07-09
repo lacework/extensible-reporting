@@ -7,7 +7,7 @@ class ReportGenCSADetailed(ReportGen):
     report_short_name = 'CSA Detailed'
     report_name = 'Detailed Cloud Security Assessment (CIS)'
     report_description = "This is the detailed version of the Lacework Cloud Security Assessment with CIS compliance reporting."
-    default_recommendations = """<h3>Recommendations</h3>
+    default_recommendations = """<h2>Recommendations</h2>
             <p>
               Based on the findings of this assessment, Lacework recommends the following action plan and next steps:
             </p>
@@ -44,7 +44,7 @@ class ReportGenCSADetailed(ReportGen):
         self.alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
         self.secrets_data=self.gather_secrets(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
 
-    def render(self, customer, author):
+    def render(self, customer, author, pagesize="a3"):
         return self.template.render(
             customer=str(customer),
             date=self.get_current_date(),
@@ -58,7 +58,8 @@ class ReportGenCSADetailed(ReportGen):
             container_vulns_data=self.container_vulns_data,
             alerts_data=self.alerts_data,
             secrets_data=self.secrets_data,
-            recommendations=self.recommendations
+            recommendations=self.recommendations,
+            pagesize=pagesize
         )
 
     def generate(self,
@@ -68,12 +69,13 @@ class ReportGenCSADetailed(ReportGen):
                  vulns_end_time: LaceworkTime = LaceworkTime('0:0'),
                  alerts_start_time: LaceworkTime = LaceworkTime('7:0'),
                  alerts_end_time: LaceworkTime = LaceworkTime('0:0'),
-                 custom_logo=None):
+                 custom_logo=None,
+                 pagesize="a3"):
         self.gather_data(vulns_start_time,
                          vulns_end_time,
                          alerts_start_time,
                          alerts_end_time,
                          custom_logo=custom_logo)
-        return self.render(customer, author)
+        return self.render(customer, author, pagesize=pagesize)
 
 
