@@ -25,7 +25,8 @@
     table {transform: scale(1);}
     p {break-inside: avoid;}
     div {break-inside: avoid;}
-    .pagebreak { page-break-after: always; }
+    .pagebreak { page-break-after: always;
+                  clear: both;}
     @page {
       size: a3 landscape;
     }
@@ -500,8 +501,9 @@
   {% endif %}
 
   {% if polygraph_graphic_html %}
-    <div class="pagebreak"> </div>
+    <div class="pagebreak">
   {{ polygraph_graphic_html | safe }}
+      </div>
     {% endif %}
   </div>
    <div class="section-three">
