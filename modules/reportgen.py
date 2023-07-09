@@ -84,7 +84,7 @@ class ReportGen:
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Hosts Affected'].values[0]
         summary_bar_graphic = host_vulnerabilities.host_vulns_by_severity_bar(width=1200)
         summary_bar_graphic_encoded = self.bytes_to_image_tag(summary_bar_graphic, "svg+xml")
-        fixable_vulns = host_vulnerabilities.fixable_vulns()
+        fixable_vulns = host_vulnerabilities.fixable_vulns(severities=["Critical"])
         return {
             'hosts_scanned_count': total_evaluated,
             'host_vulns_summary': summary,
@@ -118,7 +118,7 @@ class ReportGen:
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Images Affected'].values[0]
         summary_by_package_bar = container_vulnerabilities.top_packages_bar(width=1200)
         summary_by_package_bar_encoded = self.bytes_to_image_tag(summary_by_package_bar, 'svg+xml')
-        fixable_vulns = container_vulnerabilities.fixable_vulns()
+        fixable_vulns = container_vulnerabilities.fixable_vulns(severities=['Critical'])
         return {
             'containers_scanned_count': total_evaluated,
             'container_vulns_summary': summary,
