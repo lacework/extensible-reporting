@@ -40,7 +40,7 @@ class ReportGenCSA(ReportGen):
         self.container_vulns_data=self.gather_container_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string())
         self.alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
 
-    def render(self, customer, author):
+    def render(self, customer, author, pagesize="a3"):
         return self.template.render(
             customer=str(customer),
             date=self.get_current_date(),
