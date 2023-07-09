@@ -99,13 +99,13 @@ def lambda_handler(event, context):
     # create report html
     report_gen = ReportGenCSADetailed(basedir)
     report = report_gen.generate(event['customer'], 'Lacework')
-    s3_key_name = f'html/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+    s3_key_name_html = f'html/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
     try:
         aws_s3_client = boto3.client('s3', region_name=aws_region)
         response = aws_s3_client.put_object(
             Body=report,
             Bucket=s3_bucket,
-            Key=s3_key_name)
+            Key=s3_key_name_html)
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to write html to S3",
@@ -118,9 +118,9 @@ def lambda_handler(event, context):
     #                   "page-size": "A3",
     #                   "disable-smart-shrinking": True}
     lambda_client = boto3.client('lambda', region_name=aws_region)
-    s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
-    function_params = {'uri': f's3://csareports/{s3_key_name}',
-                       'filename': s3_key_name}
+    s3_key_name_pdf = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
+    function_params = {'uri': f's3://csareports/{s3_key_name_html}',
+                       'filename': s3_key_name_pdf}
 
     try:
         response = lambda_client.invoke(
