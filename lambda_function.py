@@ -76,8 +76,6 @@ def lambda_handler(event, context):
     s3_bucket = os.getenv('S3_BUCKET')
     # aws region we're in
     aws_region = os.getenv('AWS_REGION')
-    # pdf generator function URL
-    pdf_gen_arn = os.getenv('PDF_GEN_ARN')
     # Get credentials for marketo
     try:
         secret = get_secret("marketo", aws_region)
@@ -111,44 +109,31 @@ def lambda_handler(event, context):
                 "message": "Failed to write html to S3",
                 "details": str(e)}
     # generate pdf from html
-    # pdfkit_config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    # pdf_file_name = "/tmp/report.pdf"
-    # pdfkit_options = {"enable-local-file-access": None,
-    #                   "viewport-size": "1920x1080",
-    #                   "page-size": "A3",
-    #                   "disable-smart-shrinking": True}
+    pdf_file_name = "/tmp/report.pdf"
     lambda_client = boto3.client('lambda', region_name=aws_region)
-    s3_key_name_pdf = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
-    function_params = {'uri': f's3://csareports/{s3_key_name_html}',
-                       'fileName': s3_key_name_pdf}
-
     try:
-        response = lambda_client.invoke(
-            FunctionName=pdf_gen_arn,
-            InvocationType='RequestResponse',
-            Payload=json.dumps(function_params)
-        )
+
         #result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
-        # font_config = FontConfiguration()
-        # html = HTML(string=report)
-        # html.write_pdf(pdf_file_name, font_config=font_config)
+        font_config = FontConfiguration()
+        html = HTML(string=report)
+        html.write_pdf(pdf_file_name, font_config=font_config)
 
     except Exception as e:
         return {"statusCode": 502,
                 "message": "Failed to create pdf",
                 "response": response,
                 "details": str(e)}
-    # s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
-    # try:
-    #     aws_s3_client = boto3.client('s3', region_name=aws_region)
-    #     response = aws_s3_client.upload_file(
-    #         pdf_file_name,
-    #         s3_bucket,
-    #         s3_key_name)
-    # except Exception as e:
-    #     return {"statusCode": 502,
-    #             "message": "Failed to write pdf to S3",
-    #             "details": str(e)}
+    s3_key_name_pdf = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
+    try:
+        aws_s3_client = boto3.client('s3', region_name=aws_region)
+        response = aws_s3_client.upload_file(
+            pdf_file_name,
+            s3_bucket,
+            s3_key_name_pdf)
+    except Exception as e:
+        return {"statusCode": 502,
+                "message": "Failed to write pdf to S3",
+                "details": str(e)}
 
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name_pdf}
     presigned_url = aws_s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
