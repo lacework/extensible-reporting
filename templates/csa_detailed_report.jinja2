@@ -577,9 +577,9 @@
     </div>
     {% if alerts_data %}
     <div class="alerts">
-    <p>
-      <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
 
+      <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
+      <p>
         Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
       </p>
 
@@ -635,7 +635,7 @@
       <p>This section contains additional details on the findings that were summarized above:</p>
         <h3>Detailed CVE Breakdown</h3>
       {% if host_vulns_data %}
-        <h4>Hosts With Critical Severity Fixable Vulnerabilities</h4>
+        <h4>Hosts With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all hosts with "critical" vulnerabilities that have fixes available. Additional vulnerability information for other severity levels
           can be found in the Lacework UI. </p>
         {{ host_vulns_data.fixable_vulns.to_html() | safe }}
@@ -644,7 +644,7 @@
 
       {% if container_vulns_data %}
 
-        <h4>Containers With Critical Severity Fixable Vulnerabilities</h4>
+        <h4>Containers With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all containers with "critical" vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework UI. </p>
         {{ container_vulns_data.fixable_vulns.to_html() | safe }}
 
