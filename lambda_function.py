@@ -117,7 +117,7 @@ def lambda_handler(event, context):
     #                   "viewport-size": "1920x1080",
     #                   "page-size": "A3",
     #                   "disable-smart-shrinking": True}
-    lambda_client = boto3.client('lambda')
+    lambda_client = boto3.client('lambda', region_name=aws_region)
     s3_key_name = f'reports/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
     function_params = {'uri': f's3://csareports/{s3_key_name}',
                        'filename': s3_key_name}
