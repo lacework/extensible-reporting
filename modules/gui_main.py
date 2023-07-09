@@ -16,7 +16,7 @@ class ReportPreview(QMainWindow):
         super().__init__()
         self.web_viewer = QWebEngineView()
         self.setCentralWidget(self.web_viewer)
-        self.resize(640, 480)
+        self.resize(1280, 720)
         self.setWindowTitle("Lacework Report Preview")
         self.web_viewer.pdfPrintingFinished.connect(self.pdf_print_finished)
 

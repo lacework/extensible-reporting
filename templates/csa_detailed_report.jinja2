@@ -22,9 +22,10 @@
     }
   }
   @media print {
-    table {max-width: 150px;}
+    table {transform: scale(1);}
     p {break-inside: avoid;}
     div {break-inside: avoid;}
+    .pagebreak { page-break-after: always; }
     @page {
       size: a3 landscape;
     }
@@ -499,6 +500,7 @@
   {% endif %}
 
   {% if polygraph_graphic_html %}
+    <div class="pagebreak"> </div>
   {{ polygraph_graphic_html | safe }}
     {% endif %}
   </div>
@@ -625,16 +627,16 @@
       <p>This section contains additional details on the findings that were summarized above:</p>
         <h3>Detailed CVE Breakdown</h3>
       {% if host_vulns_data %}
-        <h4>Hosts With Critical/High Severity Fixable Vulnerabilities</h4>
-        <p> This table lists all of your hosts with critical and high severity vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework user interface. </p>
+        <h4>Hosts With Critical Severity Fixable Vulnerabilities</h4>
+        <p> This table lists all of your hosts with critical severity vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework user interface. </p>
         {{ host_vulns_data.fixable_vulns.to_html() | safe }}
 
       {% endif %}
 
       {% if container_vulns_data %}
 
-        <h4>Containers With Critical/High Severity Fixable Vulnerabilities</h4>
-        <p> This table lists all of your containers with critical and high severity vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework user interface. </p>
+        <h4>Containers With Critical Severity Fixable Vulnerabilities</h4>
+        <p> This table lists all of your containers with critical severity vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework user interface. </p>
         {{ container_vulns_data.fixable_vulns.to_html() | safe }}
 
       {% endif %}

@@ -60,6 +60,8 @@ class HostVulnerabilities:
             df['severity'] = False
         df = df[df['severity'].isin(severities)]
         df = df[df['fixInfo.fix_available'] == '1']
+        #cve_count = df.groupby('evalCtx.hostname')['vulnId'].nunique()
+        #print(cve_count)
         df = df[['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed', 'fixInfo.fixed_version']]
         # df = df.groupby(['evalCtx.hostname', 'featureKey.name', 'featureKey.version_installed', 'severity', 'vulnId'],
         #                 as_index=False).agg({'fixInfo.fixed_version': ', '.join})
