@@ -23,6 +23,10 @@
   }
   @media print {
     table {transform: scale(1);}
+      td, th {
+    max-width: 150px;
+    word-wrap: break-word;
+  }
     p {break-inside: avoid;}
     div {break-inside: avoid;}
     .pagebreak { page-break-after: always;
