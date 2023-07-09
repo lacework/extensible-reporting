@@ -125,7 +125,7 @@ def lambda_handler(event, context):
     try:
         response = lambda_client.invoke(
             FunctionName=pdf_gen_arn,
-            InvocationType='RequestReponse',
+            InvocationType='RequestResponse',
             Payload=json.dumps(function_params)
         )
         #result = pdfkit.from_string(report, pdf_file_name, configuration=pdfkit_config, options=pdfkit_options, verbose=True)
