@@ -66,7 +66,9 @@ def lambda_handler(event, context):
         print(f"marketo email:{event['marketo_email']}")
     # set credentials for Lacework
     basedir = os.path.dirname(os.path.abspath(__file__))
-    os.environ['LW_ACCOUNT'] = str(event['lacework_instance']).split(".")[0]
+    short_instance_name = str(event['lacework_instance']).split(".")[0]
+    print(f"Using {short_instance_name} as instance name.")
+    os.environ['LW_ACCOUNT'] = short_instance_name
     if 'lacework_subaccount' in event:
         os.environ['LW_SUBACCOUNT'] = event['lacework_subaccount']
     os.environ['LW_API_KEY'] = event['key']
