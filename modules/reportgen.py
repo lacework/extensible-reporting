@@ -83,7 +83,7 @@ class ReportGen:
         summary = host_vulnerabilities.summary()
         summary.style.set_table_attributes('class="host_vulns_summary"')
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Hosts Affected'].values[0]
-        summary_bar_graphic = host_vulnerabilities.host_vulns_by_severity_bar(width=1200 * self.graph_scale)
+        summary_bar_graphic = host_vulnerabilities.host_vulns_by_severity_bar(width=1200 * self.graph_scale, height=350 * self.graph_scale)
         summary_bar_graphic_encoded = self.bytes_to_image_tag(summary_bar_graphic, "svg+xml")
         fixable_vulns = host_vulnerabilities.fixable_vulns(severities=["Critical"])
         return {
@@ -117,7 +117,7 @@ class ReportGen:
         summary = container_vulnerabilities.summary()
         summary.style.set_table_attributes('class="container_vulns_summary"')
         critical_vulnerability_count = summary.loc[summary['Severity'] == 'Critical', 'Images Affected'].values[0]
-        summary_by_package_bar = container_vulnerabilities.top_packages_bar(width=1200 * self.graph_scale)
+        summary_by_package_bar = container_vulnerabilities.top_packages_bar(width=1200 * self.graph_scale, height=350 * self.graph_scale)
         summary_by_package_bar_encoded = self.bytes_to_image_tag(summary_by_package_bar, 'svg+xml')
         fixable_vulns = container_vulnerabilities.fixable_vulns(severities=['Critical'])
         return {
@@ -152,10 +152,10 @@ class ReportGen:
         summary.style.set_table_attributes('class="compliance_summary"')
         print(summary)
         # get graphics
-        findings_by_account_bar_graph = compliance_reports.get_summary_by_account_bar_graph(width=1200 * self.graph_scale)
+        findings_by_account_bar_graph = compliance_reports.get_summary_by_account_bar_graph(width=1200 * self.graph_scale,  height=350 * self.graph_scale)
         findings_by_account_bar_graph_encoded = self.bytes_to_image_tag(findings_by_account_bar_graph, 'svg+xml')
 
-        findings_summary_by_service_bar_graph = compliance_reports.get_summary_by_service_bar_graph(width=1200 * self.graph_scale)
+        findings_summary_by_service_bar_graph = compliance_reports.get_summary_by_service_bar_graph(width=1200 * self.graph_scale, height=350 * self.graph_scale)
         findings_summary_by_service_bar_graph_encoded = self.bytes_to_image_tag(findings_summary_by_service_bar_graph, 'svg+xml')
         critical_details = compliance_reports.critical_compliance_details()
         summary_by_account = compliance_reports.get_summary_by_account()
