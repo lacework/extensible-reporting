@@ -92,8 +92,6 @@ def lambda_handler(event, context):
             print('Failed to get Marketo credentials from ENV variables too. Exiting...')
             sys.exit()
 
-
-
     # create report html
     report_gen = ReportGenCSADetailed(basedir)
     report = report_gen.generate(event['customer'], 'Lacework', pagesize='a2')

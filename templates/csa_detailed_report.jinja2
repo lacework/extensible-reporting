@@ -22,21 +22,23 @@
     }
   }
   @media print {
-    table {transform: scale(1);}
-      td, th {
-    max-width: 150px;
-    word-wrap: break-word;
-  }
-    p {break-inside: avoid;}
-    div {break-inside: avoid;}
-    .pagebreak { page-break-after: always;
-                  clear: both;}
     {% if pagesize %}
     @page {
       size: {{pagesize}} landscape;
     }
     {% endif %}
+    table {transform: scale(1);}
+    td, th {
+      max-width: 150px;
+      word-wrap: break-word;
+    }
+    p {break-inside: avoid;}
+    div {break-inside: avoid;}
+    .pagebreak { page-break-after: always; clear: both;}
+    .noprint, .noprint img { visibility: hidden; height: 0px; }
+    .printit, .printit img { visibility: visible !important; height: 600px !important; }
   }
+  .printit, .printit img { visibility: hidden; height: 0px; }
 
   @font-face {
     font-family: 'NB International';
@@ -414,12 +416,17 @@
       {{ summary_data | join(', ') }}
     </blockquote>
   </div>
+     {% if polygraph_graphic_html %}
+       <div class="printit">
+         {{ polygraph_graphic_html | safe }}
+        </div>
+    {% endif %}
 
   <div class="section-two">
-       {% if polygraph_graphic_html %}
-    <div class="pagebreak">
-      {{ polygraph_graphic_html | safe }}
-      </div>
+     {% if polygraph_graphic_html %}
+       <div class="noprint">
+          {{ polygraph_graphic_html | safe }}
+       </div>
     {% endif %}
     <h2>Executive Summary</h2>
     <p>
@@ -527,14 +534,12 @@
      {% endif %}
        <div class="compliance_findings">
     {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
-         <h4> Compliance Findings </h4>
-              <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:
-      </p>
+    <h4> Compliance Findings </h4>
+    <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:</p>
     {% endif %}
 
-
     {% if aws_compliance_data %}
-
+    <div class="pagebreak">
       <h4>AWS Compliance Findings</h4>
       <p><b>
         Total AWS Accounts Analyzed: {{aws_compliance_data.cloud_accounts_count}}
@@ -544,10 +549,11 @@
       {{ aws_compliance_data.compliance_findings_by_service_bar_graphic | safe  }}
       {{ aws_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       </p>
-
+    </div>
     {% endif %}
 
     {% if azure_compliance_data %}
+    <div class="pagebreak">
 
        <p>
       <h4>Azure Compliance Findings</h4>
@@ -559,20 +565,21 @@
       {{ azure_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
       </p>
 
+    </div>
     {% endif %}
 
     {% if gcp_compliance_data %}
-
-    <p>
-      <h4>GCP Compliance Findings</h4>
-      <b>
-        Total GCP Subscriptions Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
-      </b>
-      {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
-      {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
-      {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
-      </p>
-
+    <div class="pagebreak">
+      <p>
+        <h4>GCP Compliance Findings</h4>
+        <b>
+          Total GCP Subscriptions Analyzed: {{gcp_compliance_data.cloud_accounts_count}}
+        </b>
+        {{ gcp_compliance_data.compliance_summary.to_html(index=False) | safe }}
+        {{ gcp_compliance_data.compliance_findings_by_service_bar_graphic | safe }}
+        {{ gcp_compliance_data.compliance_findings_by_account_bar_graphic | safe }}
+        </p>
+    </div>
     {% endif %}
     </div>
     {% if alerts_data %}
