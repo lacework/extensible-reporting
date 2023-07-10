@@ -16,8 +16,8 @@ class ReportGenCSADetailed(ReportGen):
               <li>Complete a recurring Cloud Security Assessment once a wider Lacework deployment has been completed to baseline and trend improvements to your cloud security posture.</li>
             </ol>"""
 
-    def __init__(self, basedir, use_cache=False, api_key_file=None):
-        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
+    def __init__(self, basedir, use_cache=False, api_key_file=None, graph_scale=1):
+        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file, graph_scale=graph_scale)
         self.recommendations = self.default_recommendations
         self.template = self.get_jinja2_template('csa_detailed_report.jinja2')
 
