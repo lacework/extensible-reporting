@@ -93,7 +93,7 @@ def lambda_handler(event, context):
             sys.exit()
 
     # create report html
-    report_gen = ReportGenCSADetailed(basedir, graph_scale=1.6)
+    report_gen = ReportGenCSADetailed(basedir, graph_scale=1.4)
     report = report_gen.generate(event['customer'], 'Lacework', pagesize='a2')
     s3_key_name_html = f'html/{event["customer"]}_CSA_{datetime.datetime.now().strftime("%Y%m%d")}.html'
     try:
