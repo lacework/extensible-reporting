@@ -670,33 +670,36 @@
           <h4>AWS - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ aws_compliance_data.compliance_detail.to_html() | safe }}
-        {% endif %}
+
         {% if aws_compliance_data.critical_finding_count > 0 %}
           <h4>AWS - Critical Findings with Details</h4>
         <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
         {{ aws_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
         {% endif %}
+              {% endif %}
 
         {% if azure_compliance_data %}
           <h4>Azure - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ azure_compliance_data.compliance_detail.to_html(index=False) | safe }}
-                {% endif %}
+
         {% if azure_compliance_data.critical_finding_count > 0 %}
         <h4>Azure - Critical Findings with Details</h4>
         <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
         {{ azure_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
         {% endif %}
+         {% endif %}
 
         {% if gcp_compliance_data %}
           <h4>GCP - Top High/Critical Compliance Findings</h4>
           <p></p>
           {{ gcp_compliance_data.compliance_detail.to_html(index=False) | safe }}
-                {% endif %}
+
         {% if gcp_compliance_data.critical_finding_count > 0 %}
         <h4>GCP - Critical Findings with Details</h4>
         <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
         {{ gcp_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
+        {% endif %}
         {% endif %}
 
       {% endif %}
