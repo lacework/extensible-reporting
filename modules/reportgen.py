@@ -204,13 +204,16 @@ class ReportGen:
             logger.error(traceback.format_exc())
             return False
         print(f'Found {alerts.count_alerts()} total alerts.')
-        processed_alerts = alerts.processed_alerts(limit=25)
-        high_critical_finding_count = len(processed_alerts[processed_alerts['Severity'].isin(['Critical', 'High'])])
-        print(f'Found {high_critical_finding_count} high and critical alerts.')
-        return {
-            'alerts_raw': processed_alerts,
-            'high_critical_finding_count': high_critical_finding_count
-        }
+        if alerts.count_alerts() > 0:
+            processed_alerts = alerts.processed_alerts(limit=25)
+            high_critical_finding_count = len(processed_alerts[processed_alerts['Severity'].isin(['Critical', 'High'])])
+            print(f'Found {high_critical_finding_count} high and critical alerts.')
+            return {
+                'alerts_raw': processed_alerts,
+                'high_critical_finding_count': high_critical_finding_count
+            }
+        else:
+            return None
 
     def gather_data(self,
                  vulns_start_time: LaceworkTime,
