@@ -167,7 +167,7 @@ def lambda_handler(event, context):
                 "message": "Failed to write pdf to S3",
                 "details": str(e)}
 
-    presigned_url = gen_presigned_url(s3_key_name_pdf, s3_bucket, download_role_arn, aws_region)
+    presigned_url = gen_presigned_url(s3_key_name_pdf, s3_bucket, aws_region)
     marketo_presigned_url = presigned_url.removeprefix('https://')
 
     if 'marketo_email' in event:
