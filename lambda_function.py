@@ -5,6 +5,7 @@ from marketorestpython.client import MarketoClient
 import os
 import datetime
 import boto3
+import boto3.session
 from weasyprint import HTML, CSS
 from weasyprint.text.fonts import FontConfiguration
 #import pdfkit
@@ -35,6 +36,30 @@ def get_secret(secret_name, region_name):
 
     return json.loads(secret)
 
+
+def gen_aws_session(role_arn, session_name='my_session'):
+    """
+    If role_arn is given assumes a role and returns boto3 session
+    otherwise return a regular session with the current IAM user/role
+    """
+    if role_arn:
+
+        client = boto3.client('sts', config=boto3.session.Config(signature_version='s3v4'))
+        response = client.assume_role(RoleArn=role_arn, RoleSessionName=session_name)
+        session = boto3.Session(
+            aws_access_key_id=response['Credentials']['AccessKeyId'],
+            aws_secret_access_key=response['Credentials']['SecretAccessKey'],
+            aws_session_token=response['Credentials']['SessionToken'])
+        return session
+    else:
+        return boto3.Session()
+
+def gen_presigned_url(s3_key, s3_bucket, role_arn, aws_region):
+    session = gen_aws_session(role_arn)
+    presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key}
+    s3_client = session.client("s3", region_name=aws_region)
+    presigned_url = s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
+    return presigned_url
 
 def lambda_handler(event, context):
     '''
@@ -78,6 +103,8 @@ def lambda_handler(event, context):
     s3_bucket = os.getenv('S3_BUCKET')
     # aws region we're in
     aws_region = os.getenv('AWS_REGION')
+    # role_arn to assume for generating presigned download link
+    download_role_arn = os.getenv('DOWNLOAD_ROLE_ARN')
     # Get credentials for marketo
     try:
         secret = get_secret("marketo", aws_region)
@@ -135,8 +162,7 @@ def lambda_handler(event, context):
                 "message": "Failed to write pdf to S3",
                 "details": str(e)}
 
-    presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key_name_pdf}
-    presigned_url = aws_s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
+    presigned_url = gen_presigned_url(s3_key_name_pdf, s3_bucket, download_role_arn, aws_region)
     marketo_presigned_url = presigned_url.removeprefix('https://')
 
     if 'marketo_email' in event:
