@@ -37,7 +37,7 @@ def get_secret(secret_name, region_name):
     return json.loads(secret)
 
 
-def gen_aws_session(role_arn, session_name='my_session'):
+def assume_role(role_arn, session_name='my_session'):
     """
     If role_arn is given assumes a role and returns boto3 session
     otherwise return a regular session with the current IAM user/role
@@ -54,8 +54,13 @@ def gen_aws_session(role_arn, session_name='my_session'):
     else:
         return boto3.Session()
 
-def gen_presigned_url(s3_key, s3_bucket, role_arn, aws_region):
-    session = gen_aws_session(role_arn)
+
+def gen_presigned_url(s3_key, s3_bucket, aws_region):
+    creds = get_secret('report_download_creds', aws_region)
+    session = boto3.Session(
+        aws_access_key_id=creds['key'],
+        aws_secret_access_key=creds['secret']
+    )
     presigned_url_args = {'Bucket': s3_bucket, 'Key': s3_key}
     s3_client = session.client("s3", region_name=aws_region)
     presigned_url = s3_client.generate_presigned_url('get_object', Params=presigned_url_args, ExpiresIn=604799)
