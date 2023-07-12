@@ -542,7 +542,7 @@
     <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:</p>
     {% endif %}
 
-    {% if aws_compliance_data %}
+    {% if aws_compliance_data and aws_compliance_data.summary_count > 0 %}
     <div class="pagebreak">
       <h4>AWS Compliance Findings</h4>
       <p><b>
@@ -556,7 +556,7 @@
     </div>
     {% endif %}
 
-    {% if azure_compliance_data %}
+    {% if azure_compliance_data and azure_compliance_data.summary_count > 0 %}
     <div class="pagebreak">
 
        <p>
@@ -572,7 +572,7 @@
     </div>
     {% endif %}
 
-    {% if gcp_compliance_data %}
+    {% if gcp_compliance_data and azure_compliance_data.summary_count > 0 %}
     <div class="pagebreak">
       <p>
         <h4>GCP Compliance Findings</h4>
@@ -644,7 +644,9 @@
       <div class="detailed_findings">
       <h2>Appendix of Detailed Findings</h2>
       <p>This section contains additional details on the findings that were summarized above:</p>
+        {% if host_vulns_data or container_vulns_data %}
         <h3>Detailed CVE Breakdown</h3>
+        {% endif %}
       {% if host_vulns_data %}
         <h4>Hosts With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all hosts with "critical" vulnerabilities that have fixes available. Additional vulnerability information for other severity levels

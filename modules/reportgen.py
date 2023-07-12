@@ -159,6 +159,7 @@ class ReportGen:
         findings_summary_by_service_bar_graph_encoded = self.bytes_to_image_tag(findings_summary_by_service_bar_graph, 'svg+xml', align='middle')
         critical_details = compliance_reports.critical_compliance_details()
         summary_by_account = compliance_reports.get_summary_by_account()
+        summary_count = summary_by_account.shape[0]
         if 'Critical' in summary_by_account.columns:
             critical_finding_count = summary_by_account['Critical'].sum()
         else:
@@ -170,6 +171,7 @@ class ReportGen:
             'compliance_findings_by_service_bar_graphic': findings_summary_by_service_bar_graph_encoded,
             'compliance_findings_by_account_bar_graphic': findings_by_account_bar_graph_encoded,
             'compliance_detail': details,
+            'summary_count': summary_count,
             'critical_finding_count': critical_finding_count,
             'critical_details': critical_details
         }
