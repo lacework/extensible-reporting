@@ -60,23 +60,25 @@ class HostVulnerabilities:
             df['severity'] = False
         df = df[df['severity'].isin(severities)]
         df = df[df['fixInfo.fix_available'] == '1']
-        #cve_count = df.groupby('evalCtx.hostname')['vulnId'].nunique()
-        #print(cve_count)
-        df = df[['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed', 'fixInfo.fixed_version']]
-        # df = df.groupby(['evalCtx.hostname', 'featureKey.name', 'featureKey.version_installed', 'severity', 'vulnId'],
-        #                 as_index=False).agg({'fixInfo.fixed_version': ', '.join})
-        df = df.groupby(['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed'],
-                        as_index=False).agg(pd.unique).applymap(lambda x: x[0] if len(x) == 1 else x)
-        df = df.groupby(['evalCtx.hostname', 'severity', 'featureKey.name', 'fixInfo.fixed_version','featureKey.version_installed' ], as_index=False).agg({'vulnId': ', '.join})
-        # rename columns
-        df.rename(columns={'evalCtx.hostname': 'Hostname',
-                           'severity': 'Severity',
-                           'vulnId': 'CVE',
-                           'featureKey.name': 'Package Name',
-                           "fixInfo.fixed_version": "Fixed Version(s)",
-                           'featureKey.version_installed': "Installed Version"},
-                  inplace=True)
-        df = df[['Hostname', 'CVE', 'Severity', 'Package Name', 'Installed Version', 'Fixed Version(s)']]
+        if not df.empty:
+            #cve_count = df.groupby('evalCtx.hostname')['vulnId'].nunique()
+            #print(cve_count)
+            df = df[['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed', 'fixInfo.fixed_version']]
+            # df = df.groupby(['evalCtx.hostname', 'featureKey.name', 'featureKey.version_installed', 'severity', 'vulnId'],
+            #                 as_index=False).agg({'fixInfo.fixed_version': ', '.join})
+            df = df.groupby(['evalCtx.hostname', 'severity', 'vulnId', 'featureKey.name', 'featureKey.version_installed'],
+                            as_index=False).agg(pd.unique).applymap(lambda x: x[0] if len(x) == 1 else x)
+            print(df)
+            df = df.groupby(['evalCtx.hostname', 'severity', 'featureKey.name', 'fixInfo.fixed_version','featureKey.version_installed' ], as_index=False).agg({'vulnId': ', '.join})
+            # rename columns
+            df.rename(columns={'evalCtx.hostname': 'Hostname',
+                               'severity': 'Severity',
+                               'vulnId': 'CVE',
+                               'featureKey.name': 'Package Name',
+                               "fixInfo.fixed_version": "Fixed Version(s)",
+                               'featureKey.version_installed': "Installed Version"},
+                      inplace=True)
+            df = df[['Hostname', 'CVE', 'Severity', 'Package Name', 'Installed Version', 'Fixed Version(s)']]
         return df
 
     def summary(self, severities=("Critical", "High", "Medium", "Low")):

@@ -647,7 +647,7 @@
         {% if host_vulns_data or container_vulns_data %}
         <h3>Detailed CVE Breakdown</h3>
         {% endif %}
-      {% if host_vulns_data %}
+      {% if not host_vulns_data.fixable_vulns.empty %}
         <h4>Hosts With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all hosts with "critical" vulnerabilities that have fixes available. Additional vulnerability information for other severity levels
           can be found in the Lacework UI. </p>
@@ -655,7 +655,7 @@
 
       {% endif %}
 
-      {% if container_vulns_data %}
+      {% if not container_vulns_data.fixable_vulns.empty %}
 
         <h4>Containers With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all containers with "critical" vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework UI. </p>
