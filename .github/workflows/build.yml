@@ -47,6 +47,11 @@ jobs:
             CMD_BUILD: pyinstaller generate_csa_report_win.spec
             OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
+          - os: ubuntu-latest
+            TARGET: linux
+            CMD_BUILD: pyinstaller generate_csa_report_linux.spec
+            OUT_FILE_NAME: lw_report_gen_linux_x86_64
+            ASSET_MIME: application/octet-stream
     steps:
     - uses: actions/checkout@v1
     - name: Set up Python 3.8.1
