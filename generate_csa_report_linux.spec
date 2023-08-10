@@ -31,7 +31,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='lw_report_gen_linux',
+    name='lw_report_gen_linux_x86_64',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
