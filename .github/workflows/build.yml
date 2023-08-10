@@ -54,10 +54,10 @@ jobs:
             ASSET_MIME: application/octet-stream
     steps:
     - uses: actions/checkout@v1
-    - name: Set up Python 3.11.4
+    - name: Set up Python 3.10.12
       uses: actions/setup-python@v2
       with:
-        python-version: 3.11.4
+        python-version: 3.10.12
     - name: Update VERSION file
       id: update_version
       run: |
