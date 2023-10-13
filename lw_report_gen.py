@@ -9,7 +9,7 @@ from modules.process_args import get_validated_arguments, pre_process_args
 from modules.gui_main import ExtensibleReportingGUI
 from modules.utils import get_available_reports
 from modules.utils import alert_new_release
-from modules.reportgen import ReportGen # do not remove, needed by pyinstaller
+from modules.reportgen import ReportGen  # do not remove, needed by pyinstaller
 
 
 def main():
@@ -18,8 +18,6 @@ def main():
     # Required for Pyinstaller as it temporarily extracts all files to a temp folder before running
     if getattr(sys, 'frozen', False):
         basedir = sys._MEIPASS
-        if platform.system() == "Darwin":
-            os.environ["QTWEBENGINE_RESOURCES_PATH"] = basedir
     else:
         basedir = os.path.dirname(os.path.abspath(__file__))
 
@@ -29,7 +27,7 @@ def main():
     logzero.logfile('lw_report_gen.log', loglevel=logzero.DEBUG)
 
     # check github for updates
-    alert_new_release()
+    # alert_new_release()
 
     # Dynamically import report classes from "modules/reports" subdirectory
     available_reports: list = get_available_reports(basedir)
