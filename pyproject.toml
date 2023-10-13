@@ -22,9 +22,12 @@ laceworksdk = "^1.8.1"
 pyside6 = "^6.4.3"
 
 [tool.poetry.dev-dependencies]
-pyinstaller = "^5.4.1"
+pyinstaller = "^6.0.0"
 boto3 = "^1.26.0"
+poethepoet = "^0.24.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+[tool.poe.tasks]
+clean = "rm -r build/ dist/"

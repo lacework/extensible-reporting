@@ -1,6 +1,6 @@
 from modules.reportgen import ReportGen
 from modules.utils import LaceworkTime
-
+import os
 
 class ReportGenCSA(ReportGen):
 
@@ -20,18 +20,13 @@ class ReportGenCSA(ReportGen):
         super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
         self.recommendations = self.default_recommendations
         self.template = self.get_jinja2_template('csa_report.jinja2')
+        self.polygraph_graphic_html = self.file_to_image_tag('assets/polygraph-info.png', 'png')
 
     def gather_data(self,
                     vulns_start_time: LaceworkTime,
                     vulns_end_time: LaceworkTime,
                     alerts_start_time: LaceworkTime,
-                    alerts_end_time: LaceworkTime,
-                    custom_logo=None):
-        self.polygraph_graphic_html = self.file_to_image_tag('assets/polygraph-info.png', 'png')
-        if custom_logo:
-            self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
-        else:
-            self.custom_logo_html = None
+                    alerts_end_time: LaceworkTime):
 
         self.aws_compliance_data=self.gather_compliance_data(cloud_provider='AWS')
         self.azure_compliance_data=self.gather_compliance_data(cloud_provider='AZURE')
@@ -40,7 +35,11 @@ class ReportGenCSA(ReportGen):
         self.container_vulns_data=self.gather_container_vulnerability_data(vulns_start_time.generate_time_string(), vulns_end_time.generate_time_string())
         self.alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
 
-    def render(self, customer, author, pagesize="a3"):
+    def render(self, customer, author, custom_logo=None, pagesize="a3"):
+        if custom_logo and os.path.isfile(custom_logo):
+            self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
+        else:
+            self.custom_logo_html = None
         return self.template.render(
             customer=str(customer),
             date=self.get_current_date(),
@@ -67,8 +66,7 @@ class ReportGenCSA(ReportGen):
         self.gather_data(vulns_start_time,
                          vulns_end_time,
                          alerts_start_time,
-                         alerts_end_time,
-                         custom_logo=custom_logo)
-        return self.render(customer, author)
+                         alerts_end_time)
+        return self.render(customer, author, custom_logo=custom_logo)
 
 

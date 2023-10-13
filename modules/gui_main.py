@@ -24,6 +24,9 @@ class ReportPreview(QMainWindow):
         self.web_viewer.setHtml(report)
         self.show()
 
+    def clear_report(self):
+        self.web_viewer.setHtml(None)
+
     def reload_report(self, report):
         self.web_viewer.setHtml(report)
 
@@ -100,7 +103,7 @@ class ExtensibleReportingGUI(QApplication):
         self.report_generator.recommendations = self.window.plainTextEditRecommendations.plainText
 
         if self.report:
-            self.report = self.report_generator.render(self.window.lineEditCustomer.text, self.window.lineEditAuthor.text)
+            self.report = self.report_generator.render(self.window.lineEditCustomer.text, self.window.lineEditAuthor.text, custom_logo=self.window.lineEditCustomLogo.text)
             self.report_preview.reload_report(self.report)
 
     def write_html(self):
@@ -173,6 +176,9 @@ class ExtensibleReportingGUI(QApplication):
         self.report_to_run = [report['report_class'] for report in self.available_reports if report['report_name'] == report_name][0]
         self.report_generator = self.report_to_run(self.basedir, use_cache=self.window.checkBoxUseCache.checked, api_key_file=self.pre_processed_args['api_key_file'])
         logger.debug(f"Currently Selected Report: {report_name}")
+        self.report = None
+        self.report_preview.hide()
+        self.report_preview.clear_report()
         self.window.plainTextEditRecommendations.plainText = self.report_to_run.default_recommendations
 
 
