@@ -72,6 +72,7 @@ def get_arguments():
     parser.add_argument("--v", help="Set Verbose Logging", action='store_true')
     parser.add_argument("--vv", help="Set Extremely Verbose Logging", action='store_true')
     parser.add_argument("--report", help="Choose which report to execute. Default is 'CSA'", default="CSA")
+    parser.add_argument("--report-format", help="Specify output format, HTML or PDF. Default is HTML", default="HTML")
     parser.add_argument("--gui", help="Run this tool in GUI mode, which provides additional customization options.", action='store_true')
     parser.add_argument("--logo", type=str, help="Specify a custom logo (PNG file) to add to the report.")
     parser.add_argument("--list-reports", help="List the available reports to generate. Default is 'CSA'", action='store_true')
@@ -118,6 +119,10 @@ def get_validated_arguments():
             logger.error(
                 "The API key file you specified either does not exist or is not readable. Please check the file and it's permissions.")
             sys.exit()
+    if args.report_format not in ["HTML", "PDF"]:
+        logger.error("Please specify a valid report format of either HTML or PDF.")
+        sys.exit()
+        
     return args
 
 

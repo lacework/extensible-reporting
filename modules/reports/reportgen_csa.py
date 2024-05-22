@@ -16,8 +16,8 @@ class ReportGenCSA(ReportGen):
               <li>Complete a recurring Cloud Security Assessment once a wider Lacework deployment has been completed to baseline and trend improvements to your cloud security posture.</li>
             </ol>"""
 
-    def __init__(self, basedir, use_cache=False, api_key_file=None):
-        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file)
+    def __init__(self, basedir, use_cache=False, api_key_file=None, graph_scale=1):
+        super().__init__(basedir, use_cache=use_cache, api_key_file=api_key_file, graph_scale=graph_scale)
         self.recommendations = self.default_recommendations
         self.template = self.get_jinja2_template('csa_report.jinja2')
         self.polygraph_graphic_html = self.file_to_image_tag('assets/polygraph-info.png', 'png')
@@ -62,11 +62,12 @@ class ReportGenCSA(ReportGen):
                  vulns_end_time: LaceworkTime = LaceworkTime('0:0'),
                  alerts_start_time: LaceworkTime = LaceworkTime('7:0'),
                  alerts_end_time: LaceworkTime = LaceworkTime('0:0'),
-                 custom_logo=None):
+                 custom_logo=None,
+                 pagesize="a3"):
         self.gather_data(vulns_start_time,
                          vulns_end_time,
                          alerts_start_time,
                          alerts_end_time)
-        return self.render(customer, author, custom_logo=custom_logo)
+        return self.render(customer, author, custom_logo=custom_logo, pagesize=pagesize)
 
 

@@ -6,7 +6,6 @@ import traceback
 import platform
 from logzero import logger
 from modules.process_args import get_validated_arguments, pre_process_args
-from modules.gui_main import ExtensibleReportingGUI
 from modules.utils import get_available_reports
 from modules.utils import alert_new_release
 from modules.reportgen import ReportGen  # do not remove, needed by pyinstaller
@@ -43,24 +42,39 @@ def main():
 
     if args.gui:
         # Bring up the GUI interface
+        from modules.gui_main import ExtensibleReportingGUI
         report_gui = ExtensibleReportingGUI(args, pre_processed_args, available_reports, basedir)
         report_gui.exec()
     else:
         # Execute the selected report from command line (no GUI)
         try:
-            report_generator = pre_processed_args['report_to_run'](basedir, use_cache=args.cache_data, api_key_file=pre_processed_args['api_key_file'])
+            
             if args.logo:
                 custom_logo = args.logo
             else:
                 custom_logo = None
-            report = report_generator.generate(args.customer,
-                                               args.author,
-                                               vulns_start_time=pre_processed_args['vulns_start_time'],
-                                               vulns_end_time=pre_processed_args['vulns_end_time'],
-                                               alerts_start_time=pre_processed_args['alerts_start_time'],
-                                               alerts_end_time=pre_processed_args['alerts_end_time'],
-                                               custom_logo=custom_logo
-                                               )
+            if args.report_format == "HTML":
+                report_generator = pre_processed_args['report_to_run'](basedir, use_cache=args.cache_data, api_key_file=pre_processed_args['api_key_file'])
+                report = report_generator.generate(args.customer,
+                                                args.author,
+                                                vulns_start_time=pre_processed_args['vulns_start_time'],
+                                                vulns_end_time=pre_processed_args['vulns_end_time'],
+                                                alerts_start_time=pre_processed_args['alerts_start_time'],
+                                                alerts_end_time=pre_processed_args['alerts_end_time'],
+                                                custom_logo=custom_logo
+                                                )
+            elif args.report_format == "PDF":
+                report_generator = pre_processed_args['report_to_run'](basedir, use_cache=args.cache_data, api_key_file=pre_processed_args['api_key_file'], graph_scale=1.4)
+                report = report_generator.generate(args.customer,
+                                                args.author,
+                                                vulns_start_time=pre_processed_args['vulns_start_time'],
+                                                vulns_end_time=pre_processed_args['vulns_end_time'],
+                                                alerts_start_time=pre_processed_args['alerts_start_time'],
+                                                alerts_end_time=pre_processed_args['alerts_end_time'],
+                                                custom_logo=custom_logo,
+                                                pagesize='a2'
+                                                )
+
         except Exception as e:
             logger.error(f"Report Generation failed for report {args.report}, did you specify one that exists? Check what's available with the '--list-reports' flag.")
             logger.error("Exiting....")
@@ -70,18 +84,32 @@ def main():
 
         # Generate a filename if one was not specified
         if not args.report_path:
-            report_file_name = f'{args.customer}_{args.report}_{datetime.datetime.now().strftime("%Y%m%d")}.html'
+            report_file_name = f'{args.customer}_{args.report}_{datetime.datetime.now().strftime("%Y%m%d")}'
         else:
             report_file_name = args.report_path
-        # Write out the report file
-        logger.info(f'Writing report to {report_file_name}')
-        try:
-            with open(str(report_file_name), 'w') as file:
-                file.write(report)
-        except Exception as e:
-            logger.error(f'Failed writing report file {report_file_name}: {str(e)}')
-            sys.exit()
 
+        if args.report_format == "HTML":
+            report_file_name += ".html"
+            # Write out the report file
+            logger.info(f'Writing report to {report_file_name}')
+            try:
+                with open(str(report_file_name), 'w') as file:
+                    file.write(report)
+            except Exception as e:
+                logger.error(f'Failed writing report file {report_file_name}: {str(e)}')
+                sys.exit()
+        elif args.report_format == "PDF":
+            report_file_name += ".pdf"
+            logger.info(f'Writing report to {report_file_name}')
+            try:
+                from weasyprint import HTML, CSS
+                from weasyprint.text.fonts import FontConfiguration
+                font_config = FontConfiguration()
+                html = HTML(string=report)
+                html.write_pdf(report_file_name, font_config=font_config)
+            except Exception as e:
+                logger.error(f'Failed writing report file {report_file_name}: {str(e)}')
+                sys.exit()    
 
 if __name__ == "__main__":
     main()
