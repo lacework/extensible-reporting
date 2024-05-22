@@ -72,6 +72,6 @@ class ReportGenCSADetailed(ReportGen):
                          vulns_end_time,
                          alerts_start_time,
                          alerts_end_time)
-        return self.render(customer, author, pagesize=pagesize)
+        return self.render(customer, author, custom_logo=custom_logo, pagesize=pagesize)
 
 
