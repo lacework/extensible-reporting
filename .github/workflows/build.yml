@@ -42,7 +42,7 @@ jobs:
             CMD_BUILD: pyinstaller generate_csa_report_mac_arm.spec
             OUT_FILE_NAME: lw_report_gen_mac_arm
             ASSET_MIME: application/octet-stream
-           - os: macos-13
+          - os: macos-13
             TARGET: macos_X86_64
             CMD_BUILD: pyinstaller lw_report_gen_mac_x86_64.spec
             OUT_FILE_NAME: lw_report_gen_mac_arm
