@@ -4,7 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Tim MacDonald"]
 readme = "README.md"
-packages = [{include = "extensible_reporting"}]
+# packages = [{include = "extensible_reporting"}]
 
 [tool.poetry.dependencies]
 
