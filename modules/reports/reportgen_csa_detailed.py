@@ -4,7 +4,7 @@ import os
 
 class ReportGenCSADetailed(ReportGen):
 
-    report_short_name = 'CSA Detailed'
+    report_short_name = 'CSA_Detailed'
     report_name = 'Detailed Cloud Security Assessment (CIS)'
     report_description = "This is the detailed version of the Lacework Cloud Security Assessment with CIS compliance reporting."
     default_recommendations = """<h2>Recommendations</h2>
