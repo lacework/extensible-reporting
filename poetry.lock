@@ -642,20 +642,22 @@ files = [
 
 [[package]]
 name = "laceworksdk"
-version = "1.10.0"
+version = "4.1.0"
 description = "Community-developed Python SDK for the Lacework APIs"
 optional = false
-python-versions = "*"
+python-versions = "<4,>=3.8"
 files = [
-    {file = "laceworksdk-1.10.0-py3-none-any.whl", hash = "sha256:8af8a99c6c6984a72a6839f9c58269ab01c3c21dc2d660731603b94f176e4efe"},
-    {file = "laceworksdk-1.10.0.tar.gz", hash = "sha256:5b855827edbf83b01af95a1a3cf941eef1568436244ff2978f805017082b9ddc"},
+    {file = "laceworksdk-4.1.0-py3-none-any.whl", hash = "sha256:55a67355f135fc1a7173796d904a4ee9f3173953ca3c2afa0ec9c84ceddd1cef"},
+    {file = "laceworksdk-4.1.0.tar.gz", hash = "sha256:83a5b996704eb7854705fa69d7306705871134bd0342f55f6baae50526a2ca76"},
 ]
 
 [package.dependencies]
-bleach = "*"
-configparser = "*"
-python-dotenv = "*"
-requests = "*"
+bleach = ">=4.1.0"
+configparser = ">=5.2.0"
+importlib-metadata = ">=4.2"
+python-dotenv = ">=0.20.0"
+requests = ">=2.27.1"
+urllib3 = ">=1.26.15"
 
 [[package]]
 name = "logzero"
@@ -1521,4 +1523,4 @@ test = ["pytest"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<3.12"
-content-hash = "a0b3d91fe135f636736ab2579ad1c486bde7a5a2156506b85a3bf87bfd7595d3"
+content-hash = "d2425ebb8323d5344d84f0d91b46fca38109deeaf2f14dca0ccfd7db83f6eed7"
