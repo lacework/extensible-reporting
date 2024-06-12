@@ -1,4 +1,5 @@
 # -*- mode: python ; coding: utf-8 -*-
+from PyInstaller.utils.hooks import copy_metadata
 
 
 block_cipher = None
@@ -10,6 +11,7 @@ added_files = [
     ( 'modules/reports/*', 'modules/reports' ),
     ( 'VERSION', '.')
     ]
+added_files += copy_metadata("laceworksdk")
 
 a = Analysis(
     ['lw_report_gen.py'],
