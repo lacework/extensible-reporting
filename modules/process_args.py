@@ -154,9 +154,9 @@ def pre_process_args(args, available_reports):
     # Check to see if creds were provided
     api_key_file = None
     lacework_toml_exists = Path(str(Path.home()) + '/.lacework.toml').exists()
-    env_var_creds_exist = bool(os.environ.get('LW_ACCOUNT')) and\
+    env_var_creds_exist = (bool(os.environ.get('LW_ACCOUNT')) and\
         bool(os.environ.get('LW_API_KEY')) and\
-        bool(os.environ.get('LW_API_SECRET'))
+        bool(os.environ.get('LW_API_SECRET'))) or bool(os.environ.get('LW_API_TOKEN'))
     # If there's an API keyfile specified, try to use it, else exit
     if args.api_key_file:
         try:
