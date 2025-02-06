@@ -23,7 +23,7 @@ class LaceworkTime:
         return (datetime.now(timezone.utc) - timedelta(days=self.delta_days, hours=self.delta_hours)).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def generate_md5_from_obj(obj_to_hash):
+def generate_hash_from_obj(obj_to_hash):
     json_object = json.dumps(obj_to_hash)
     return hashlib.sha256(json_object.encode()).hexdigest()
 
@@ -34,7 +34,7 @@ def cache_results(func):
         use_cache = args[0].use_cache
         if use_cache:
             func_name = func.__name__
-            kwargs_hash = generate_md5_from_obj(kwargs)
+            kwargs_hash = generate_hash_from_obj(kwargs)
             file_path = Path(f"lw_csa_{func_name}{kwargs_hash}.cache")
             if file_path.is_file():
                 try:
