@@ -2,6 +2,10 @@ name: Build
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag for the release (e.g. v1.0.0). When empty, the push event’s tag will be used.'
+        required: false
   push:
     tags:
       - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
@@ -19,7 +23,8 @@ jobs:
       id: create_release
       uses: ncipollo/release-action@v1
       with:
-        name: Release ${{ github.ref }}
+        tag: ${{ github.event.inputs.tag || github.ref_name }}
+        name: Release ${{ github.event.inputs.tag || github.ref_name }}
         draft: true
         prerelease: false
     - name: Output Release URL File
