@@ -13,7 +13,7 @@ on:
 jobs:
   createrelease:
     name: Create Release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     permissions:
       contents: write
     outputs:
@@ -57,7 +57,7 @@ jobs:
             CMD_BUILD: pyinstaller generate_csa_report_win.spec
             OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
-          - os: ubuntu-latest
+          - os: ubuntu-20.04
             TARGET: linux
             CMD_BUILD: pyinstaller generate_csa_report_linux.spec
             OUT_FILE_NAME: lw_report_gen_linux_x86_64
@@ -123,7 +123,7 @@ jobs:
   publish:
     name: Publish
     needs: [createrelease, build]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Publish Release
         uses: eregon/publish-release@v1
