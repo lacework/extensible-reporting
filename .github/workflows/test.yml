@@ -9,7 +9,7 @@ jobs:
       with:
         python-version: '3.8'
         cache: 'pip' # cache pip dependencies
-    - run: sudo apt-get update && sudo apt-get install -y libegl1-mesa
+    - run: sudo apt-get install -y libegl-mesa0
     - run: pip install -r requirements.txt
     - run: pip --version
     - run: python lw_report_gen.py --author Author --customer Customer
