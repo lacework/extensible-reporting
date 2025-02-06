@@ -54,8 +54,7 @@ jobs:
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
-            # Use the runtime hook to suppress warnings for user32 and msvcrt.
-            CMD_BUILD: pyinstaller --runtime-hook ./pyinstaller_runtime_hook.py generate_csa_report_win.spec
+            CMD_BUILD: pyinstaller generate_csa_report_win.spec
             OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: ubuntu-latest
