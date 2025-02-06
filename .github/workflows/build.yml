@@ -8,7 +8,7 @@ on:
         required: false
   push:
     tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+      - 'v*'  # Push events to matching v*, e.g. v1.0, v20.15.10
 
 jobs:
   createrelease:
@@ -54,7 +54,8 @@ jobs:
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
-            CMD_BUILD: pyinstaller generate_csa_report_win.spec
+            # Use the runtime hook to suppress warnings for user32 and msvcrt.
+            CMD_BUILD: pyinstaller --runtime-hook ./pyinstaller_runtime_hook.py generate_csa_report_win.spec
             OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: ubuntu-latest
@@ -98,10 +99,15 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release_url
+          path: release_url
       - name: Get Release File Name & Upload URL
         id: get_release_info
         shell: bash
         run: |
+          if [ ! -f release_url/release_url.txt ]; then
+            echo "release_url/release_url.txt not found"
+            exit 1
+          fi
           value=$(cat release_url/release_url.txt)
           echo "::set-output name=upload_url::$value"
       - name: Upload Release Asset
