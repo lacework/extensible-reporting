@@ -25,7 +25,7 @@ class LaceworkTime:
 
 def generate_md5_from_obj(obj_to_hash):
     json_object = json.dumps(obj_to_hash)
-    return hashlib.md5(json_object.encode()).hexdigest()
+    return hashlib.sha256(json_object.encode()).hexdigest()
 
 
 def cache_results(func):
