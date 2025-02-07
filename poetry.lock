@@ -643,7 +643,7 @@ files = [
 [[package]]
 name = "laceworksdk"
 version = "4.1.0"
-description = "Community-developed Python SDK for the Lacework APIs"
+description = "Community-developed Python SDK for the FortiCNAPP APIs"
 optional = false
 python-versions = "<4,>=3.8"
 files = [

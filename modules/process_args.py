@@ -20,7 +20,7 @@ def validate_time_argument(time_string: str) -> bool:
 
 def get_arguments():
     parser = argparse.ArgumentParser(description=
-    """                                     Tool to generate a Lacework report. By default a Cloud Security Assessment report
+    """                                     Tool to generate a FortiCNAPP report. By default a Cloud Security Assessment report
                                      is generated. 
                                      
                                      To see other report types available (if any are) use the '--list-reports' flag.
@@ -30,7 +30,7 @@ def get_arguments():
                                      names (strings) that will be inserted into the report. They are not required but are
                                      highly recommended.
 
-                                     If you do not specify an API Key file (downloaded from the Lacework UI) then
+                                     If you do not specify an API Key file (downloaded from the FortiCNAPP UI) then
                                      either the default account/creds in your .lacework.toml file will be used OR you can 
                                      specify account/creds in the environmental variables as defined on the github page.
                                      The default query times for vulnerability data and alert data are:
@@ -54,7 +54,7 @@ def get_arguments():
     parser.add_argument("--report-path", type=str, help="Filename to save report")
     parser.add_argument("--author", help="Author of report", type=str, default="John Doe")
     parser.add_argument("--customer", help="Customer Name (Company)", type=str, default="Some Company")
-    parser.add_argument("--cache-data", help="Create/use locally cached copies of Lacework data. This is mainly used for dev testing.", action='store_true')
+    parser.add_argument("--cache-data", help="Create/use locally cached copies of FortiCNAPP data. This is mainly used for dev testing.", action='store_true')
     parser.add_argument("--vulns-start-time", type=str,
                         help="The number of days and hours in the past relative to NOW to start the vulnerability report. In the format <D:H>",
                         default="0:25")
@@ -68,7 +68,7 @@ def get_arguments():
                         help="The number of days and hours in the past relative to NOW to end the alert report. In the format <D:H> (use 0:0 for now)",
                         default="0:0")
     parser.add_argument("--api-key-file", type=str,
-                        help="Read your credentials from an API key file downloaded from the Lacework UI (JSON formatted).")
+                        help="Read your credentials from an API key file downloaded from the FortiCNAPP UI (JSON formatted).")
     parser.add_argument("--v", help="Set Verbose Logging", action='store_true')
     parser.add_argument("--vv", help="Set Extremely Verbose Logging", action='store_true')
     parser.add_argument("--report", help="Choose which report to execute. Default is 'CSA'", default="CSA")
@@ -145,7 +145,7 @@ def pre_process_args(args, available_reports):
     elif args.vv:
         logzero.loglevel(logzero.DEBUG)
 
-    # Convert query time args to a date format the Lacework API understands
+    # Convert query time args to a date format the FortiCNAPP API understands
     vulns_start_time = LaceworkTime(args.vulns_start_time)
     vulns_end_time = LaceworkTime(args.vulns_end_time)
     alerts_start_time = LaceworkTime(args.alerts_start_time)
@@ -166,7 +166,7 @@ def pre_process_args(args, available_reports):
             logger.error(f"Failed to read keyfile: {str(e)}")
             sys.exit()
     elif not lacework_toml_exists and not env_var_creds_exist:
-        logger.error("You have failed to provide Lacework API credentials")
+        logger.error("You have failed to provide FortiCNAPP API credentials")
         logger.error("Please read the github page for instructions.")
         logger.error("https://github.com/lacework/extensible-reporting")
         sys.exit()
