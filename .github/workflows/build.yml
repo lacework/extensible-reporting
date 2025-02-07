@@ -64,7 +64,7 @@ jobs:
             OUT_FILE_NAME: lw_report_gen_linux_x86_64
             ASSET_MIME: application/octet-stream
     steps:
-      - uses: actions/checkout@v4A
+      - uses: actions/checkout@v4
       - name: Set up Python 3.10.11
         uses: actions/setup-python@v5
         with:
