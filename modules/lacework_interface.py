@@ -55,7 +55,7 @@ class LaceworkInterface:
         try:
             accounts = self.lacework.cloud_accounts.get()['data']
         except Exception as e:
-            logger.error(f"Failed to retrieve list of cloud accounts from Lacework API:{str(e)}")
+            logger.error(f"Failed to retrieve list of cloud accounts from FortiCNAPP API:{str(e)}")
             raise e
         account_details = []
         config_accounts = [account for account in accounts if ("Cfg" in account['type'] and account['enabled'] == 1 and account['state']['ok'] is True)]
@@ -109,7 +109,7 @@ class LaceworkInterface:
             try:
                 alerts = self.lacework.alerts.search(json=filters)
             except Exception as e:
-                logger.error(f"Failed to retrieve list of alerts from Lacework API:{str(e)}")
+                logger.error(f"Failed to retrieve list of alerts from FortiCNAPP API:{str(e)}")
                 raise e
             i = 1
             for page in alerts:
@@ -118,7 +118,7 @@ class LaceworkInterface:
                 alerts_list.extend(page['data'])
             if i > 100:
                 logger.warning(
-                    "Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
+                    "FortiCNAPP API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
         logger.info(f'{len(alerts_list)} alerts returned.')
         alerts = Alerts(alerts_list)
         return alerts
@@ -133,7 +133,7 @@ class LaceworkInterface:
         try:
             secrets = self.lacework.queries.execute(query_text=lql_query, arguments=lql_query_args)
         except Exception as e:
-            logger.error(f"Failed to retrieve list of secrets from Lacework API:{str(e)}")
+            logger.error(f"Failed to retrieve list of secrets from FortiCNAPP API:{str(e)}")
             raise e
         return Secrets(secrets)
 
@@ -160,7 +160,7 @@ class LaceworkInterface:
             try:
                 host_vulns = self.lacework.vulnerabilities.hosts.search(json=filters)
             except Exception as e:
-                logger.error(f"Failed to retrieve list of host vulnerabilities from Lacework API:{str(e)}")
+                logger.error(f"Failed to retrieve list of host vulnerabilities from FortiCNAPP API:{str(e)}")
                 raise e
 
             i = 1
@@ -170,7 +170,7 @@ class LaceworkInterface:
                 results.extend(page['data'])
             if i > 100:
                 logger.warning(
-                    "Lacework API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
+                    "FortiCNAPP API returned maximum pages of host vuln results (100 pages). Processed dataset is likely incomplete.")
 
         host_vulns = HostVulnerabilities(results)
         return host_vulns
@@ -197,7 +197,7 @@ class LaceworkInterface:
             try:
                 container_vulns = self.lacework.vulnerabilities.containers.search(json=filters)
             except Exception as e:
-                logger.error(f"Failed to retrieve list of container vulnerabilities from Lacework API:{str(e)}")
+                logger.error(f"Failed to retrieve list of container vulnerabilities from FortiCNAPP API:{str(e)}")
                 raise e
 
             # logger.info('Found ' + len(container_vulns) + ' pages of data')
@@ -208,7 +208,7 @@ class LaceworkInterface:
                 results.extend(page['data'])
             if i > 100:
                 logger.warning(
-                    "Lacework API returned maximum pages of container vuln results (100 pages). Processed dataset is likely incomplete.")
+                    "FortiCNAPP API returned maximum pages of container vuln results (100 pages). Processed dataset is likely incomplete.")
 
         container_vulns = ContainerVulnerabilities(results)
         return container_vulns
@@ -233,7 +233,7 @@ class LaceworkInterface:
                                                        latest=True,
                                                        report_type=report_query_string)
                 except Exception as e:
-                    logger.error(f"Failed to retrieve {report_type} report for {cloud_provider} from Lacework API:{str(e)}")
+                    logger.error(f"Failed to retrieve {report_type} report for {cloud_provider} from FortiCNAPP API:{str(e)}")
                     raise e
 
                 logger.info(f"{cloud_provider}:{report_type}:{compliance_account['primary_query_id']}:{compliance_account['secondary_query_id']}:"

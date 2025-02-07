@@ -2,12 +2,11 @@
 
 ## Description
 
-A project to abstract the gathering, transformations, and rendering of datasets from Lacework into auto-generated reports.
-
+A project to abstract the gathering, transformations, and rendering of datasets from FortiCNAPP into auto-generated reports.
 
 ## Usage for CSA Reports
 
-This tool framework simplifies how partners and internal resources can execute Lacework Cloud Security Assessments to prospective customers. Below are a few example screenshots of the report that once generated is an html that can be modified and exported as a PDF and sent to prospects. 
+This tool framework simplifies how partners and internal resources can execute FortiCNAPP Cloud Security Assessments to prospective customers. Below are a few example screenshots of the report that once generated is an html that can be modified and exported as a PDF and sent to prospects. 
 
 <img width="604" alt="image (1)" src="https://user-images.githubusercontent.com/10535862/196780720-f74c93d1-ebcb-42d4-930f-66d3c2a6571d.png">
 
@@ -16,9 +15,6 @@ This tool framework simplifies how partners and internal resources can execute L
 <img width="604" src="https://user-images.githubusercontent.com/10535862/196780860-a9cae2d1-e047-4b23-9d23-ade77c1d6de0.png">
 
 <img width="604" src="https://user-images.githubusercontent.com/10535862/196780942-de7297c0-89ea-4cce-a6f8-ca712f4ea0ed.png">
-
-
-
 
 ## Downloading and Setting up the Tool
 
@@ -35,8 +31,6 @@ Use the compiled binary on the releases page. This is the easiest option as you 
 - If running on Windows you will need to:
     1. Launch a command prompt and run the report from the directory you downloaded it to `lw_report_gen.exe --author your_name --customer your_customer`
     
-    
- 
  The report will be generated in the same directory you execute the binary with a name of `CSA_Report_customer_date.html`
 
 ### Option 2:
@@ -49,18 +43,23 @@ To run the python directly you will need
 - `pip3` (latest version is required, run `pip3 install --upgrade pip`)
 
 To install dependencies run:
-```
+
+```bash
 $ pip3 install -r requirements.txt
 ```
 
 On Windows or Linux run the script using the python interpreter:
-```
+
+```bash
 python lw_report_gen.py --author your_name --customer your_customer
 ```
+
 On a Mac you may need to specify "python3" instead of "python" ("python" references python 2, which won't work). so...
-```
+
+```bash
 python3 lw_report_gen.py --author your_name --customer your_customer
 ```
+
 Once the report is generated, you may edit the html with your own company logo or add in new content. From there, simply print as a PDF and your report is ready to be shared. 
 
 ## GUI Mode
@@ -68,50 +67,54 @@ Once the report is generated, you may edit the html with your own company logo o
 A new GUI mode has been added to the script. To run the script in GUI mode use the "--gui"
 command line flag. 
 
-## Specifying a Lacework instance and credentials:
+## Specifying a FortiCNAPP instance and credentials:
 
-You must have a valid Lacework API key for your Lacework instance to run this tool. You can read about creating and downloading 
+You must have a valid FortiCNAPP API key for your FortiCNAPP instance to run this tool. You can read about creating and downloading 
 an API key here: 
 
 https://docs.lacework.com/api/api-access-keys-and-tokens
 
-Once you have created an API key There are three ways to specify the Lacework API instance/credentials used when generating a report:
+Once you have created an API key There are three ways to specify the FortiCNAPP API instance/credentials used when generating a report:
 
-1. Install and configure the Lacework CLI to setup a credentials file which this tool will read.
+1. Install and configure the FortiCNAPP CLI to setup a credentials file which this tool will read.
 2. Specify a JSON file containing your API instance/credentials. 
 3. Specify your credentials via variables.
 
-### Method 1: Lacework CLI
-Though it is not required, you may wish to install and configure the Lacework CLI to create a .lacework.toml file containing your API credentials. Instructions to do so can be found here: https://docs.lacework.com/cli/
+### Method 1: FortiCNAPP CLI
+
+Though it is not required, you may wish to install and configure the FortiCNAPP CLI to create a .lacework.toml file containing your API credentials. Instructions to do so can be found here: https://docs.lacework.com/cli/
 
 ### Method 2: JSON File
 
-You may download an API key JSON file from your Lacework instance (Settings > Configuration > API keys) and specify it using the ````"--api-key-file"```` command line
+You may download an API key JSON file from your FortiCNAPP instance (Settings > Configuration > API keys) and specify it using the ````"--api-key-file"```` command line
 parameter. 
 
 ### Method 3: Environment Variables
 
-If you wish to configure the LaceworkClient instance using environment variables, this tool honors the same
-variables used by the Lacework CLI. The `account`, `subaccount`, `api_key`, `api_secret`, and `profile` parameters
+If you wish to configure the FortiCNAPP Client instance using environment variables, this tool honors the same
+variables used by the FortiCNAPP CLI. The `account`, `subaccount`, `api_key`, `api_secret`, and `profile` parameters
 can all be configured as specified below.
 
 | Environment Variable | Description                                                          | Required |
 | -------------------- | -------------------------------------------------------------------- | :------: |
-| `LW_PROFILE`         | Lacework CLI profile to use (configured at ~/.lacework.toml)         |    N     |
-| `LW_ACCOUNT`         | Lacework account/organization domain (i.e. `<account>`.lacework.net) |    Y     |
-| `LW_SUBACCOUNT`      | Lacework sub-account                                                 |    N     |
-| `LW_API_KEY`         | Lacework API Access Key                                              |    Y     |
-| `LW_API_SECRET`      | Lacework API Access Secret                                           |    Y     |
+| `LW_PROFILE`         | FortiCNAPP CLI profile to use (configured at ~/.lacework.toml)         |    N     |
+| `LW_ACCOUNT`         | FortiCNAPP account/organization domain (i.e. `<account>`.lacework.net) |    Y     |
+| `LW_SUBACCOUNT`      | FortiCNAPP sub-account                                                 |    N     |
+| `LW_API_KEY`         | FortiCNAPP API Access Key                                              |    Y     |
+| `LW_API_SECRET`      | FortiCNAPP API Access Secret                                           |    Y     |
+
 ## Query Time Ranges
 
-By default the tool will query Lacework for data in the following time ranges:
+By default the tool will query FortiCNAPP for data in the following time ranges:
+
 ```
 Vulnerability Data Start: 25 hours prior to execution time -> End : Current time at execution
 Alert Data Start Time: 7 days prior to execution time -> End: Current time at execution
 ```
+
 If you with to change the time range of these queries you can specify new start and stop times using the following flags:
 
-```
+```bash
 --vulns-start-time
 --vulns-end-time
 --alerts-start-time
@@ -121,21 +124,25 @@ If you with to change the time range of these queries you can specify new start 
 To use these flags you must specify a number of days and hours prior to execution time in the format `````"days:hours"`````
 
 For example to specify a 14 day window for alerts you would specify:
-```
+
+```bash
 ./lw_report_gen_mac --author your_name --customer your_customer --alerts-start-time 14:0
 ```
 
 Whereas to specify a 7 day window for alerts that starts 2 weeks in the past you would specify:
-```
+
+```bash
 ./lw_report_gen_mac --author your_name --customer your_customer --alerts-start-time 14:0 --alerts-end-time 7:0
 ```
+
 ## Cached Data
 
 To simplify development and limit the API calls made to a provider's backend, the main CLI interface supports the `--cache-data` flag. 
-If you are customizing this script you may wish to use this flag to speed up script execution during testing and eliminate most of the API calls to Lacework. 
+If you are customizing this script you may wish to use this flag to speed up script execution during testing and eliminate most of the API calls to FortiCNAPP. 
 Note that the cache files created the first time you use this flag will be used in all subsequent runs in which you use this flag. They will not expire. 
 If you want to create new cache files you need to manually delete the cache files. For instance on Mac and Linux:
-```
+
+```bash
 rm *.cache
 ```
 
@@ -172,7 +179,7 @@ put it in the `templates` folder. You can then reference this template in your c
 
 ## License and Copyright
 
-Copyright 2022, Lacework Inc.
+Copyright 2022, Fortinet Inc.
 
 ```
 Licensed under the Apache License, Version 2.0 (the "License");

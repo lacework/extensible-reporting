@@ -6,14 +6,14 @@ class ReportGenCSA(ReportGen):
 
     report_short_name = 'CSA'
     report_name = 'Cloud Security Assessment (CIS)'
-    report_description = "This is the Lacework provided Cloud Security Assessment with CIS compliance reporting."
+    report_description = "This is the Fortinet provided Cloud Security Assessment with CIS compliance reporting."
     default_recommendations = """<h3>Recommendations</h3>
             <p>
-              Based on the findings of this assessment, Lacework recommends the following action plan and next steps:
+              Based on the findings of this assessment, Fortinet recommends the following action plan and next steps:
             </p>
             <ol>
-              <li>Engage with your Lacework account team and partner to review services offerings to prioritize and remediate the findings</li>
-              <li>Complete a recurring Cloud Security Assessment once a wider Lacework deployment has been completed to baseline and trend improvements to your cloud security posture.</li>
+              <li>Engage with your Fortinet account team and partner to review services offerings to prioritize and remediate the findings</li>
+              <li>Complete a recurring Cloud Security Assessment once a wider FortiCNAPP deployment has been completed to baseline and trend improvements to your cloud security posture.</li>
             </ol>"""
 
     def __init__(self, basedir, use_cache=False, api_key_file=None, graph_scale=1):

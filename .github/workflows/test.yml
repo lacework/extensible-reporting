@@ -1,3 +1,4 @@
+---
 name: Test
 on: [push]
 jobs:
@@ -7,9 +8,9 @@ jobs:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
+        python-version: '3.10'
         cache: 'pip' # cache pip dependencies
-    - run: sudo apt-get install libegl1-mesa
+    - run: sudo apt-get install -y libegl-mesa0
     - run: pip install -r requirements.txt
     - run: pip --version
     - run: python lw_report_gen.py --author Author --customer Customer

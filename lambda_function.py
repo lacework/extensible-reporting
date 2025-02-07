@@ -68,14 +68,14 @@ def gen_presigned_url(s3_key, s3_bucket, aws_region):
 
 def lambda_handler(event, context):
     '''
-    Connect to a Lacework Instance and generate a CSA Report which is then saved to an S3 bucket and a download link
+    Connect to a FortiCNAPP Instance and generate a CSA Report which is then saved to an S3 bucket and a download link
     is emailed to the email address provided
 
     :param event: A dict with the following format:
-        {'lacework_account': Str,                          # the fqdn of the lacework instance
-        'lacework_subaccount': Str | None,                  # the Lacework subaccount if it exists, otherwise pass Null/None
-        'key': Str,                                         # the Lacework API key
-        'secret': Str,                                      # the Lacework API secret
+        {'lacework_account': Str,                           # the fqdn of the FortiCNAPP instance
+        'lacework_subaccount': Str | None,                  # the FortiCNAPP subaccount if it exists, otherwise pass Null/None
+        'key': Str,                                         # the FortiCNAPP API key
+        'secret': Str,                                      # the FortiCNAPP API secret
         'customer': Str,                                    # the name of the Customer
         'marketplace_email': Str                            # the email tied to original aws marketplace request (and Marketo Lead)
         'email': Str,                                       # the email to send the download link to
