@@ -52,8 +52,8 @@ def get_arguments():
 
 
     parser.add_argument("--report-path", type=str, help="Filename to save report")
-    parser.add_argument("--author", help="Author of report", type=str, default="John Doe")
-    parser.add_argument("--customer", help="Customer Name (Company)", type=str, default="Some Company")
+    parser.add_argument("--author", help="Author of report", type=str, default="Fortinet")
+    parser.add_argument("--customer", help="Customer Name (Company)", type=str, default="customer")
     parser.add_argument("--cache-data", help="Create/use locally cached copies of Lacework data. This is mainly used for dev testing.", action='store_true')
     parser.add_argument("--vulns-start-time", type=str,
                         help="The number of days and hours in the past relative to NOW to start the vulnerability report. In the format <D:H>",
@@ -71,7 +71,7 @@ def get_arguments():
                         help="Read your credentials from an API key file downloaded from the Lacework UI (JSON formatted).")
     parser.add_argument("--v", help="Set Verbose Logging", action='store_true')
     parser.add_argument("--vv", help="Set Extremely Verbose Logging", action='store_true')
-    parser.add_argument("--report", help="Choose which report to execute. Default is 'CSA'", default="CSA")
+    parser.add_argument("--report", help="Choose which report to execute. Default is 'CSA_Detailed'", default="CSA_Detailed")
     parser.add_argument("--report-format", help="Specify output format, HTML or PDF. Default is HTML", default="HTML")
     parser.add_argument("--gui", help="Run this tool in GUI mode, which provides additional customization options.", action='store_true')
     parser.add_argument("--logo", type=str, help="Specify a custom logo (PNG file) to add to the report.")
@@ -133,7 +133,7 @@ def pre_process_args(args, available_reports):
     if args.list_reports:
         print(f'\nAvailable Reports (use the "ID" with the "--report" flag to specify one):\n')
         for available_report in available_reports:
-            print(f"{'(*Default) ' if available_report['report_short_name'] == 'CSA' else ''}ID:{available_report['report_short_name']}", end=" ")
+            print(f"{'(*Default) ' if available_report['report_short_name'] == 'CSA_Detailed' else ''}ID:{available_report['report_short_name']}", end=" ")
             print(f"Name:{available_report['report_name']}", end=" ")
             print(f"Description: {available_report['report_description']}")
         print('')

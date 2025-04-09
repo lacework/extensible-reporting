@@ -390,13 +390,15 @@
 </head>
 <body>
   <header>
-    <img src="https://d33wubrfki0l68.cloudfront.net/d3b93ffb077063fc6238de3e13b896becc6f907b/98bc1/img/logo.png"  />
+     {% if company_logo_html %}
+         {{ company_logo_html | safe }}
+    {% endif %}
     {% if custom_logo_html %}
         {{ custom_logo_html | safe}}
     {% endif %}
   </header>
   <div class="section-one">
-    <h1>Lacework Cloud Security Assessment Report</h1>
+    <h1>Assessment Report</h1>
     <h4>Report created for {{customer}}</h4>
     <p>{{date}}</p>
     <blockquote>
@@ -434,10 +436,10 @@
     {% endif %}
     <h2>Executive Summary</h2>
     <p>
-      The purpose of this report is to highlight the findings during the Cloud Security Assessment for {{customer}}. The findings below are representative of the cloud accounts and hosts that were inscope of the engagement and cover cloud compliance and vulnerability findings leveraging Lacework and our agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
+      The purpose of this report is to highlight the assessment findings for {{customer}}. The findings below are representative of the cloud accounts and hosts that were in scope of the engagement and cover cloud compliance and vulnerability findings leveraging FortiCNAPP agentless scanning capabilities. This report provides a detailed summary of each identified area of interest and how it pertains to your overall cloud security and risk.
     </p>
     <p>
-      Below are quick findings identified by the CSA and additional detail is explained on subsequent pages:
+      Below is a summary of findings. Additional detail is provided on subsequent pages:
     </p>
     
     <div class="boxes">
@@ -504,7 +506,7 @@
 
       <p>
     <b><u>
-      The CSA offers a glimpse into the value that Lacework provides customers and when expanded into additional accounts and leveraging our Polygraph Data Platform, we help customers:
+      This assessment offers a glimpse into the value that FortiCNAPP provides customers, including:
     </u></b>
   </p>
     <p>
@@ -529,7 +531,7 @@
 
       <h4>Exposed SSH Keys</h4>
       <p>
-        Using Lacework’s agentless workload scanning capability we've found the following SSH Keys on your workloads:
+        Using FortiCNAPP agentless workload scanning the following SSH Keys have been found on your workloads:
       </p>
 
       {{ secrets_data.secrets_raw.to_html(index=False) | safe }}
@@ -539,7 +541,7 @@
        <div class="compliance_findings">
     {% if aws_compliance_data or azure_compliance_data or gcp_compliance_data %}
     <h4> Compliance Findings </h4>
-    <p>Using Lacework’s agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. Lacework identified the following:</p>
+    <p>Using FortiCNAPP agentless compliance functionality, we’ve assessed the current security posture against best practices, policies, and compliance frameworks. FortiCNAPP identified the following:</p>
     {% endif %}
 
     {% if aws_compliance_data and aws_compliance_data.summary_count > 0 %}
@@ -591,7 +593,7 @@
 
       <h2>Behavioral & Known-Bad Alerts - Polygraph Anomalies (last 7 days / top 25)</h2>
       <p>
-        Using Lacework’s agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
+        Using the FortiCNAPP agentless Cloud Log behavioral assessment & any behavioral data from any agents you may have deployed, we’ve identified the following anomalous or policy-based activity for further investigation.
       </p>
 
       {{ alerts_data.alerts_raw.to_html(index=False) | safe }}
@@ -602,7 +604,7 @@
 
       <h2>Workload Vulnerability Assessment</h2>
       <p>
-        Lacework has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. If the Lacework agent was not installed as part of this assessment it may be installed later to highlight observed behavior, communication paths, and context with the Lacework Polygraph.
+        FortiCNAPP has scanned and identified vulnerable container images and/or hosts and associated risk of the vulnerabilities present. If the FortiCNAPP agent was not installed as part of this assessment it may be installed later to highlight observed behavior, communication paths, and context.
       </p>
         
       {% if host_vulns_data %}
@@ -650,7 +652,7 @@
       {% if host_vulns_data and not host_vulns_data.fixable_vulns.empty %}
         <h4>Hosts With Critical, Fixable Vulnerabilities</h4>
         <p> This table lists all hosts with "critical" vulnerabilities that have fixes available. Additional vulnerability information for other severity levels
-          can be found in the Lacework UI. </p>
+          can be found in the FortiCNAPP UI. </p>
         {{ host_vulns_data.fixable_vulns.to_html() | safe }}
 
       {% endif %}
@@ -658,7 +660,7 @@
       {% if container_vulns_data and not container_vulns_data.fixable_vulns.empty %}
 
         <h4>Containers With Critical, Fixable Vulnerabilities</h4>
-        <p> This table lists all containers with "critical" vulnerabilities that have fixes available. Additional vulnerability information can be found in the Lacework UI. </p>
+        <p> This table lists all containers with "critical" vulnerabilities that have fixes available. Additional vulnerability information can be found in the FortiCNAPP UI. </p>
         {{ container_vulns_data.fixable_vulns.to_html() | safe }}
 
       {% endif %}
@@ -675,7 +677,7 @@
 
         {% if aws_compliance_data.critical_finding_count > 0 %}
           <h4>AWS - Critical Findings with Details</h4>
-        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
+        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the FortiCNAPP UI. </p>
         {{ aws_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
         {% endif %}
               {% endif %}
@@ -687,7 +689,7 @@
 
         {% if azure_compliance_data.critical_finding_count > 0 %}
         <h4>Azure - Critical Findings with Details</h4>
-        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
+        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the FortiCNAPP UI. </p>
         {{ azure_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
         {% endif %}
          {% endif %}
@@ -699,7 +701,7 @@
 
         {% if gcp_compliance_data.critical_finding_count > 0 %}
         <h4>GCP - Critical Findings with Details</h4>
-        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the Lacework UI. </p>
+        <p> This table contains CIS compliance findings with a severity of "Critical". Other severity levels can be reviewed in the FortiCNAPP UI. </p>
         {{ gcp_compliance_data.critical_details.to_html().replace("\\n","<br>") | safe }}
         {% endif %}
         {% endif %}

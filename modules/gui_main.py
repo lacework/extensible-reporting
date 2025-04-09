@@ -12,6 +12,8 @@ import os
 
 class ReportPreview(QMainWindow):
 
+
+
     def __init__(self):
         super().__init__()
         self.web_viewer = QWebEngineView()
@@ -38,7 +40,6 @@ class ReportPreview(QMainWindow):
 
     def save_pdf(self, path):
         self.web_viewer.page().printToPdf(path)
-
 
 
 class ErrorDialog(QMessageBox):
@@ -78,8 +79,9 @@ class ExtensibleReportingGUI(QApplication):
         else:
             self.window.lineEditCustomLogo.text = "None"
         self.report_preview = ReportPreview()
-        self.connect_ui_elements()
+
         self.populate_fields_from_args()
+        self.connect_ui_elements()
         self.window.show()
 
 
@@ -159,6 +161,16 @@ class ExtensibleReportingGUI(QApplication):
     def populate_fields_from_args(self):
         for available_report in self.available_reports:
             self.window.comboBoxReportSelector.addItem(available_report['report_name'])
+        #print(str(self.args.report))
+        selected_report_name = [report['report_name'] for report in self.available_reports if report['report_short_name'] == self.args.report][0]
+        #print(selected_report_name)
+        # Could not get comboBoxReportSelector.setCurrentIndex to work. Switching to setCurrentText
+        report_index = self.window.comboBoxReportSelector.findText(str(selected_report_name))
+        # print(report_index)
+        # print(type(self.window.comboBoxReportSelector))
+        self.window.comboBoxReportSelector.setCurrentIndex(report_index)
+        #self.window.comboBoxReportSelector.setCurrentText(selected_report_name)
+
         if self.args.cache_data:
             self.window.checkBoxUseCache.setCheckState(Qt.Checked)
         self.window.lineEditCustomer.text = self.args.customer

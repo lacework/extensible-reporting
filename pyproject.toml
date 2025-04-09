@@ -8,7 +8,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 
-python = ">=3.9,<3.12"
+python = ">=3.9,<3.14"
+numpy = "<2.0"
 pandas = "^1.5.0"
 coloredlogs = "^15.0.1"
 jinja2 = "^3.1.2"
@@ -20,6 +21,7 @@ python-dotenv = "^0.21.1"
 laceworksdk = "^4.1.0"
 pyside6 = "^6.4.3"
 weasyprint = "^62.1"
+
 
 [tool.poetry.dev-dependencies]
 pyinstaller = "^6.0.0"
