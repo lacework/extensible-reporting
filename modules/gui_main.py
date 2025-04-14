@@ -82,11 +82,20 @@ class ExtensibleReportingGUI(QApplication):
 
         self.populate_fields_from_args()
         self.connect_ui_elements()
+
+
+        # Hide report selector widget for now due to bug in setting combobox index, set report based on command line argument instead
+        selected_report_name = [report['report_name'] for report in self.available_reports if report['report_short_name'] == self.args.report][0]
+        self.report_changed(selected_report_name)
+        self.window.labelSelectReport.hide()
+        self.window.comboBoxReportSelector.hide()
+
         self.window.show()
 
 
     def connect_ui_elements(self):
-        self.window.comboBoxReportSelector.currentTextChanged.connect(self.report_changed)
+        # Combobox disabled due to bug in setting current index
+        # self.window.comboBoxReportSelector.currentTextChanged.connect(self.report_changed)
         self.window.pushButtonRunReport.clicked.connect(self.run_report)
         self.window.pushButtonTogglePreview.clicked.connect( self.toggle_preview)
         self.window.plainTextEditRecommendations.textChanged.connect(self.lineedits_changed)
@@ -159,17 +168,13 @@ class ExtensibleReportingGUI(QApplication):
             self.report_preview.show()
 
     def populate_fields_from_args(self):
-        for available_report in self.available_reports:
-            self.window.comboBoxReportSelector.addItem(available_report['report_name'])
-        #print(str(self.args.report))
-        selected_report_name = [report['report_name'] for report in self.available_reports if report['report_short_name'] == self.args.report][0]
-        #print(selected_report_name)
-        # Could not get comboBoxReportSelector.setCurrentIndex to work. Switching to setCurrentText
-        report_index = self.window.comboBoxReportSelector.findText(str(selected_report_name))
-        # print(report_index)
-        # print(type(self.window.comboBoxReportSelector))
-        self.window.comboBoxReportSelector.setCurrentIndex(report_index)
-        #self.window.comboBoxReportSelector.setCurrentText(selected_report_name)
+        # Combobox disabled due to bug in setting current index
+        # for available_report in self.available_reports:
+        #    self.window.comboBoxReportSelector.addItem(available_report['report_name'])
+        # selected_report_name = [report['report_name'] for report in self.available_reports if report['report_short_name'] == self.args.report][0]
+        # report_index = self.window.comboBoxReportSelector.findText(str(selected_report_name))
+        # self.window.comboBoxReportSelector.setCurrentIndex(report_index)
+
 
         if self.args.cache_data:
             self.window.checkBoxUseCache.setCheckState(Qt.Checked)

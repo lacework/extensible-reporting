@@ -45,13 +45,20 @@
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="labelSelectReport">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
           <property name="text">
            <string>Select Report:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBoxReportSelector"/>
+         <widget class="QComboBox" name="comboBoxReportSelector">
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_4">

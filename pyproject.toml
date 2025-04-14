@@ -19,7 +19,7 @@ logzero = "^1.7.0"
 pytest = "^7.2.1"
 python-dotenv = "^0.21.1"
 laceworksdk = "^4.1.0"
-pyside6 = "^6.4.3"
+pyside6 = "^6.9.0"
 weasyprint = "^62.1"
 
 
