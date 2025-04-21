@@ -70,6 +70,7 @@ def main():
                                                 alerts_end_time=pre_processed_args['alerts_end_time'],
                                                 custom_logo=custom_logo,
                                                 pagesize='a2',
+                                                pdf=True,
                                                 )
 
         except Exception as e:
@@ -101,8 +102,11 @@ def main():
             try:
                 from weasyprint import HTML, CSS
                 from weasyprint.text.fonts import FontConfiguration
+                import logging as log
+                weasyprint_log = log.getLogger('weasyprint')
+                weasyprint_log.addHandler(log.FileHandler('weasyprint.log'))
                 font_config = FontConfiguration()
-                html = HTML(string=report)
+                html = HTML(string=report, base_url=basedir)
                 html.write_pdf(report_file_name, font_config=font_config)
             except Exception as e:
                 logger.error(f'Failed writing report file {report_file_name}: {str(e)}')

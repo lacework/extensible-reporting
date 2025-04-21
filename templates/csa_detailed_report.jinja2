@@ -25,6 +25,7 @@
             size: {{pagesize}} landscape;
           }
           {% endif %}
+          img {visibility: visible !important;}
           table {transform: scale(1);}
           td, th {
             max-width: 150px;
@@ -33,7 +34,6 @@
           p {break-inside: avoid;}
           div {break-inside: avoid;}
           .pagebreak { page-break-after: always; clear: both;}
-
         }
 
 
@@ -100,6 +100,12 @@
           padding: 1em;
           margin-bottom: 1.5rem;
           margin-top: 1.5rem;
+        }
+
+        .promographicpdf img {
+            display: block;
+            margin: auto;
+            width: 90%;
         }
 
         .promographic {
@@ -403,12 +409,19 @@
         {{ summary_data | join(', ') }}
     </blockquote>
 
+    {% if pdf %}
+        <div class="promographicpdf">
+            {% if polygraph_graphic_html %}
+                {{ polygraph_graphic_html | safe }}
+            {% endif %}
+        </div>
+    {% else %}
     <div class="promographic">
         {% if polygraph_graphic_html %}
             {{ polygraph_graphic_html | safe }}
         {% endif %}
     </div>
-
+    {% endif %}
 </div>
 
 <div class="section-two">
