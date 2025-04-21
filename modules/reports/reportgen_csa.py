@@ -21,7 +21,7 @@ class ReportGenCSA(ReportGen):
         self.recommendations = self.default_recommendations
         self.template = self.get_jinja2_template('csa_report.jinja2')
         self.company_logo_html = self.file_to_image_tag('assets/Fortinet_logo.png', 'png')
-        self.polygraph_graphic_html = self.file_to_image_tag('assets/FortiCNAPP-info.png', 'png')
+        self.polygraph_graphic_html = self.file_to_image_tag('assets/FortiCNAPP-Unified-Approach.png', 'png')
 
     def gather_data(self,
                     vulns_start_time: LaceworkTime,

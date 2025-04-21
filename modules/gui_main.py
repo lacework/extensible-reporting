@@ -143,6 +143,15 @@ class ExtensibleReportingGUI(QApplication):
 
     def write_pdf(self):
         if self.report:
+            if self.window.ui.lineEditCustomLogo.text == "None":
+                custom_logo = None
+            else:
+                custom_logo = self.window.ui.lineEditCustomLogo.text
+            self.report = self.report_generator.render(self.window.ui.lineEditCustomer.text,
+                                                       self.window.ui.lineEditAuthor.text,
+                                                       custom_logo=custom_logo,
+                                                       pagesize="a3",
+                                                       pdf=True)
             if not self.report_file_name:
                 self.report_file_name = f'{self.window.ui.lineEditCustomer.text}_{self.window.ui.lineEditAuthor.text}_{datetime.datetime.now().strftime("%Y%m%d")}.pdf'
             else:

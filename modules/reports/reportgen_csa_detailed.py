@@ -37,11 +37,12 @@ class ReportGenCSADetailed(ReportGen):
         self.alerts_data=self.gather_alert_data(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
         self.secrets_data=self.gather_secrets(alerts_start_time.generate_time_string(), alerts_end_time.generate_time_string())
 
-    def render(self, customer, author, pagesize="a3", custom_logo=None):
+    def render(self, customer, author, pagesize="a3", custom_logo=None, pdf=False):
         if custom_logo and os.path.isfile(custom_logo):
             self.custom_logo_html = self.file_to_image_tag(custom_logo, 'png', align='right')
         else:
             self.custom_logo_html = None
+        self.template = self.get_jinja2_template('csa_detailed_report.jinja2')
         return self.template.render(
             customer=str(customer),
             date=self.get_current_date(),
@@ -57,7 +58,8 @@ class ReportGenCSADetailed(ReportGen):
             alerts_data=self.alerts_data,
             secrets_data=self.secrets_data,
             recommendations=self.recommendations,
-            pagesize=pagesize
+            pagesize=pagesize,
+            pdf=pdf
         )
 
     def generate(self,
@@ -68,11 +70,12 @@ class ReportGenCSADetailed(ReportGen):
                  alerts_start_time: LaceworkTime = LaceworkTime('7:0'),
                  alerts_end_time: LaceworkTime = LaceworkTime('0:0'),
                  custom_logo=None,
-                 pagesize="a3"):
+                 pagesize="a3",
+                 pdf=False):
         self.gather_data(vulns_start_time,
                          vulns_end_time,
                          alerts_start_time,
                          alerts_end_time)
-        return self.render(customer, author, custom_logo=custom_logo, pagesize=pagesize)
+        return self.render(customer, author, custom_logo=custom_logo, pagesize=pagesize, pdf=pdf)
 
 
