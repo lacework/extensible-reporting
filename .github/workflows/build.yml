@@ -40,40 +40,48 @@ jobs:
         include:
           - os: macos-latest
             TARGET: macos_ARM
-            CMD_BUILD: pyinstaller generate_csa_report_mac_arm.spec
+            CMD_BUILD: poetry run pyinstaller generate_csa_report_mac_arm.spec
             OUT_FILE_NAME: lw_report_gen_mac_arm
             ASSET_MIME: application/octet-stream
           - os: macos-13
             TARGET: macos_X86_64
-            CMD_BUILD: pyinstaller generate_csa_report_mac.spec
+            CMD_BUILD: poetry run pyinstaller generate_csa_report_mac.spec
             OUT_FILE_NAME: lw_report_gen_mac_x86_64
             ASSET_MIME: application/octet-stream
           - os: windows-latest
             TARGET: windows
-            CMD_BUILD: pyinstaller generate_csa_report_win.spec
+            CMD_BUILD: poetry run pyinstaller generate_csa_report_win.spec
             OUT_FILE_NAME: lw_report_gen_win.exe
             ASSET_MIME: application/vnd.microsoft.portable-executable
           - os: ubuntu-latest
             TARGET: linux
-            CMD_BUILD: pyinstaller generate_csa_report_linux.spec
+            CMD_BUILD: poetry run pyinstaller generate_csa_report_linux.spec
             OUT_FILE_NAME: lw_report_gen_linux_x86_64
             ASSET_MIME: application/octet-stream
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.10.11
+
+    - name: install poetry
+      run: pipx install poetry
+
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: 3.10.11
+        python-version: 3.10
+        cache: 'poetry'
+
+    - name: Install python modules
+      run: |
+          poetry check
+          poetry lock --no-update
+          poetry install --verbose
+
     - name: Update VERSION file
       id: update_version
       run: |
         python ./.github/workflows/ci_bump_version.py ${{ github.ref_name }}
         cat ./VERSION
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pyinstaller
+
     - name: Build with pyinstaller for ${{matrix.TARGET}}
       run: ${{matrix.CMD_BUILD}}
     - name: Load Release URL File from release job

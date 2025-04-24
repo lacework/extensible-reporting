@@ -5,14 +5,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: install poetry
+      run: pipx install poetry
     - uses: actions/setup-python@v4
       with:
-        python-version: '3.8'
-        cache: 'pip' # cache pip dependencies
-    - run: sudo apt-get install libglx-mesa0 libgl1
-    - run: pip install -r requirements.txt
-    - run: pip --version
-    - run: python lw_report_gen.py --author Author --customer Customer
+        python-version: '3.10'
+        cache: 'poetry'
+    - name: install dependencies
+      run: sudo apt-get install libglx-mesa0 libgl1
+
+    - name: Install dependencies
+      run: |
+          poetry check
+          poetry lock --no-update
+          poetry install --verbose
+
+    - run: poetry run python lw_report_gen.py --author Author --customer Customer
       env:
         LW_ACCOUNT: ${{ secrets.LW_ACCOUNT }}
         LW_SUBACCOUNT: ${{ secrets.LW_SUBACCOUNT }}
