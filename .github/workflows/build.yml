@@ -73,7 +73,7 @@ jobs:
     - name: Install python modules
       run: |
           poetry check
-          poetry lock --no-update
+          poetry lock
           poetry install --verbose
 
     - name: Update VERSION file
