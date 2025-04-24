@@ -4,6 +4,27 @@
 
 A project to abstract the gathering, transformations, and rendering of datasets from Lacework into auto-generated reports.
 
+## Quickstart
+
+1. Download the binary for your platform from the releases section
+
+2. Ensure you have some method of authenticating against your FortiCNAPP API. The easiest
+    way is to download an API key file from your FortiCNAPP UI under Settings ->  API Keys. 
+
+3. Run the binary <i> from the command line </i> using the following flags: 
+
+`--gui --api-key-file <keyfile>`
+
+Where \<keyfile> is the name of the api key file you downloaded. 
+
+For example on an ARM based Mac download the ARM binary file from the "Releases" section of this page (lw_report_gen_mac_arm
+) and execute it:
+
+`./lw_report_gen_mac_arm --gui --api-key-file example.json`
+
+On Mac you may get an error regarding it being an unsigned application. If so you can read the following article on how to run the binary:
+
+https://support.apple.com/guide/mac-help/open-a-mac-app-from-an-unknown-developer-mh40616/mac
 
 ## Usage for CSA Reports
 

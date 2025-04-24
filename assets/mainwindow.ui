@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Lacework Extensible Reporting</string>
+   <string>FortiCNAPP Extensible Reporting</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_9">
@@ -22,7 +22,7 @@
         <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -45,18 +45,25 @@
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="labelSelectReport">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
            <string>Select Report:</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBoxReportSelector"/>
+         <widget class="QComboBox" name="comboBoxReportSelector">
+          <property name="editable">
+           <bool>false</bool>
+          </property>
+         </widget>
         </item>
         <item>
          <spacer name="horizontalSpacer_4">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -152,7 +159,7 @@
         <item>
          <widget class="Line" name="line">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
          </widget>
         </item>
@@ -217,7 +224,7 @@
         <item>
          <widget class="Line" name="line_2">
           <property name="orientation">
-           <enum>Qt::Vertical</enum>
+           <enum>Qt::Orientation::Vertical</enum>
           </property>
          </widget>
         </item>
@@ -262,7 +269,7 @@
         <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -303,7 +310,7 @@
         <item>
          <spacer name="horizontalSpacer_2">
           <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+           <enum>Qt::Orientation::Horizontal</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -332,7 +339,7 @@
      <x>0</x>
      <y>0</y>
      <width>1049</width>
-     <height>29</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>

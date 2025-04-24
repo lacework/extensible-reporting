@@ -1,27 +1,33 @@
-[tool.poetry]
+[project]
 name = "extensible-reporting"
-version = "0.1.0"
+version = "2.0.0"
 description = ""
-authors = ["Tim MacDonald"]
+authors = [{name="Tim MacDonald", email="tmacdonald@fortinet.com"}]
 readme = "README.md"
+requires-python = ">=3.10,<3.13"
 # packages = [{include = "extensible_reporting"}]
 
-[tool.poetry.dependencies]
+dependencies = [
 
-python = ">=3.9,<3.12"
-pandas = "^1.5.0"
-coloredlogs = "^15.0.1"
-jinja2 = "^3.1.2"
-plotly = "^5.10.0"
-kaleido = "0.2.1"
-logzero = "^1.7.0"
-pytest = "^7.2.1"
-python-dotenv = "^0.21.1"
-laceworksdk = "^4.1.0"
-pyside6 = "^6.4.3"
-weasyprint = "^62.1"
+"numpy  (<2.0)",
+"pandas (>=1.5.0)",
+"coloredlogs (>=15.0.1)",
+"jinja2 (>=3.1.2)",
+"plotly (>=5.10.0)",
+"kaleido (>=0.2.1)",
+"logzero (>=1.7.0)",
+"pytest (>=7.2.1)",
+"python-dotenv (>=0.21.1)",
+"laceworksdk (>=4.1.0)",
+"pyside6 (>=6.9.0)",
+"weasyprint (>=62.1)",
 
-[tool.poetry.dev-dependencies]
+    ]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.group.dev.dependencies]
 pyinstaller = "^6.0.0"
 boto3 = "^1.26.0"
 poethepoet = "^0.24.0"
