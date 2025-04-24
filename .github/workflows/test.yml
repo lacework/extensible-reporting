@@ -17,7 +17,7 @@ jobs:
     - name: Install dependencies
       run: |
           poetry check
-          poetry lock --no-update
+          poetry lock
           poetry install --verbose
 
     - run: poetry run python lw_report_gen.py --author Author --customer Customer
