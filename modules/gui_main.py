@@ -205,7 +205,7 @@ class ExtensibleReportingGUI(QApplication):
 
     def report_changed(self, report_name):
         self.report_to_run = [report['report_class'] for report in self.available_reports if report['report_name'] == report_name][0]
-        self.report_generator = self.report_to_run(self.basedir, use_cache=self.window.ui.checkBoxUseCache.checked, api_key_file=self.pre_processed_args['api_key_file'])
+        self.report_generator = self.report_to_run(self.basedir, use_cache=bool(self.window.ui.checkBoxUseCache.checkState()), api_key_file=self.pre_processed_args['api_key_file'])
         logger.debug(f"Currently Selected Report: {report_name}")
         self.report = None
         self.report_preview.hide()
