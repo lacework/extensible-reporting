@@ -25,6 +25,7 @@ RUN pip install \
 
 
 FROM public.ecr.aws/docker/library/python:3.12-bookworm
+ARG CACHE_BUST=1
 ARG FUNCTION_DIR
 RUN apt-get update && \
     apt-get install -y xfonts-75dpi xfonts-base
