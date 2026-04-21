@@ -1,6 +1,6 @@
 ARG FUNCTION_DIR="/function"
 
-FROM public.ecr.aws/docker/library/python:3.12-bookworm as build-image
+FROM public.ecr.aws/docker/library/python:3.12-bookworm AS build-image
 
 ARG FUNCTION_DIR="/function"
 
